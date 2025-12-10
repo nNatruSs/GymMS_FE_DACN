@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "mock:api": "json-server db.json --routes routes.json --middlewares auth-middleware.js --port 3000"
+  }
+}
