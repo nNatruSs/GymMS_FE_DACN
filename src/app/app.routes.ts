@@ -22,13 +22,15 @@ export const routes: Routes = [
   { path: 'organizer-registration', component: OrganizerRegistrationComponent, canActivate:[preventAccessIfLoggedInGuardGuard] },
   { 
     path: 'admin', 
+    data: {role: 'ADMIN'},
     loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule), 
-    canMatch: [adminGuard] 
+    canActivate: [adminGuard] 
   },
   { 
     path: 'trainer', 
+    data: {role: 'TRAINER'},
     loadChildren: () => import('./modules/trainer/trainer.module').then(m => m.TrainerModule), 
-    canMatch: [trainerGuard] 
+    canActivate: [trainerGuard] 
   },
   // { 
   //   path: 'customer', 
@@ -37,8 +39,9 @@ export const routes: Routes = [
   // },
   { 
     path: 'user', 
+    data: {role: 'USER'},
     loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule), 
-    canMatch: [userGuard] 
+    canActivate: [userGuard] 
   },
   { 
     path: 'organizers', 

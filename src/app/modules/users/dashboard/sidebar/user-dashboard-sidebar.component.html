@@ -1,0 +1,140 @@
+<!-- <aside class="w-64 bg-slate-900 text-white p-6">
+  <h2 class="text-lg font-semibold mb-8">User Dashboard</h2>
+
+  <nav class="space-y-3">
+    <a
+      routerLink="/user/dashboard"
+      routerLinkActive="bg-slate-700"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="block rounded px-4 py-2 hover:bg-slate-800 transition"
+    >
+      Dashboard
+    </a>
+
+    <a
+      routerLink="/user/dashboard/membership-management"
+      routerLinkActive="bg-slate-700"
+      class="block rounded px-4 py-2 hover:bg-slate-800 transition"
+    >
+      Membership Management
+    </a>
+
+    <a
+      routerLink="/user/dashboard/bookings"
+      routerLinkActive="bg-slate-700"
+      class="block rounded px-4 py-2 hover:bg-slate-800 transition"
+    >
+      My Bookings
+    </a>
+  </nav>
+</aside> -->
+
+
+<!-- <section class="bg-light py-5"> 
+    <div class="container px-5">
+      <div class="row gx-5 justify-content-center">
+        <div class="col-xxl-12">
+          <div class="text-center my-5">
+           <h1>Dashboard</h1>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row g-4" id="fundraiserList">
+     
+
+      </div>
+    </div>
+  </section> -->
+
+  <!-- <aside
+  class="bg-[#0f172a] text-slate-200 h-screen shadow-lg transition-all duration-300 shrink-0"
+  [class.w-64]="!collapsed"
+  [class.w-20]="collapsed"
+>
+
+  <div class="flex items-center justify-between p-4 border-b border-slate-800">
+    <span *ngIf="!collapsed" class="text-lg font-semibold">User Panel</span>
+
+    <button
+      (click)="toggle()"
+      class="p-2 rounded hover:bg-slate-800 transition"
+    >
+      ☰
+    </button>
+  </div>
+
+
+  <nav class="mt-4 space-y-1 px-2">
+
+
+    <a
+      routerLink="/user/dashboard/membership-management"
+      routerLinkActive="bg-slate-800 text-white"
+      class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-slate-800 transition"
+    >
+      <span class="text-xl">💳</span>
+      <span *ngIf="!collapsed">Memberships</span>
+    </a>
+
+
+    <a
+      routerLink="/user/dashboard/bookings"
+      routerLinkActive="bg-slate-800 text-white"
+      class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-slate-800 transition"
+    >
+      <span class="text-xl">📅</span>
+      <span *ngIf="!collapsed">My Bookings</span>
+    </a>
+  </nav>
+</aside> -->
+
+<nav
+  class="sidebar d-flex flex-column p-3 text-white"
+  [class.collapsed]="collapsed"
+>
+  <!-- Header -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <span class="fs-5 fw-bold" *ngIf="!collapsed">User Dashboard</span>
+    <button class="btn btn-sm btn-outline-light" (click)="toggleSidebar()">
+      <i class="bi bi-list"></i>
+    </button>
+  </div>
+
+  <!-- Menu -->
+  <ul class="nav nav-pills flex-column gap-1">
+    <li class="nav-item">
+      <a
+        routerLink="/user/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-link text-white"
+      >
+        <i class="bi bi-speedometer2 me-2"></i>
+        <span *ngIf="!collapsed">Dashboard</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a
+        routerLink="/user/dashboard/membership-management"
+        routerLinkActive="active"
+        class="nav-link text-white"
+      >
+        <i class="bi bi-credit-card me-2"></i>
+        <span *ngIf="!collapsed">Memberships</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a
+        routerLink="/user/dashboard/bookings"
+        routerLinkActive="active"
+        class="nav-link text-white"
+      >
+        <i class="bi bi-calendar-check me-2"></i>
+        <span *ngIf="!collapsed">My Bookings</span>
+      </a>
+    </li>
+  </ul>
+</nav>
