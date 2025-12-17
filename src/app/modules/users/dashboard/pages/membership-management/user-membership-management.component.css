@@ -1,0 +1,38 @@
+.card-img-top {
+  height: 160px;
+  object-fit: cover;
+}
+
+button {
+  transition: transform 0.15s ease;
+}
+
+.membership-card {
+  transition: box-shadow 0.3s ease;
+}
+
+.membership-card:hover {
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+}
+
+.plan-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.plan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.12);
+}
+
+.plan-img {
+  transition: transform 0.3s ease;
+}
+
+.plan-card:hover .plan-img {
+  transform: scale(1.1);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+

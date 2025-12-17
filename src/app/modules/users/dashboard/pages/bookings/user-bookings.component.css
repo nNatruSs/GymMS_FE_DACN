@@ -1,0 +1,120 @@
+/* .chrome-tabs {
+  display: flex;
+  border-bottom: 1px solid #dee2e6;
+  background: #e9ecef;
+  padding-left: 0.5rem;
+}
+
+.chrome-tabs .nav-link {
+  border: 1px solid transparent;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin-right: 6px;
+  padding: 10px 18px;
+  color: #495057;
+  background: #dee2e6;
+  transition: all 0.25s ease;
+  font-weight: 500;
+}
+
+.chrome-tabs .nav-link:hover {
+  background: #d6d8db;
+  transform: translateY(-2px);
+}
+
+.chrome-tabs .nav-link.active {
+  background: #ffffff;
+  color: #000;
+  border-color: #dee2e6 #dee2e6 #ffffff;
+  position: relative;
+  z-index: 2;
+}
+
+.tab-content-container {
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  min-height: 400px;
+  animation: fadeIn 0.25s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} */
+
+
+/* Wrapper ensures tabs stay above content */
+.chrome-tabs-wrapper {
+  position: relative;
+  z-index: 1; //10?
+}
+
+/* Chrome-style tab bar */
+.chrome-tabs {
+  display: flex;
+  border-bottom: 1px solid #dee2e6;
+  background: #e9ecef;
+  padding-left: 0.5rem;
+  position: relative;
+  z-index: 1; //10?
+}
+
+/* Individual tab */
+.chrome-tabs .nav-link {
+  border: 1px solid transparent;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin-right: 6px;
+  padding: 10px 18px;
+  color: #495057;
+  background: #dee2e6;
+  transition: all 0.25s ease;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Hover */
+.chrome-tabs .nav-link:hover {
+  background: #d6d8db;
+  transform: translateY(-2px);
+}
+
+/* Active tab */
+.chrome-tabs .nav-link.active {
+  background: #ffffff;
+  color: #000;
+  border-color: #dee2e6 #dee2e6 #ffffff;
+  position: relative;
+  z-index: 1; //20?
+}
+
+/* Content area */
+.tab-content-container {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  min-height: 400px;
+  animation: fadeIn 0.25s ease-in;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

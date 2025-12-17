@@ -1,0 +1,22 @@
+<h4 class="fw-semibold mb-4">Choose a Branch</h4>
+
+<div class="row g-4">
+  <div class="col-md-6" *ngFor="let b of branches">
+    <div class="branch-card" (click)="select.emit(b)">
+      <img [src]="b.thumbnail" />
+
+      <div class="branch-overlay">
+        <h5>{{ b.name }}</h5>
+        <p>{{ b.address }}</p>
+
+        <div class="stats">
+          <span><i class="bi bi-heart-pulse"></i> {{ b.stats?.cardio || 0 }}</span>
+          <span><i class="bi bi-bar-chart"></i> {{ b.stats?.strength || 0 }}</span>
+          <span><i class="bi bi-flower1"></i> {{ b.stats?.mind_body || 0 }}</span>
+          <span><i class="bi bi-lightning"></i> {{ b.stats?.specialty || 0 }}</span>
+          <span><i class="bi bi-person-badge"></i> {{ b.stats?.trainers || 0 }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

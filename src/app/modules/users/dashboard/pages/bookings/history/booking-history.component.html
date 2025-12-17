@@ -1,0 +1,76 @@
+<!-- <div class="card shadow-sm border-0">
+  <div class="card-body">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of bookings">
+          <td>{{ b.type }}</td>
+          <td>{{ b.name }}</td>
+          <td>{{ b.date }}</td>
+          <td>{{ b.time }}</td>
+          <td>
+            <span class="badge bg-success" *ngIf="b.status === 'completed'"
+              >Completed</span
+            >
+            <span
+              class="badge bg-warning text-dark"
+              *ngIf="b.status === 'upcoming'"
+              >Upcoming</span
+            >
+            <span class="badge bg-danger" *ngIf="b.status === 'cancelled'"
+              >Cancelled</span
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> -->
+
+<div *ngIf="loading" class="text-center py-5">
+  <div class="spinner-border text-primary"></div>
+</div>
+
+<div *ngIf="!loading" class="card shadow-sm border-0">
+  <div class="card-body p-0">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Type</th>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of bookings">
+          <td class="text-capitalize">{{ b.type }}</td>
+          <td class="fw-semibold">{{ b.title }}</td>
+          <td>{{ b.date }}</td>
+          <td>{{ b.time }}</td>
+          <td>
+            <span
+              class="badge"
+              [ngClass]="{
+                'bg-success': b.status === 'completed',
+                'bg-warning text-dark': b.status === 'upcoming',
+                'bg-danger': b.status === 'cancelled'
+              }"
+            >
+              {{ b.status }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

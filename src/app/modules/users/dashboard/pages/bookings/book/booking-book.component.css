@@ -1,0 +1,17 @@
+.branch-card,
+.item-card {
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.branch-card:hover,
+.item-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.modal {
+  background: rgba(0, 0, 0, 0.6);
+}

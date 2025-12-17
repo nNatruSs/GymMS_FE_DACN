@@ -1,0 +1,101 @@
+<!-- <h4 class="fw-semibold mb-4 text-capitalize">
+  Available {{ mode }}s
+</h4>
+
+<div *ngIf="loading" class="text-center py-5">
+  <div class="spinner-border"></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-4" *ngFor="let i of items">
+    <div class="item-card">
+      <img [src]="i.thumbnail" />
+      <div class="p-3">
+        <h6>{{ i.name || i.bio }}</h6>
+        <p class="small text-muted">
+          {{ i.schedule || i.specialties?.join(', ') }}
+        </p>
+        <button class="btn btn-outline-primary w-100">
+          View Details
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="btn btn-link mt-4" (click)="back.emit()">← Back</button> -->
+
+<!-- <h4 class="fw-semibold mb-4 text-capitalize">
+  Available {{ mode }}s
+</h4>
+
+<div *ngIf="loading" class="text-center py-5">
+  <div class="spinner-border"></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-4" *ngFor="let i of items">
+    <div class="item-card">
+      <img [src]="i.thumbnail" />
+      <div class="p-3">
+        <h6>{{ i.name || i.bio }}</h6>
+        <p class="small text-muted">
+          {{ i.schedule || i.specialties?.join(', ') }}
+        </p>
+        <button class="btn btn-outline-primary w-100">
+          View Details
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="btn btn-link mt-4" (click)="back.emit()">← Back</button> -->
+
+<div class="mode-header mb-4 d-flex align-items-center">
+  <button
+    class="back-btn me-3"
+    type="button"
+    (click)="back.emit()"
+    aria-label="Go back"
+  >
+    <i class="bi bi-arrow-left"></i>
+  </button>
+  <h5 class="fw-semibold mb-0">
+    {{ branch.name }} — Choose your class!
+  </h5>
+</div>
+
+<div *ngIf="loading" class="text-center py-5">
+  <div class="spinner-border text-primary"></div>
+</div>
+
+<div class="row g-3" *ngIf="!loading">
+  <div class="col-md-4" *ngFor="let i of items">
+    <div
+      class="card item-card h-100"
+      [class.disabled]="!hasMembership"
+      (click)="open(i)">
+      <div class="thumb-wrapper">
+        <img [src]="i.thumbnail" alt="" />
+      </div>
+      <!-- <img [src]="i.thumbnail" class="card-img-top h-100" /> -->
+      <div class="card-body">
+        <h6 class="fw-semibold mb-1">
+          {{ mode === 'class' ? i.name : i.trainerName }}
+        </h6>
+        <small class="text-muted">
+          {{ mode === 'class' ? i.schedule : i.trainerSpecialties.join(', ') }}
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-booking-details-modal
+  *ngIf="selectedItem"
+  [item]="selectedItem"
+  [mode]="mode"
+  (close)="close()"
+  (confirm)="confirm()">
+</app-booking-details-modal>

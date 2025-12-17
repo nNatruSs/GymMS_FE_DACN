@@ -1,0 +1,119 @@
+/* .mode-card {
+  height: 300px;
+  border-radius: 26px;
+  color: white;
+  padding: 2rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all .4s ease;
+}
+
+.mode-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+}
+
+.mode-card * {
+  position: relative;
+  z-index: 1;
+}
+
+.mode-card.class {
+  background: url('/assets/book/mode-select/class_session.jpg') center/cover;
+  border: 3px solid #0d6efd;
+}
+
+.mode-card.trainer {
+  background: url('/assets/book/mode-select/trainer_session.jpg') center/cover;
+  border: 3px solid #dc3545;
+}
+
+.mode-card:hover {
+  transform: scale(1.04);
+} */
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.mode-card {
+  height: 240px;
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .35s cubic-bezier(.4,0,.2,1);
+}
+
+.mode-card.class {
+  background: url('/assets/book/mode-select/class_session.jpg') center / cover;
+  border: 2px solid #4f46e5;
+}
+
+.mode-card.trainer {
+  background: url('/assets/book/mode-select/trainer_session.jpg') center / cover;
+  border: 2px solid #16a34a;
+}
+
+.mode-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+}
+
+.mode-card .overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform .3s ease;
+}
+
+.mode-card:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+.mode-card:hover .overlay {
+  transform: scale(1.1);
+}
+
+.mode-card.disabled {
+  opacity: .45;
+  pointer-events: none;
+}
+
+.back-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.04);
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .25s cubic-bezier(.4,0,.2,1);
+}
+
+.back-btn i {
+  font-size: 1.2rem;
+}
+
+.back-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  transform: translateX(-2px);
+}
+
+.back-btn:active {
+  transform: scale(0.92);
+}

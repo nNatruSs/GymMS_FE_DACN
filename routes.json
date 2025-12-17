@@ -1,4 +1,7 @@
 {
   "/auth/login": "/login",
-  "/auth/register": "/register"
+  "/auth/register": "/register",
+
+  "/api/user-memberships": "/user_memberships",
+  "/api/membership-plans": "/membership_plans"
 }

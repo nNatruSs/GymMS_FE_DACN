@@ -1,0 +1,48 @@
+<!-- <div class="row g-4">
+  <div class="col-md-4" *ngFor="let b of branches">
+    <div class="card h-100 shadow-sm">
+      <img [src]="b.thumbnail" class="card-img-top" />
+      <div class="card-body">
+        <h6>{{ b.name }}</h6>
+        <p class="text-muted small">{{ b.address }}</p>
+        <button class="btn btn-outline-primary w-100">Select</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+<div class="booking-wrapper">
+
+  <!-- MEMBERSHIP WARNING -->
+  <div *ngIf="!hasMembership" class="alert alert-warning mb-4">
+    <strong>Membership required.</strong>
+    Please purchase a membership to book classes or trainers.
+  </div>
+
+  <!-- STEP 1 -->
+  <app-branch-selector
+    *ngIf="!selectedBranch"
+    [branches]="branches"
+    (select)="onBranchSelected($event)">
+  </app-branch-selector>
+
+  <!-- STEP 2 -->
+  <app-booking-mode-selector
+    *ngIf="selectedBranch && !mode"
+    [branch]="selectedBranch"
+    [disabled]="!hasMembership"
+    (select)="onModeSelected($event)"
+    (back)="reset()">
+  </app-booking-mode-selector>
+
+  <!-- STEP 3 -->
+  <app-booking-item-list
+    *ngIf="selectedBranch && mode"
+    [branch]="selectedBranch"
+    [mode]="mode"
+    [hasMembership]="hasMembership"
+    (back)="mode = null">
+  </app-booking-item-list>
+
+</div>

@@ -1,0 +1,67 @@
+<!-- <div class="card shadow-sm border-0">
+  <div class="card-body">
+    <h6 class="fw-semibold mb-3">January 2025</h6>
+
+    <div class="row g-2">
+      <div class="col-2 text-center" *ngFor="let day of days">
+        <div class="calendar-day">
+          <small>{{ day.date }}</small>
+
+          <div
+            *ngFor="let booking of day.bookings"
+            class="booking-pill"
+            data-bs-toggle="modal"
+            data-bs-target="#bookingDetailModal"
+          >
+            {{ booking.name }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- <div class="row g-3">
+  <div class="col-md-3" *ngFor="let b of bookings">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <strong>{{ b.name }}</strong>
+        <div class="text-muted small">{{ b.date }} | {{ b.time }}</div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div *ngIf="loading" class="text-center py-5">
+  <div class="spinner-border text-primary"></div>
+</div>
+
+<div *ngIf="!loading" class="card shadow-sm border-0">
+  <div class="row g-3">
+    <div class="col-md-4" *ngFor="let b of bookings">
+      <div class="card shadow-sm h-100">
+        <img
+          *ngIf="b.thumbnail"
+          [src]="b.thumbnail"
+          class="card-img-top"
+          style="height: 160px; object-fit: cover"
+        />
+
+        <div class="card-body">
+          <h6 class="fw-semibold mb-1">{{ b.title }}</h6>
+          <div class="text-muted small">{{ b.date }} • {{ b.time }}</div>
+
+          <span
+            class="badge mt-2"
+            [ngClass]="{
+              'bg-info': b.type === 'class',
+              'bg-secondary': b.type === 'trainer'
+            }"
+          >
+            {{ b.type }} session
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -93,15 +93,13 @@
   class="sidebar d-flex flex-column p-3 text-white"
   [class.collapsed]="collapsed"
 >
-  <!-- Header -->
   <div class="d-flex align-items-center justify-content-between mb-4">
     <span class="fs-5 fw-bold" *ngIf="!collapsed">User Dashboard</span>
-    <button class="btn btn-sm btn-outline-light" (click)="toggleSidebar()">
+    <button class="btn btn-sm btn-outline-light ms-1" (click)="toggleSidebar()">
       <i class="bi bi-list"></i>
     </button>
   </div>
 
-  <!-- Menu -->
   <ul class="nav nav-pills flex-column gap-1">
     <li class="nav-item">
       <a

@@ -1,0 +1,209 @@
+<!-- <div class="modal-backdrop-custom" (click)="close.emit()"></div>
+
+<div class="modal-container">
+  <div class="modal-card">
+
+
+    <div class="modal-header">
+      <h5 class="fw-semibold">
+        {{ mode === 'class' ? item.name : 'Personal Training' }}
+      </h5>
+      <button class="btn-close" (click)="close.emit()"></button>
+    </div>
+
+
+    <div class="image-slider">
+      <img [src]="images[currentIndex]" />
+
+      <button class="nav left" (click)="prev()">‹</button>
+      <button class="nav right" (click)="next()">›</button>
+    </div>
+
+
+    <div class="modal-body">
+      <p class="text-muted">
+        {{ item.bio || item.schedule }}
+      </p>
+
+      <div class="d-flex justify-content-between mt-3">
+        <span class="fw-semibold">${{ item.price }}</span>
+        <span class="badge bg-primary text-capitalize">{{ mode }}</span>
+      </div>
+    </div>
+
+
+    <div class="modal-footer">
+      <button class="btn btn-outline-secondary" (click)="close.emit()">
+        Cancel
+      </button>
+      <button class="btn btn-primary" (click)="confirm.emit()">
+        Confirm Booking
+      </button>
+    </div>
+
+  </div>
+</div> -->
+
+<div class="modal-backdrop-custom" (click)="close.emit()"></div>
+
+<div class="modal-container">
+  <div class="modal-card">
+
+    <!-- HEADER -->
+    <div class="modal-header justify-content-end mt-4 me-4">
+      <button class="btn-close" (click)="close.emit()"></button>
+    </div>
+
+    <!-- BODY -->
+    <div class="modal-body-grid">
+
+      <!-- LEFT: IMAGE -->
+      <div class="image-section">
+        <div class="image-wrapper">
+          <img [src]="images[currentIndex]" />
+        </div>
+
+        <button class="nav left" (click)="prev()">‹</button>
+        <button class="nav right" (click)="next()">›</button>
+      </div>
+
+      <!-- RIGHT: DETAILS -->
+      <div class="content-section">
+
+        <h3 class="fw-bold mb-1">
+          {{ item.name }}
+        </h3>
+
+        <div *ngIf="mode==='class'" class="text-muted mb-3">
+          Instructor:
+          <strong class="text-dark">{{ item.trainerName }}</strong>
+        </div>
+
+        <p class="mb-2 text-muted">{{ item.trainerBio }}</p>
+
+        <div class="mb-3">
+        <span class="small text-muted mb-1">Trainer's specialties:</span>
+          <span
+            class="badge bg-light text-dark me-2"
+            *ngFor="let s of item.trainerSpecialties"
+          >
+            {{ s }}
+          </span>
+        </div>
+
+        <hr />
+
+        <div class="mb-3">
+          <i class="bi bi-geo-alt me-2"></i>
+          <strong>{{ item.branchName }}</strong>
+          <div class="text-muted small">
+            {{ item.branchAddress }}
+          </div>
+        </div>
+
+        <!-- SCHEDULE (CLASS ONLY) -->
+        <div *ngIf="mode === 'class'" class="mb-3">
+          <i class="bi bi-clock me-2"></i>
+          {{ item.schedule }}
+        </div>
+        
+        <!-- TRAINER NOTE -->
+        <div *ngIf="mode === 'trainer'" class="mb-3 text-muted">
+          <i class="bi bi-info-circle me-2"></i>
+          Private session — please select an available date & time below.
+        </div>
+
+        <p class="text-muted">
+          Description: {{ item.description }}
+        </p>
+
+        <!-- ========================= -->
+        <!-- TRAINER CALENDAR BOOKING -->
+        <!-- ========================= -->
+        <div *ngIf="mode === 'trainer'" class="trainer-calendar mb-4">
+
+          <!-- DATE SELECT -->
+          <h6 class="fw-semibold mb-2">Select a date</h6>
+
+          <div class="d-flex gap-2 flex-wrap mb-3">
+            <button
+              *ngFor="let day of availability"
+              class="date-chip"
+              [class.active]="selectedDate === day.date"
+              (click)="selectDate(day.date)"
+            >
+              {{ day.date | date: 'MMM d' }}
+            </button>
+          </div>
+
+          <!-- SLOT SELECT -->
+          <div *ngIf="selectedDate">
+            <h6 class="fw-semibold mb-2">Available time slots</h6>
+
+            <div class="d-flex gap-2 flex-wrap">
+              <button
+                *ngFor="let slot of selectedDaySlots"
+                class="slot-chip"
+                [class.active]="selectedSlot === slot"
+                (click)="selectSlot(slot)"
+              >
+                {{ slot }}
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PURCHASE -->
+        <!-- <div class="purchase-box">
+          <div>
+            <div class="small text-muted">Price</div>
+            <div class="fw-bold fs-5">${{ item.price }} / session</div>
+          </div>
+
+          <div class="d-flex gap-2 align-items-center">
+            <select class="form-select">
+              <option>1 session</option>
+              <option>4 sessions</option>
+              <option>8 sessions</option>
+            </select>
+
+            <button class="btn btn-primary px-4" (click)="confirm.emit()">
+              Purchase
+            </button>
+          </div>
+        </div> -->
+
+        <div class="purchase-box">
+
+          <div>
+            <div class="small text-muted">Price</div>
+            <div class="fw-bold fs-5">
+              ${{ item.price }}
+              <span class="fs-6 text-muted">/ session</span>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 align-items-center">
+            <select class="form-select">
+              <option>1 session</option>
+              <option>4 sessions</option>
+              <option>8 sessions</option>
+            </select>
+
+            <button
+              class="btn btn-primary px-4"
+              [disabled]="mode === 'trainer' && !selectedSlot"
+              (click)="confirm.emit({
+                date: selectedDate,
+                time: selectedSlot
+              })"
+            >
+              Purchase
+            </button>
+          </div>
+      </div>
+    </div>
+
+  </div>
+</div>

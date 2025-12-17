@@ -5,21 +5,214 @@
       "email": "admin@test.com",
       "password": "123456",
       "role": "ADMIN",
-      "name": "Admin Michael"
+      "name": "Admin User"
     },
     {
       "id": "2",
       "email": "user@test.com",
       "password": "123456",
       "role": "USER",
-      "name": "Member Jessy"
+      "name": "Normal User"
     },
     {
       "id": "3",
       "email": "trainer@test.com",
       "password": "123456",
       "role": "TRAINER",
-      "name": "Trainer Roger"
+      "name": "Trainer Anna Lee"
+    },
+    {
+    "id": "4",
+    "email": "user2@test.com",
+    "password": "123456",
+    "role": "USER",
+    "name": "User David Nguyen"
+  },
+  {
+    "id": "5",
+    "email": "trainer2@test.com",
+    "password": "123456",
+    "role": "TRAINER",
+    "name": "Trainer Michael Tran"
+  }
+  ],
+  "user_memberships": [
+    {
+      "id": "1765640016625",
+      "user_id": "2",
+      "plan": "premium",
+      "start_date": "2025-12-13",
+      "duration_days": 90
+    }
+  ],
+  "membership_plans": [
+    {
+      "id": "1",
+      "name": "basic",
+      "price": 20,
+      "duration_days": 30,
+      "benefits": "Access to gym floor and basic equipment.",
+      "image_url": "/assets/memberships/basic.png"
+    },
+    {
+      "id": "2",
+      "name": "premium",
+      "price": 40,
+      "duration_days": 30,
+      "benefits": "Includes classes, premium equipment, and locker.",
+      "image_url": "/assets/memberships/premium.png"
+    },
+    {
+      "id": "3",
+      "name": "elite",
+      "price": 60,
+      "duration_days": 30,
+      "benefits": "All benefits + sauna + one PT session monthly.",
+      "image_url": "/assets/memberships/elite.png"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "b1",
+      "user_id": "2",
+      "type": "class",               
+      "ref_id": "c1",                
+      "branch_id": "br1",
+      "date": "2025-01-10",
+      "time": "16:00 - 17:00",
+      "status": "upcoming",
+      "price": 20
+    },
+    {
+      "id": "b2",
+      "user_id": "2",
+      "type": "trainer",               
+      "ref_id": "3",                
+      "branch_id": "br1",
+      "date": "2025-01-15",
+      "time": "12:00 - 15:00",
+      "status": "upcoming",
+      "price": 25
+    }
+  ],
+  "trainer_profiles": [
+    {
+      "id": "tp1",
+      "user_id": "3",
+      "branch_id": "br1",
+      "specialties": ["Yoga", "Pilates"],
+      "price_per_session": 25,
+      "bio": "Certified yoga and pilates instructor",
+      "thumbnail": "/assets/branches/trainers/anna.jpg",
+      "active": true
+    },
+    {
+      "id": "tp2",
+      "user_id": "5",
+      "branch_id": "br2",
+      "specialties": ["Strength", "CrossFit"],
+      "price_per_session": 30,
+      "bio": "Strength & conditioning specialist",
+      "thumbnail": "/assets/branches/trainers/michael.jpg",
+      "active": true
+    }
+  ],
+  "classes": [
+    {
+      "id": "c1",
+      "name": "Yoga Flow",
+      "category": "mind_body",
+      "branch_id": "br1",
+      "trainer_user_id": "3",
+      "schedule": "Tue 16:00 - 17:00",
+      "price": 20,
+      "capacity": 20,
+      "thumbnail": "/assets/branches/classes/yoga.jpg",
+      "images": [
+        "/assets/branches/classes/yoga/p1.jpg",
+        "/assets/branches/classes/yoga/p2.jpg",
+        "/assets/branches/classes/yoga/p3.jpg",
+        "/assets/branches/classes/yoga/p4.jpg"
+      ],
+      "description": "A calming yoga class focusing on flexibility, breathing, and balance. Suitable for all levels.",
+      "active": true
+    },
+    {
+      "id": "c2",
+      "name": "HIIT Cardio",
+      "category": "cardio",
+      "branch_id": "br1",
+      "trainer_user_id": "5",
+      "schedule": "Mon 18:00 - 19:00",
+      "price": 15,
+      "capacity": 25,
+      "thumbnail": "/assets/branches/classes/hiit.jpg",
+      "images": [
+        "/assets/branches/classes/hiit/p1.jpg",
+        "/assets/branches/classes/hiit/p2.jpg",
+        "/assets/branches/classes/hiit/p3.jpg",
+        "/assets/branches/classes/hiit/p4.jpg"
+      ],
+      "description": "High-intensity interval training to burn calories and improve endurance.",
+      "active": true
+    },
+    {
+      "id": "c3",
+      "name": "Body Pump",
+      "category": "strength",
+      "branch_id": "br2",
+      "trainer_user_id": "5",
+      "schedule": "Fri 17:00 - 18:00",
+      "price": 18,
+      "capacity": 30,
+      "thumbnail": "/assets/branches/classes/bodypump.jpg",
+      "images": [
+        "/assets/branches/classes/bodypump/p1.jpg",
+        "/assets/branches/classes/bodypump/p2.jpg",
+        "/assets/branches/classes/bodypump/p3.jpg",
+        "/assets/branches/classes/bodypump/p4.jpg"
+      ],
+      "description": "Body Pump is a high-energy workout that combines strength and cardio exercises.",
+      "active": true
+    }
+  ],
+  "branches": [
+    {
+      "id": "br1",
+      "name": "HCMUT Gym",
+      "address": "268 Lý Thường Kiệt, Phường Diên Hồng, Tp. HCM",
+      "thumbnail": "/assets/branches/branch_hcmut.jpg",
+      "description": "Modern gym with full equipment"
+    },
+    {
+      "id": "br2",
+      "name": "HCMUSSH Gym",
+      "address": "10-12 Đinh Tiên Hoàng, phường Sài Gòn, Quận 1, Thành phố Hồ Chí Minh",
+      "thumbnail": "/assets/branches/branch_hcmussh.jpg",
+      "description": "Modern gym with full equipment"
+    }
+  ],
+  "trainer_availability": [
+    {
+      "id": "ta1",
+      "trainer_user_id": "3",
+      "branch_id": "br1",
+      "date": "2025-01-20",
+      "slots": [
+        "09:00 - 10:00",
+        "10:00 - 11:00",
+        "14:00 - 15:00"
+      ]
+    },
+    {
+      "id": "ta2",
+      "trainer_user_id": "3",
+      "branch_id": "br1",
+      "date": "2025-01-21",
+      "slots": [
+        "16:00 - 17:00",
+        "17:00 - 18:00"
+      ]
     }
   ]
 }
