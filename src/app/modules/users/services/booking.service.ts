@@ -152,9 +152,19 @@ export class BookingService {
     );
   }
 
+  getTrainerBookings(trainerId: string) {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/bookings?ref_id=${trainerId}&type=trainer`
+    );
+  }
 
   /** GET USER */
   getUser(userId: string) {
     return this.http.get<any>(`${this.baseUrl}/users/${userId}`);
   }
+
+  createBooking(payload: any) {
+    return this.http.post(`${this.baseUrl}/bookings`, payload);
+  }
+
 }

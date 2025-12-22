@@ -22,27 +22,27 @@
       "name": "Trainer Anna Lee"
     },
     {
-    "id": "4",
-    "email": "user2@test.com",
-    "password": "123456",
-    "role": "USER",
-    "name": "User David Nguyen"
-  },
-  {
-    "id": "5",
-    "email": "trainer2@test.com",
-    "password": "123456",
-    "role": "TRAINER",
-    "name": "Trainer Michael Tran"
-  }
+      "id": "4",
+      "email": "user2@test.com",
+      "password": "123456",
+      "role": "USER",
+      "name": "User David Nguyen"
+    },
+    {
+      "id": "5",
+      "email": "trainer2@test.com",
+      "password": "123456",
+      "role": "TRAINER",
+      "name": "Trainer Michael Tran"
+    }
   ],
   "user_memberships": [
     {
-      "id": "1765640016625",
+      "id": "1766329345935",
       "user_id": "2",
-      "plan": "premium",
-      "start_date": "2025-12-13",
-      "duration_days": 90
+      "plan": "elite",
+      "start_date": "2025-12-21",
+      "duration_days": 30
     }
   ],
   "membership_plans": [
@@ -75,8 +75,8 @@
     {
       "id": "b1",
       "user_id": "2",
-      "type": "class",               
-      "ref_id": "c1",                
+      "type": "class",
+      "ref_id": "c1",
       "branch_id": "br1",
       "date": "2025-01-10",
       "time": "16:00 - 17:00",
@@ -86,13 +86,24 @@
     {
       "id": "b2",
       "user_id": "2",
-      "type": "trainer",               
-      "ref_id": "3",                
+      "type": "trainer",
+      "ref_id": "3",
       "branch_id": "br1",
-      "date": "2025-01-15",
-      "time": "12:00 - 15:00",
+      "date": "2025-12-22",
+      "time": "12:00",
       "status": "upcoming",
       "price": 25
+    },
+    {
+      "id": "0069c7c4-d171-4ef5-a5cc-784a2807fc8c",
+      "user_id": "2",
+      "type": "trainer",
+      "ref_id": "5",
+      "branch_id": "br2",
+      "date": "2025-12-20",
+      "time": "10:00",
+      "status": "upcoming",
+      "price": 30
     }
   ],
   "trainer_profiles": [
@@ -100,7 +111,10 @@
       "id": "tp1",
       "user_id": "3",
       "branch_id": "br1",
-      "specialties": ["Yoga", "Pilates"],
+      "specialties": [
+        "Yoga",
+        "Pilates"
+      ],
       "price_per_session": 25,
       "bio": "Certified yoga and pilates instructor",
       "thumbnail": "/assets/branches/trainers/anna.jpg",
@@ -110,7 +124,10 @@
       "id": "tp2",
       "user_id": "5",
       "branch_id": "br2",
-      "specialties": ["Strength", "CrossFit"],
+      "specialties": [
+        "Strength",
+        "CrossFit"
+      ],
       "price_per_session": 30,
       "bio": "Strength & conditioning specialist",
       "thumbnail": "/assets/branches/trainers/michael.jpg",
@@ -197,21 +214,42 @@
       "id": "ta1",
       "trainer_user_id": "3",
       "branch_id": "br1",
-      "date": "2025-01-20",
+      "date": "2025-12-19",
       "slots": [
-        "09:00 - 10:00",
-        "10:00 - 11:00",
-        "14:00 - 15:00"
+        "09:00",
+        "10:00",
+        "14:00"
       ]
     },
     {
       "id": "ta2",
       "trainer_user_id": "3",
       "branch_id": "br1",
-      "date": "2025-01-21",
+      "date": "2025-12-17",
       "slots": [
-        "16:00 - 17:00",
-        "17:00 - 18:00"
+        "16:00",
+        "17:00"
+      ]
+    },
+    {
+      "id": "ta3",
+      "trainer_user_id": "5",
+      "branch_id": "br2",
+      "date": "2025-12-20",
+      "slots": [
+        "09:00",
+        "10:00",
+        "14:00"
+      ]
+    },
+    {
+      "id": "ta4",
+      "trainer_user_id": "5",
+      "branch_id": "br2",
+      "date": "2025-12-16",
+      "slots": [
+        "16:00",
+        "17:00"
       ]
     }
   ]

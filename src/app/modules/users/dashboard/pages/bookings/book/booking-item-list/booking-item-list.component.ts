@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BookingService } from '../../../../../services/booking.service';
 import { BookingDetailsModalComponent } from '../booking-details-modal/booking-details-modal.component';
+import { StorageService } from '../../../../../../../auth/services/storage/storage.service';
+
 @Component({
   selector: 'app-booking-item-list',
   standalone: true,
@@ -21,7 +23,7 @@ export class BookingItemListComponent implements OnInit {
   items: any[] = [];
   loading = true;
 
-  constructor(private bookingService: BookingService) {}
+  constructor(private bookingService: BookingService, private storage: StorageService) {}
 
   ngOnInit() {
     const req = this.mode === 'class'
@@ -44,8 +46,30 @@ export class BookingItemListComponent implements OnInit {
     this.selectedItem = null;
   }
 
-  confirm() {
-    alert('Booking confirmed (mock)');
-    this.close();
-  }
+//   confirm() {
+//     alert('Booking confirmed (mock)');
+//     this.close();
+//   }
+
+    confirm({ date, time }: { date: string; time: string }) {
+    const booking = {
+        id: crypto.randomUUID(),
+        user_id: this.storage.getUserId(),
+        type: this.mode,
+        ref_id: this.mode === 'trainer'
+        ? this.selectedItem.trainerUserId
+        : this.selectedItem.id,
+        branch_id: this.branch.id,
+        date,
+        time,
+        status: 'upcoming',
+        price: this.selectedItem.price
+    };
+
+    this.bookingService.createBooking(booking).subscribe(() => {
+        this.selectedItem = null;
+        alert('Booking successful!');
+    });
+    }
+
 }

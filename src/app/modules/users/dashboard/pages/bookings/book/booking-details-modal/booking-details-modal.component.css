@@ -132,7 +132,7 @@
   align-items: center;
 }
 
-.date-chip,
+/* .date-chip,
 .slot-chip {
   border: 1px solid #dee2e6;
   padding: 8px 14px;
@@ -153,4 +153,84 @@
   background: #0d6efd;
   color: white;
   border-color: #0d6efd;
+} */
+
+
+/* ========================= */
+/* TRAINER WEEKLY CALENDAR */
+/* ========================= */
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.calendar-header {
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 10px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.time-label {
+  background: #f8f9fa;
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 8px;
+  border-right: 1px solid #dee2e6;
+}
+
+.calendar-cell {
+  height: 38px;
+  border: 1px solid #f1f1f1;
+  cursor: not-allowed;
+}
+
+.calendar-cell.available {
+  background: #e9f2ff;
+  cursor: pointer;
+}
+
+.calendar-cell.available:hover {
+  background: #d6e6ff;
+}
+
+.calendar-cell.selected {
+  background: #0d6efd;
+}
+
+.calendar-cell.disabled {
+  background: #f1f3f5;
+  cursor: not-allowed;
+  opacity: .5;
+}
+
+.calendar-cell.booked {
+  background: repeating-linear-gradient(
+    45deg,
+    #dee2e6,
+    #dee2e6 5px,
+    #f8f9fa 5px,
+    #f8f9fa 10px
+  );
+  cursor: not-allowed;
+}
+
+
+.nav-week {
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  color: #0d6efd;
+  cursor: pointer;
+  transition: transform .2s ease;
+}
+
+.nav-week:hover {
+  transform: scale(1.2);
 }

@@ -117,12 +117,9 @@
           Description: {{ item.description }}
         </p>
 
-        <!-- ========================= -->
-        <!-- TRAINER CALENDAR BOOKING -->
-        <!-- ========================= -->
-        <div *ngIf="mode === 'trainer'" class="trainer-calendar mb-4">
+        <!-- <div *ngIf="mode === 'trainer'" class="trainer-calendar mb-4">
 
-          <!-- DATE SELECT -->
+
           <h6 class="fw-semibold mb-2">Select a date</h6>
 
           <div class="d-flex gap-2 flex-wrap mb-3">
@@ -136,7 +133,6 @@
             </button>
           </div>
 
-          <!-- SLOT SELECT -->
           <div *ngIf="selectedDate">
             <h6 class="fw-semibold mb-2">Available time slots</h6>
 
@@ -152,7 +148,57 @@
             </div>
           </div>
 
+        </div> -->
+
+        <div *ngIf="mode === 'trainer'" class="trainer-calendar mb-4">
+
+            <h6 class="fw-semibold mb-3">
+                Select a time slot
+            
+            </h6>
+
+            <div class="calendar-nav d-flex justify-content-between align-items-center mb-3">
+            <button class="nav-week" (click)="prevWeek()">‹</button>
+
+            <div class="fw-semibold">
+                {{ monthLabel }}
+            </div>
+
+            <button class="nav-week" (click)="nextWeek()">›</button>
+            </div>
+
+
+            <div class="calendar-grid">
+
+                <!-- HEADER -->
+                <div class="calendar-header"></div>
+                <div
+                    class="calendar-header"
+                    *ngFor="let d of weekDates"
+                >
+                    {{ d | date:'EEE dd' }}
+                </div>
+
+                <!-- BODY -->
+                <ng-container *ngFor="let time of timeSlots">
+                    <div class="time-label">{{ time }}</div>
+
+                    <div
+                    *ngFor="let d of weekDates"
+                    class="calendar-cell"
+                    [class.available]="isAvailable(d, time)"
+                    [class.disabled]="isPast(d)"
+                    [class.booked]="isBooked(d, time)"
+                    [class.selected]="isSelected(d, time)"
+                    (click)="selectSlot(d, time)"
+                    >
+                    </div>
+                </ng-container>
+
+            </div>
+
         </div>
+
 
         <!-- PURCHASE -->
         <!-- <div class="purchase-box">
@@ -194,10 +240,7 @@
             <button
               class="btn btn-primary px-4"
               [disabled]="mode === 'trainer' && !selectedSlot"
-              (click)="confirm.emit({
-                date: selectedDate,
-                time: selectedSlot
-              })"
+              (click)="purchase()"
             >
               Purchase
             </button>
