@@ -34,7 +34,65 @@
       "password": "123456",
       "role": "TRAINER",
       "name": "Trainer Michael Tran"
+    },
+    {
+      "id": "6",
+      "email": "trainer3@test.com",
+      "password": "123456",
+      "role": "TRAINER",
+      "name": "Trainer Sarah Pham"
+    },
+    {
+      "id": "7",
+      "email": "trainer4@test.com",
+      "password": "123456",
+      "role": "TRAINER",
+      "name": "Trainer Jason Vu"
+    },
+    {
+      "id": "8",
+      "email": "trainer5@test.com",
+      "password": "123456",
+      "role": "TRAINER",
+      "name": "Trainer Linh Nguyen"
+    },
+    {
+      "id": "9",
+      "email": "trainer6@test.com",
+      "password": "123456",
+      "role": "TRAINER",
+      "name": "Trainer Kevin Pham"
+    },
+    {
+      "id": "10",
+      "email": "trainer7@test.com",
+      "password": "123456",
+      "role": "TRAINER",
+      "name": "Trainer Emily Vo"
+    },
+    {
+      "id": "11",
+      "email": "trainer3@test.com",
+      "password": "123456",
+      "role": "TRAINER",
+      "name": "Trainer Minh Pham"
+    },
+    {
+      "id": "12",
+      "email": "trainer4@test.com",
+      "password": "123456",
+      "role": "TRAINER",
+      "name": "Trainer Sarah Le"
+    },
+    {
+      "id": "13",
+      "email": "trainer5@test.com",
+      "password": "123456",
+      "role": "TRAINER",
+      "name": "Trainer John Nguyen"
     }
+
+
   ],
   "user_memberships": [
     {
@@ -80,7 +138,7 @@
       "branch_id": "br1",
       "date": "2025-01-10",
       "time": "16:00 - 17:00",
-      "status": "cancelled",
+      "status": "completed",
       "price": 20
     },
     {
@@ -91,7 +149,7 @@
       "branch_id": "br1",
       "date": "2025-12-22",
       "time": "12:00",
-      "status": "upcoming",
+      "status": "completed",
       "price": 25
     },
     {
@@ -104,7 +162,163 @@
       "time": "10:00",
       "status": "cancelled",
       "price": 30
+    },
+    {
+      "id": "b10",
+      "user_id": "2",
+      "type": "class",
+      "ref_id": "c1",
+      "branch_id": "br1",
+      "date": "2025-12-30",
+      "time": "16:00 - 17:00",
+      "status": "upcoming",
+      "price": 20
+    },
+    {
+      "id": "b11",
+      "user_id": "2",
+      "type": "trainer",
+      "ref_id": "3",
+      "branch_id": "br1",
+      "date": "2025-12-30",
+      "time": "10:00",
+      "status": "upcoming",
+      "price": 25
+    },
+    {
+      "id": "b12",
+      "user_id": "2",
+      "type": "trainer",
+      "ref_id": "6",
+      "branch_id": "br3",
+      "date": "2026-01-02",
+      "time": "11:00",
+      "status": "upcoming",
+      "price": 22
+    },
+    {
+      "id": "b13",
+      "user_id": "2",
+      "type": "class",
+      "ref_id": "c4",
+      "branch_id": "br3",
+      "date": "2026-01-05",
+      "time": "18:00 - 19:00",
+      "status": "cancelled",
+      "price": 18
+    },
+    {
+      "id": "b14",
+      "user_id": "2",
+      "type": "class",
+      "ref_id": "c7",
+      "branch_id": "br4",
+      "date": "2025-12-31",
+      "time": "18:30 - 19:30",
+      "status": "upcoming",
+      "price": 22
+    },
+    {
+      "id": "b15",
+      "user_id": "2",
+      "type": "trainer",
+      "ref_id": "8",
+      "branch_id": "br4",
+      "date": "2025-12-30",
+      "time": "09:00",
+      "status": "completed",
+      "price": 28
+    },
+    {
+      "id": "b16",
+      "user_id": "2",
+      "type": "trainer",
+      "ref_id": "9",
+      "branch_id": "br5",
+      "date": "2025-12-31",
+      "time": "08:00",
+      "status": "upcoming",
+      "price": 26
+    },
+    {
+      "id": "b17",
+      "user_id": "2",
+      "type": "class",
+      "ref_id": "c6",
+      "branch_id": "br5",
+      "date": "2026-01-06",
+      "time": "07:00 - 08:00",
+      "status": "upcoming",
+      "price": 18
+    },
+    {
+      "id": "b18",
+      "user_id": "2",
+      "type": "trainer",
+      "ref_id": "10",
+      "branch_id": "br4",
+      "date": "2026-01-04",
+      "time": "10:00",
+      "status": "cancelled",
+      "price": 32
+    },
+    {
+      "id": "b20",
+      "user_id": "2",
+      "type": "class",
+      "ref_id": "c4",
+      "branch_id": "br1",
+      "date": "2025-12-30",
+      "time": "18:00 - 19:00",
+      "status": "upcoming",
+      "price": 22
+    },
+    {
+      "id": "b21",
+      "user_id": "2",
+      "type": "class",
+      "ref_id": "c5",
+      "branch_id": "br1",
+      "date": "2025-12-31",
+      "time": "19:00 - 20:00",
+      "status": "upcoming",
+      "price": 18
+    },
+    {
+      "id": "b22",
+      "user_id": "2",
+      "type": "trainer",
+      "ref_id": "11",
+      "branch_id": "br1",
+      "date": "2025-12-30",
+      "time": "09:00",
+      "status": "completed",
+      "price": 27
+    },
+    {
+      "id": "b23",
+      "user_id": "2",
+      "type": "trainer",
+      "ref_id": "12",
+      "branch_id": "br1",
+      "date": "2026-01-02",
+      "time": "10:00",
+      "status": "upcoming",
+      "price": 24
+    },
+    {
+      "id": "b24",
+      "user_id": "2",
+      "type": "trainer",
+      "ref_id": "13",
+      "branch_id": "br1",
+      "date": "2026-01-03",
+      "time": "17:00",
+      "status": "cancelled",
+      "price": 29
     }
+
+
   ],
   "trainer_profiles": [
     {
@@ -132,7 +346,89 @@
       "bio": "Strength & conditioning specialist",
       "thumbnail": "/assets/branches/trainers/michael.jpg",
       "active": true
+    },
+    {
+      "id": "tp3",
+      "user_id": "6",
+      "branch_id": "br3",
+      "specialties": ["Zumba", "Dance Fitness"],
+      "price_per_session": 22,
+      "bio": "Energetic dance fitness trainer",
+      "thumbnail": "/assets/branches/trainers/sarah.jpg",
+      "active": true
+    },
+    {
+      "id": "tp4",
+      "user_id": "7",
+      "branch_id": "br1",
+      "specialties": ["Bodybuilding", "Powerlifting"],
+      "price_per_session": 35,
+      "bio": "Competitive powerlifting coach",
+      "thumbnail": "/assets/branches/trainers/jason.jpg",
+      "active": true
+    },
+    {
+      "id": "tp5",
+      "user_id": "8",
+      "branch_id": "br4",
+      "specialties": ["HIIT", "Weight Loss"],
+      "price_per_session": 28,
+      "bio": "HIIT & fat loss specialist with 6+ years experience",
+      "thumbnail": "/assets/branches/trainers/linh.jpg",
+      "active": true
+    },
+    {
+      "id": "tp6",
+      "user_id": "9",
+      "branch_id": "br5",
+      "specialties": ["Yoga", "Meditation", "Mobility"],
+      "price_per_session": 26,
+      "bio": "Mindfulness & mobility coach",
+      "thumbnail": "/assets/branches/trainers/kevin.jpg",
+      "active": true
+    },
+    {
+      "id": "tp7",
+      "user_id": "10",
+      "branch_id": "br4",
+      "specialties": ["Functional Training", "Rehab"],
+      "price_per_session": 32,
+      "bio": "Functional movement & injury prevention expert",
+      "thumbnail": "/assets/branches/trainers/emily.jpg",
+      "active": true
+    },
+    {
+      "id": "tp8",
+      "user_id": "11",
+      "branch_id": "br1",
+      "specialties": ["Strength", "Hypertrophy"],
+      "price_per_session": 27,
+      "bio": "Strength coach focusing on muscle growth and compound lifts.",
+      "thumbnail": "/assets/branches/trainers/minh.jpg",
+      "active": true
+    },
+    {
+      "id": "tp9",
+      "user_id": "12",
+      "branch_id": "br1",
+      "specialties": ["Yoga", "Mobility", "Stretching"],
+      "price_per_session": 24,
+      "bio": "Yoga and mobility instructor for flexibility and recovery.",
+      "thumbnail": "/assets/branches/trainers/sarah.jpg",
+      "active": true
+    },
+    {
+      "id": "tp10",
+      "user_id": "13",
+      "branch_id": "br1",
+      "specialties": ["HIIT", "Weight Loss"],
+      "price_per_session": 29,
+      "bio": "HIIT and fat-loss specialist with high-energy sessions.",
+      "thumbnail": "/assets/branches/trainers/john.jpg",
+      "active": true
     }
+
+
   ],
   "classes": [
     {
@@ -148,8 +444,7 @@
       "images": [
         "/assets/branches/classes/yoga/p1.jpg",
         "/assets/branches/classes/yoga/p2.jpg",
-        "/assets/branches/classes/yoga/p3.jpg",
-        "/assets/branches/classes/yoga/p4.jpg"
+        "/assets/branches/classes/yoga/p3.jpg"
       ],
       "description": "A calming yoga class focusing on flexibility, breathing, and balance. Suitable for all levels.",
       "active": true
@@ -167,8 +462,7 @@
       "images": [
         "/assets/branches/classes/hiit/p1.jpg",
         "/assets/branches/classes/hiit/p2.jpg",
-        "/assets/branches/classes/hiit/p3.jpg",
-        "/assets/branches/classes/hiit/p4.jpg"
+        "/assets/branches/classes/hiit/p3.jpg"
       ],
       "description": "High-intensity interval training to burn calories and improve endurance.",
       "active": true
@@ -191,7 +485,121 @@
       ],
       "description": "Body Pump is a high-energy workout that combines strength and cardio exercises.",
       "active": true
+    },
+    {
+      "id": "c4",
+      "name": "Zumba Party",
+      "category": "dance",
+      "branch_id": "br3",
+      "trainer_user_id": "6",
+      "schedule": "Mon 18:00 - 19:00",
+      "price": 18,
+      "capacity": 30,
+      "thumbnail": "/assets/branches/classes/zumba.jpg",
+      "images": ["/assets/branches/classes/zumba/p1.jpg"],
+      "description": "High-energy dance workout.",
+      "active": true
+    },
+    {
+      "id": "c5",
+      "name": "Power Strength",
+      "category": "strength",
+      "branch_id": "br1",
+      "trainer_user_id": "7",
+      "schedule": "Fri 17:30 - 18:30",
+      "price": 25,
+      "capacity": 15,
+      "thumbnail": "/assets/branches/classes/strength1.jpg",
+      "images": ["/assets/branches/classes/strength/p1.jpg"],
+      "description": "Heavy lifting & compound movements.",
+      "active": true
+    },
+    {
+      "id": "c6",
+      "name": "Sunrise Yoga",
+      "category": "mind_body",
+      "branch_id": "br5",
+      "trainer_user_id": "9",
+      "schedule": "Mon 07:00 - 08:00",
+      "price": 18,
+      "capacity": 20,
+      "thumbnail": "/assets/branches/classes/sunrise_yoga.jpg",
+      "images": ["/assets/branches/classes/sunrise_yoga/p1.jpg"],
+      "description": "Gentle morning yoga to start your day.",
+      "active": true
+    },
+    {
+      "id": "c7",
+      "name": "HIIT Extreme",
+      "category": "cardio",
+      "branch_id": "br4",
+      "trainer_user_id": "8",
+      "schedule": "Wed 18:30 - 19:30",
+      "price": 22,
+      "capacity": 25,
+      "thumbnail": "/assets/branches/classes/hiit_extreme.jpg",
+      "images": ["/assets/branches/classes/hiit_extreme/p1.jpg"],
+      "description": "High-intensity full body workout.",
+      "active": true
+    },
+    {
+      "id": "c8",
+      "name": "Mobility & Recovery",
+      "category": "recovery",
+      "branch_id": "br5",
+      "trainer_user_id": "10",
+      "schedule": "Sat 10:00 - 11:00",
+      "price": 20,
+      "capacity": 15,
+      "thumbnail": "/assets/branches/classes/mobility.jpg",
+      "images": ["/assets/branches/classes/mobility/p1.jpg"],
+      "description": "Improve flexibility and reduce injury risk.",
+      "active": true
+    },
+    {
+      "id": "c9",
+      "name": "Power Strength",
+      "category": "strength",
+      "branch_id": "br1",
+      "trainer_user_id": "11",
+      "schedule": "Mon 18:00 - 19:00",
+      "price": 22,
+      "capacity": 25,
+      "thumbnail": "/assets/branches/classes/strength2.jpg",
+      "images": ["/assets/branches/classes/strength2/p1.jpg"],
+      "description": "Heavy compound movements to build strength.",
+      "active": true
+    },
+    {
+      "id": "c10",
+      "name": "Evening Yoga",
+      "category": "mind_body",
+      "branch_id": "br1",
+      "trainer_user_id": "12",
+      "schedule": "Wed 19:00 - 20:00",
+      "price": 18,
+      "capacity": 20,
+      "thumbnail": "/assets/branches/classes/evening_yoga1.jpg",
+      "images": ["/assets/branches/classes/evening_yoga1/p1.jpg"],
+      "description": "Relaxing yoga to unwind after a long day.",
+      "active": true
+    },
+    {
+      "id": "c11",
+      "name": "HIIT Burn",
+      "category": "cardio",
+      "branch_id": "br1",
+      "trainer_user_id": "13",
+      "schedule": "Fri 17:30 - 18:30",
+      "price": 20,
+      "capacity": 30,
+      "thumbnail": "/assets/branches/classes/hiit_burn1.jpg",
+      "images": ["/assets/branches/classes/hiit_burn1/p1.jpg"],
+      "description": "High-intensity interval training for calorie burn.",
+      "active": true
     }
+
+
   ],
   "branches": [
     {
@@ -207,7 +615,29 @@
       "address": "10-12 Đinh Tiên Hoàng, phường Sài Gòn, Quận 1, Thành phố Hồ Chí Minh",
       "thumbnail": "/assets/branches/branch_hcmussh.jpg",
       "description": "Modern gym with full equipment"
+    },
+    {
+      "id": "br3",
+      "name": "VinUni Fitness Center",
+      "address": "Vinhomes Ocean Park, Hà Nội",
+      "thumbnail": "/assets/branches/branch_vinuni.jpg",
+      "description": "Luxury university fitness center"
+    },
+    {
+      "id": "br4",
+      "name": "Landmark 81 Fitness Club",
+      "address": "Landmark 81, Bình Thạnh, Tp. HCM",
+      "thumbnail": "/assets/branches/branch_landmark81.jpg",
+      "description": "Luxury high-rise gym with city views"
+    },
+    {
+      "id": "br5",
+      "name": "Thao Dien Wellness Hub",
+      "address": "36 Xuân Thủy, Thảo Điền, Tp. HCM",
+      "thumbnail": "/assets/branches/branch_thaodien.jpg",
+      "description": "Wellness-focused gym with yoga & recovery"
     }
+
   ],
   "trainer_availability": [
     {
@@ -251,6 +681,92 @@
         "16:00",
         "17:00"
       ]
+    },
+    {
+      "id": "ta5",
+      "trainer_user_id": "3",
+      "branch_id": "br1",
+      "date": "2025-12-30",
+      "slots": ["09:00", "10:00", "14:00"]
+    },
+    {
+      "id": "ta6",
+      "trainer_user_id": "5",
+      "branch_id": "br2",
+      "date": "2025-12-31",
+      "slots": ["13:00", "15:00"]
+    },
+    {
+      "id": "ta7",
+      "trainer_user_id": "6",
+      "branch_id": "br3",
+      "date": "2026-01-02",
+      "slots": ["10:00", "11:00", "16:00"]
+    },
+    {
+      "id": "ta8",
+      "trainer_user_id": "7",
+      "branch_id": "br1",
+      "date": "2026-01-03",
+      "slots": ["08:00", "09:00"]
+    },
+    {
+      "id": "ta9",
+      "trainer_user_id": "8",
+      "branch_id": "br4",
+      "date": "2025-12-30",
+      "slots": ["08:00", "09:00", "17:00"]
+    },
+    {
+      "id": "ta10",
+      "trainer_user_id": "9",
+      "branch_id": "br5",
+      "date": "2025-12-31",
+      "slots": ["07:00", "08:00", "16:00"]
+    },
+    {
+      "id": "ta11",
+      "trainer_user_id": "10",
+      "branch_id": "br4",
+      "date": "2026-01-04",
+      "slots": ["10:00", "11:00", "15:00"]
+    },
+    {
+      "id": "ta12",
+      "trainer_user_id": "11",
+      "branch_id": "br1",
+      "date": "2025-12-30",
+      "slots": ["08:00", "09:00", "17:00"]
+    },
+    {
+      "id": "ta13",
+      "trainer_user_id": "11",
+      "branch_id": "br1",
+      "date": "2025-12-31",
+      "slots": ["10:00", "11:00", "16:00"]
+    },
+    {
+      "id": "ta14",
+      "trainer_user_id": "12",
+      "branch_id": "br1",
+      "date": "2025-12-30",
+      "slots": ["14:00", "15:00"]
+    },
+    {
+      "id": "ta15",
+      "trainer_user_id": "12",
+      "branch_id": "br1",
+      "date": "2026-01-02",
+      "slots": ["09:00", "10:00", "11:00"]
+    },
+    {
+      "id": "ta16",
+      "trainer_user_id": "13",
+      "branch_id": "br1",
+      "date": "2026-01-03",
+      "slots": ["16:00", "17:00", "18:00"]
     }
+
+
   ]
 }

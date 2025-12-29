@@ -58,13 +58,31 @@
     <div class="modal-body-grid">
 
       <!-- LEFT: IMAGE -->
-      <div class="image-section">
+      <div class="image-section"
+        (mouseenter)="stopAutoSlide()"
+        (mouseleave)="startAutoSlide()"
+      >
         <div class="image-wrapper">
           <img [src]="images[currentIndex]" />
         </div>
 
-        <button class="nav left" (click)="prev()">‹</button>
-        <button class="nav right" (click)="next()">›</button>
+        <button
+          type="button"
+          class="slide-nav slide-prev"
+          (click)="prev()"
+          aria-label="Previous image"
+        >
+          <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <button
+          type="button"
+          class="slide-nav slide-next"
+          (click)="next()"
+          aria-label="Next image"
+        >
+          <i class="bi bi-chevron-right"></i>
+        </button>
       </div>
 
       <!-- RIGHT: DETAILS -->

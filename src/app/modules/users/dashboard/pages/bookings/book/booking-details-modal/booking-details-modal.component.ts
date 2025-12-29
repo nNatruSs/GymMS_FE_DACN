@@ -72,6 +72,11 @@ export class BookingDetailsModalComponent implements OnInit {
   bookedSlots: { date: string; time: string }[] = [];
 
   loading = false;
+
+  private autoSlideInterval?: any;
+
+  
+  
   constructor(private bookingService: BookingService) {}
 
   ngOnInit() {
@@ -79,10 +84,30 @@ export class BookingDetailsModalComponent implements OnInit {
       ? this.item.images
       : [this.item.thumbnail];
     
+    this.startAutoSlide();
+
     if (this.mode === 'trainer') {
         this.loadAvailability();
         // console.log('availability 2', this.availability);
         // console.log('item', this.item.trainerUserId, this.item.branchId);
+    }
+  }
+
+  ngOnDestroy() {
+    this.stopAutoSlide();
+  }
+
+  startAutoSlide() {
+    this.stopAutoSlide();
+
+    this.autoSlideInterval = setInterval(() => {
+      this.next();
+    }, 4500); // 4.5s feels premium
+  }
+
+  stopAutoSlide() {
+    if (this.autoSlideInterval) {
+      clearInterval(this.autoSlideInterval);
     }
   }
 
