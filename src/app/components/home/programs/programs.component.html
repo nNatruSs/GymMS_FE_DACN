@@ -1,0 +1,18 @@
+<section class="container py-5">
+  <h3 class="text-center fw-bold mb-4">Our Training Programs</h3>
+
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4" *ngFor="let p of programs">
+      <div class="program-card">
+        <img [src]="p.image" />
+        <div class="overlay">
+          <h5>{{ p.title }}</h5>
+          <p>{{ p.desc }}</p>
+          <button class="btn btn-outline-light btn-sm">
+            {{ p.cta }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

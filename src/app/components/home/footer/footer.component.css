@@ -1,0 +1,28 @@
+.footer {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+.footer h6 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.footer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer li {
+  margin-bottom: 0.5rem;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.footer li:hover {
+  color: #ffffff;
+}
+
+.footer small {
+  color: #9ca3af;
+}

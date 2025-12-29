@@ -1,0 +1,52 @@
+<!-- <div class="modal-backdrop-custom"></div>
+
+<div class="modal-container">
+  <div class="modal-card p-4">
+
+    <h5 class="fw-bold mb-3">{{ title }}</h5>
+    <p class="text-muted mb-4">{{ message }}</p>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-outline-secondary" (click)="close.emit()">
+        Cancel
+      </button>
+      <button
+        class="btn"
+        [ngClass]="'btn-' + confirmType"
+        (click)="confirm.emit()"
+      >
+        {{ confirmText }}
+      </button>
+    </div>
+
+  </div>
+</div> -->
+
+
+<div class="modal-backdrop-custom" (click)="close.emit()"></div>
+
+<div class="modal-container">
+  <div class="modal-card">
+
+    <h5 class="fw-bold mb-3">{{ title }}</h5>
+
+    <p class="text-muted mb-4">
+      {{ message }}
+    </p>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-outline-secondary" (click)="close.emit()">
+        Cancel
+      </button>
+
+      <button
+        class="btn"
+        [ngClass]="'btn-' + confirmType"
+        (click)="confirm.emit()"
+      >
+        {{ confirmText }}
+      </button>
+    </div>
+
+  </div>
+</div>

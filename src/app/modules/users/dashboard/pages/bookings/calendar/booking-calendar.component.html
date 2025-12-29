@@ -32,36 +32,104 @@
   </div>
 </div> -->
 
+
+<!-- <div *ngIf="loading" class="text-center py-5">
+  <div class="spinner-border text-primary"></div>
+</div>
+
+<div *ngIf="!loading" class="calendar-wrapper">
+
+  <div class="calendar-grid">
+
+    <div></div>
+    <div
+      *ngFor="let d of weekDates"
+      class="calendar-header"
+    >
+      {{ d | date:'EEE dd' }}
+    </div>
+
+    <ng-container *ngFor="let time of timeSlots">
+      <div class="time-label">{{ time }}</div>
+
+      <div
+        *ngFor="let d of weekDates"
+        class="calendar-cell"
+        [class.class-booking]="isClass(d, time)"
+        [class.trainer-booking]="isTrainer(d, time)"
+        (click)="getBooking(d,time) && selectBooking.emit(getBooking(d,time))"
+      >
+        <span *ngIf="getBooking(d,time)">
+          {{ getBooking(d,time).title }}
+        </span>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="calendar-legend">
+    <h6 class="fw-semibold mb-2">Legend</h6>
+
+    <div class="legend-item">
+      <span class="dot class"></span>
+      Class session
+    </div>
+
+    <div class="legend-item">
+      <span class="dot trainer"></span>
+      Trainer session
+    </div>
+  </div>
+
+</div> -->
+
 <div *ngIf="loading" class="text-center py-5">
   <div class="spinner-border text-primary"></div>
 </div>
 
-<div *ngIf="!loading" class="card shadow-sm border-0">
-  <div class="row g-3">
-    <div class="col-md-4" *ngFor="let b of bookings">
-      <div class="card shadow-sm h-100">
-        <img
-          *ngIf="b.thumbnail"
-          [src]="b.thumbnail"
-          class="card-img-top"
-          style="height: 160px; object-fit: cover"
-        />
+<div *ngIf="!loading" class="calendar-wrapper">
 
-        <div class="card-body">
-          <h6 class="fw-semibold mb-1">{{ b.title }}</h6>
-          <div class="text-muted small">{{ b.date }} • {{ b.time }}</div>
-
-          <span
-            class="badge mt-2"
-            [ngClass]="{
-              'bg-info': b.type === 'class',
-              'bg-secondary': b.type === 'trainer'
-            }"
-          >
-            {{ b.type }} session
-          </span>
-        </div>
-      </div>
-    </div>
+  <!-- WEEK NAV -->
+  <div class="calendar-nav">
+    <button class="nav-btn" (click)="prevWeek()">‹</button>
+    <span class="fw-semibold">{{ monthLabel }}</span>
+    <button class="nav-btn" (click)="nextWeek()">›</button>
   </div>
+
+  <!-- GRID -->
+  <div class="calendar-grid">
+
+    <div></div>
+    <div *ngFor="let d of weekDates" class="calendar-header">
+      {{ d | date:'EEE dd' }}
+    </div>
+
+    <ng-container *ngFor="let time of timeSlots">
+      <div class="time-label">{{ time }}</div>
+
+      <div
+        *ngFor="let d of weekDates"
+        class="calendar-cell"
+        [class.class-booking]="isClass(d,time)"
+        [class.trainer-booking]="isTrainer(d,time)"
+        (click)="getBooking(d,time) && openBooking(getBooking(d,time))"
+      >
+        {{ getBooking(d,time)?.title }}
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="calendar-legend">
+    <div><span class="dot class"></span> Class</div>
+    <div><span class="dot trainer"></span> Trainer</div>
+  </div>
+
 </div>
+
+<!-- MODAL -->
+<app-booking-calendar-modal
+  *ngIf="selectedBooking"
+  [booking]="selectedBooking"
+  (close)="closeModal()"
+  (cancel)="cancelBooking($event)">
+</app-booking-calendar-modal>

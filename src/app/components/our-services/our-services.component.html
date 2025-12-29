@@ -1,0 +1,43 @@
+<section class="services-hero">
+  <h1>Our Services</h1>
+  <p>
+    Comprehensive fitness services designed to help you achieve your health
+    and wellness goals.
+  </p>
+</section>
+
+<section class="service-block" *ngFor="let s of services; let i = index">
+  <div class="content" [class.reverse]="i % 2 !== 0">
+    <div class="text">
+      <i class="bi" [ngClass]="s.icon"></i>
+      <h3>{{ s.title }}</h3>
+      <p>{{ s.description }}</p>
+
+      <ul>
+        <li *ngFor="let f of s.features">{{ f }}</li>
+      </ul>
+
+      <button class="btn-secondary">{{ s.cta }}</button>
+    </div>
+
+    <img [src]="s.image" alt="" />
+  </div>
+</section>
+
+<section class="pricing">
+  <h2>Flexible Membership Options</h2>
+  <p>Choose a plan that fits your lifestyle and goals</p>
+
+  <div class="plans">
+    <div class="plan" *ngFor="let p of plans" [class.highlight]="p.featured">
+      <h3>{{ p.name }}</h3>
+      <h4>{{ p.price }}</h4>
+
+      <ul>
+        <li *ngFor="let f of p.features">{{ f }}</li>
+      </ul>
+
+      <button class="btn-primary">Select Plan</button>
+    </div>
+  </div>
+</section>

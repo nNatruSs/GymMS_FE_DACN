@@ -5,10 +5,13 @@ import { CommonModule } from '@angular/common';
 import { OnInit } from '@angular/core';
 import { forkJoin, of } from 'rxjs';
 import { delay, finalize } from 'rxjs/operators';
+import { ExtendMembershipModalComponent } from './extend-membership-modal/extend-membership-modal.component';
+import { ConfirmModalComponent } from './confirm-modal.component.html/confirm-modal.component';
+
 @Component({
   selector: 'app-user-membership-management',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ExtendMembershipModalComponent, ConfirmModalComponent],
   templateUrl: './user-membership-management.component.html',
   styleUrls: ['./user-membership-management.component.css']
 })
@@ -81,7 +84,6 @@ export class UserMembershipManagementComponent implements OnInit {
     };
 
     this.membershipService.updateMembership(this.membership.id, updated).subscribe(() => {
-      alert('Membership extended');
       this.loadData();
     });
   }
@@ -91,7 +93,6 @@ export class UserMembershipManagementComponent implements OnInit {
     if (!confirm('Are you sure you want to cancel your membership?')) return;
 
     this.membershipService.cancelMembership(this.membership.id).subscribe(() => {
-      alert('Membership canceled');
       this.loadData();
     });
   }
@@ -118,7 +119,33 @@ export class UserMembershipManagementComponent implements OnInit {
 getProgressPercent(): number {
   const used =
     this.membership.duration_days - this.getRemainingDays();
-  return Math.min((used / this.membership.duration_days) * 100, 100);
+
+  return Math.min((this.getRemainingDays() / this.membership.duration_days) * 100, 100);
 }
-  
+
+///////////////
+
+  showExtendModal = false;
+  showCancelModal = false;
+
+  openExtendModal() {
+    this.showExtendModal = true;
+  }
+
+  openCancelModal() {
+    this.showCancelModal = true;
+  }
+
+  extendConfirmed(days: number) {
+    this.showExtendModal = false;
+    this.extend(days);
+  }
+
+  cancelConfirmed() {
+    this.showCancelModal = false;
+    this.cancel();
+  }
+
+
+
 }

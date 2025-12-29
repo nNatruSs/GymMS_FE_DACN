@@ -1,0 +1,16 @@
+section {
+  background: #f8fafc;
+}
+
+section h3 {
+  font-weight: 700;
+}
+
+section p {
+  max-width: 520px;
+  margin: 0 auto 1.5rem;
+}
+
+button {
+  min-width: 140px;
+}

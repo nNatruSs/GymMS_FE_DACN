@@ -167,4 +167,8 @@ export class BookingService {
     return this.http.post(`${this.baseUrl}/bookings`, payload);
   }
 
+  updateBooking(bookingId: string, payload: any) {
+    return this.http.patch(`${this.baseUrl}/bookings/${bookingId}`, payload);
+  };
+
 }

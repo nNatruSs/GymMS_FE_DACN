@@ -1,0 +1,23 @@
+<section class="solutions-hero">
+  <h1>Smart Fitness Solutions</h1>
+  <p>
+    Experience the future of fitness with our comprehensive management system
+    designed to make your gym journey seamless and effective.
+  </p>
+</section>
+
+<section class="solutions-grid">
+  <div class="solution-card" *ngFor="let s of solutions">
+    <div class="icon">
+      <i class="bi" [ngClass]="s.icon"></i>
+    </div>
+    <h3>{{ s.title }}</h3>
+    <p>{{ s.description }}</p>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Ready to Experience the Difference?</h2>
+  <p>Join thousands of members transforming their fitness journey with GymMS.</p>
+  <button class="btn-primary">Get Started Today</button>
+</section>

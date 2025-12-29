@@ -74,9 +74,19 @@
   background: #fff;
   width: 90%;
   max-width: 1100px;
+  
+  /* IMPORTANT */
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+
   border-radius: 16px;
   overflow: hidden;
   animation: scaleIn .25s ease;
+}
+
+.modal-header {
+  flex-shrink: 0;
 }
 
 @keyframes scaleIn {
@@ -85,10 +95,33 @@
 }
 
 .modal-body-grid {
+  flex: 1;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+
   display: grid;
   grid-template-columns: 5fr 7fr;
   gap: 24px;
   padding: 24px;
+}
+
+.modal-body-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body-grid::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.2);
+  border-radius: 8px;
+}
+
+.modal-body-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (max-width: 992px) {
+  .modal-body-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .image-section {

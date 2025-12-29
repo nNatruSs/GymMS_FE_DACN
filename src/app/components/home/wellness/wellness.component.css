@@ -1,0 +1,11 @@
+section img {
+  max-height: 420px;
+  object-fit: cover;
+}
+
+ul li {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+

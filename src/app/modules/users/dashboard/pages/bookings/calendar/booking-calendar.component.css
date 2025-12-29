@@ -1,4 +1,4 @@
-.calendar-day {
+/* .calendar-day {
   min-height: 90px;
   background: #f8f9fa;
   border-radius: 6px;
@@ -13,4 +13,156 @@
   padding: 2px 6px;
   margin-top: 4px;
   cursor: pointer;
+} */
+
+/* .calendar-wrapper {
+  display: flex;
+  gap: 24px;
 }
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+
+.calendar-header {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.time-label {
+  font-size: 0.8rem;
+  color: #777;
+  display: flex;
+  align-items: center;
+}
+
+.calendar-cell {
+  min-height: 48px;
+  border-radius: 6px;
+  background: #f1f3f5;
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 0.75rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.calendar-cell:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.class-booking {
+  background: #ffe3e3;
+  border-left: 4px solid #dc3545;
+}
+
+.trainer-booking {
+  background: #e7f1ff;
+  border-left: 4px solid #0d6efd;
+}
+
+.calendar-cell span {
+  font-weight: 600;
+}
+
+.calendar-legend {
+  min-width: 160px;
+  font-size: 0.85rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot.class {
+  background: #dc3545;
+}
+
+.dot.trainer {
+  background: #0d6efd;
+} */
+
+
+.calendar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.calendar-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-btn {
+  border: none;
+  background: #f1f3f5;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  gap: 6px;
+}
+
+.calendar-header {
+  text-align: center;
+  font-weight: 600;
+}
+
+.time-label {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.calendar-cell {
+  min-height: 46px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.class-booking {
+  background: #ffe3e3;
+  border-left: 4px solid #dc3545;
+}
+
+.trainer-booking {
+  background: #e7f1ff;
+  border-left: 4px solid #0d6efd;
+}
+
+.calendar-legend {
+  display: flex;
+  gap: 16px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.class { background: #dc3545; }
+.dot.trainer { background: #0d6efd; }

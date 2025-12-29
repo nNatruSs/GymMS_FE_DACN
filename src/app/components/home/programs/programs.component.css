@@ -1,0 +1,42 @@
+.program-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.program-card:hover {
+  transform: scale(1.02);
+}
+
+.program-card img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+}
+
+.program-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.7),
+    rgba(0,0,0,0.15)
+  );
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: #fff;
+}
+
+.program-card h5 {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.program-card p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}

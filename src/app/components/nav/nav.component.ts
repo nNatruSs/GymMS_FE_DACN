@@ -1,36 +1,3 @@
-// import { Component } from '@angular/core';
-// import { RouterOutlet, RouterModule, Router  } from '@angular/router';
-// import { StorageService } from '../../auth/services/storage/storage.service';
-// import { CommonModule } from '@angular/common'; // Import CommonModule
-
-
-// @Component({
-//   selector: 'app-nav',
-//   standalone: true,
-//   imports: [RouterModule,CommonModule],
-//   templateUrl: './nav.component.html',
-//   styleUrl: './nav.component.css'
-// })
-// export class NavComponent {
-//   isOrganizerLoggedIn: boolean = false;
-//   isUserLoggedIn: boolean = false;
-//   constructor(private router: Router){}
-
-//   ngOnInit(): void {
-//     this.isOrganizerLoggedIn = StorageService.isOrganizerLoggedIn();
-//     this.isUserLoggedIn = StorageService.isUserLoggedIn();
-  
-//   }
-
-//   onSignInClick(): void {
-//     if (!this.isOrganizerLoggedIn && !this.isUserLoggedIn) {
-//       this.router.navigateByUrl('/login');  // Or redirect to any login route you have
-//     }
-//   }
-// }
-
-
-
 
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet, RouterModule, Router  } from '@angular/router';
@@ -48,7 +15,6 @@ import { Subscription } from 'rxjs';
 })
 export class NavComponent {
   isLoggedIn: boolean = false;
-  isOrganizerLoggedIn: boolean = false;
   isUserLoggedIn: boolean = false;
   isAdminLoggedIn: boolean = false;
   isTrainerLoggedIn: boolean = false;
@@ -65,9 +31,7 @@ export class NavComponent {
       // Set login status
       this.isLoggedIn = status;
 
-      // Check user and organizer roles
       this.isUserLoggedIn = this.storage.isUserLoggedIn();
-      this.isOrganizerLoggedIn = this.storage.isOrganizerLoggedIn();
       this.isAdminLoggedIn = this.storage.isAdminLoggedIn();
       this.isTrainerLoggedIn = this.storage.isTrainerLoggedIn();
       const user = this.storage.getUser();
@@ -78,9 +42,8 @@ export class NavComponent {
     });
 
 
-    // Check if the organizer or user is logged in
+    // Check if user is logged in
     this.isAdminLoggedIn = this.storage.isAdminLoggedIn();
-    this.isOrganizerLoggedIn = this.storage.isOrganizerLoggedIn();
     this.isUserLoggedIn = this.storage.isUserLoggedIn();
     this.isTrainerLoggedIn = this.storage.isTrainerLoggedIn();
     const user = this.storage.getUser();
@@ -91,7 +54,7 @@ export class NavComponent {
 
   // Redirect user to login page if not logged in
   onSignInClick(): void {
-    if (!this.isOrganizerLoggedIn && !this.isUserLoggedIn && !this.isAdminLoggedIn && !this.isTrainerLoggedIn) {
+    if (!this.isUserLoggedIn && !this.isAdminLoggedIn && !this.isTrainerLoggedIn) {
       this.router.navigate(['/login']);  // Or redirect to any login route you have
     }
   }
@@ -100,7 +63,6 @@ export class NavComponent {
   onSignOutClick(): void {
     this.storage.signOut();
     this.storage.loggedInSubject$.next(false);
-    this.isOrganizerLoggedIn = false;
     this.isUserLoggedIn = false;
     this.isAdminLoggedIn = false;
     this.isTrainerLoggedIn = false;

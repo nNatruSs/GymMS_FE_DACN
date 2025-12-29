@@ -1,0 +1,16 @@
+<section class="py-5 text-center">
+  <h2 class="fw-bold">Transform Your Life</h2>
+  <p class="text-muted col-lg-6 mx-auto">
+    At GymMS, we believe fitness is more than exercise — it’s a lifestyle.
+  </p>
+
+  <div class="row mt-4 g-4">
+    <div class="col-md-4" *ngFor="let f of features">
+      <div class="feature-card">
+        <i class="bi {{ f.icon }}"></i>
+        <h6>{{ f.title }}</h6>
+        <p class="text-muted">{{ f.desc }}</p>
+      </div>
+    </div>
+  </div>
+</section>
