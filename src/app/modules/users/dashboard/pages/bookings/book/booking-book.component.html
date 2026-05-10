@@ -20,25 +20,18 @@
     Please purchase a membership to book classes or trainers.
   </div>
 
-  <!-- STEP 1 -->
-  <app-branch-selector
-    *ngIf="!selectedBranch"
-    [branches]="branches"
-    (select)="onBranchSelected($event)">
-  </app-branch-selector>
-
-  <!-- STEP 2 -->
+  <!-- STEP 1: mode selection (branch-less flow) -->
   <app-booking-mode-selector
-    *ngIf="selectedBranch && !mode"
+    *ngIf="!mode"
     [branch]="selectedBranch"
     [disabled]="!hasMembership"
     (select)="onModeSelected($event)"
     (back)="reset()">
   </app-booking-mode-selector>
 
-  <!-- STEP 3 -->
+  <!-- STEP 2: item list -->
   <app-booking-item-list
-    *ngIf="selectedBranch && mode"
+    *ngIf="mode"
     [branch]="selectedBranch"
     [mode]="mode"
     [hasMembership]="hasMembership"

@@ -1,0 +1,60 @@
+FROM node:22-alpine AS builder
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+RUN apk add --no-cache \
+  bash \
+  chromium \
+  nss \
+  freetype \
+  harfbuzz \
+  ttf-freefont \
+  ttf-dejavu \
+  fontconfig \
+  font-noto \
+  font-noto-cjk \
+  ca-certificates && \
+  fc-cache -f -v
+
+COPY prisma ./prisma
+RUN npx prisma generate
+
+COPY src ./src
+COPY test ./test
+COPY tsconfig*.json ./
+COPY nest-cli.json ./
+
+RUN npm run build
+RUN npm prune --omit=dev
+
+FROM node:22-alpine
+WORKDIR /usr/src/app
+
+ENV NODE_ENV=production
+ENV PORT=3500
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+
+RUN apk add --no-cache \
+  chromium \
+  nss \
+  freetype \
+  harfbuzz \
+  ttf-freefont \
+  ttf-dejavu \
+  fontconfig \
+  font-noto \
+  font-noto-cjk \
+  ca-certificates && \
+  fc-cache -f -v
+
+COPY package*.json ./
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/prisma ./prisma
+
+EXPOSE 3500
+
+CMD ["node", "dist/src/main.js"]

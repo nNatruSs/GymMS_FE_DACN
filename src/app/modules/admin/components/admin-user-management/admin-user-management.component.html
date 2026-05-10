@@ -1,0 +1,273 @@
+<div class="user-page">
+  <div class="hero-card mb-4">
+    <div>
+      <h4 class="mb-1">User Management</h4>
+      <p class="mb-0 text-muted">Create users, inspect profiles, update data, assign roles, and manage accounts.</p>
+    </div>
+    <button class="btn btn-primary px-4" (click)="openCreateModal()">Create User</button>
+  </div>
+
+  <div class="control-card mb-3">
+    <div class="row g-2 align-items-end">
+      <div class="col-lg-8">
+        <label class="form-label mb-1">Filter Users by Role</label>
+        <select class="form-select" [(ngModel)]="selectedRoleFilterId">
+          <option value="">Select role</option>
+          <option *ngFor="let role of availableRoles" [value]="role.id">
+            {{ role.name }}
+          </option>
+        </select>
+      </div>
+      <div class="col-lg-4 d-flex gap-2">
+        <button class="btn btn-outline-primary flex-grow-1" [disabled]="!selectedRoleFilterId" (click)="filterByRoleId()">
+          Apply Filter
+        </button>
+        <button class="btn btn-outline-secondary" (click)="clearRoleFilter()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success py-2">{{ successMessage }}</div>
+
+  <div class="list-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Users</h5>
+      <span class="text-muted small">
+        Showing {{ displayedUsers.length }} {{ filteredUsersByRole ? '(filtered)' : '' }}
+      </span>
+    </div>
+
+    <div *ngIf="loading" class="text-muted">Loading users...</div>
+    <div *ngIf="!loading && displayedUsers.length === 0" class="text-muted">No users found.</div>
+
+    <div class="table-responsive" *ngIf="!loading && displayedUsers.length > 0">
+      <table class="table align-middle user-table mb-0">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Contact</th>
+            <th>Status</th>
+            <th>Roles</th>
+            <th>Memberships</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-clickable" *ngFor="let user of displayedUsers" (click)="openUserDetail(user.id)">
+            <td>
+              <div class="fw-semibold">{{ user.firstName }} {{ user.lastName }}</div>
+              <div class="text-muted small">{{ user.gender || 'n/a' }} • {{ user.dob ? (user.dob | date:'yyyy-MM-dd') : 'n/a' }}</div>
+            </td>
+            <td>
+              <div>{{ user.email }}</div>
+              <div class="text-muted small">{{ user.phone || 'No phone' }}</div>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="user.status === 'active' ? 'badge-active' : 'badge-inactive'">
+                {{ user.status || 'unknown' }}
+              </span>
+            </td>
+            <td>
+              <div class="d-flex flex-wrap gap-1">
+                <span class="badge text-bg-light" *ngFor="let role of user.roles">{{ role.name }}</span>
+                <span *ngIf="!user.roles?.length" class="text-muted small">None</span>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex flex-wrap gap-1">
+                <span class="badge text-bg-secondary" *ngFor="let membership of user.memberships">{{ membership.name }}</span>
+                <span *ngIf="!user.memberships?.length" class="text-muted small">None</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3" *ngIf="!filteredUsersByRole">
+      <div class="text-muted small">Total {{ totalDocs }} users • Page {{ page }} / {{ totalPages }}</div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-outline-secondary" [disabled]="!hasPrev || loading" (click)="previousPage()">Previous</button>
+        <button class="btn btn-sm btn-outline-secondary" [disabled]="!hasNext || loading" (click)="nextPage()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showCreateModal" class="modal-overlay" (click)="onBackdropClick($event, 'create')">
+  <div class="modal-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Create User</h5>
+      <button class="btn btn-sm btn-outline-secondary" (click)="closeCreateModal()">Close</button>
+    </div>
+
+    <form [formGroup]="createForm" (ngSubmit)="createUser()">
+      <div class="row g-2">
+        <div class="col-md-6">
+          <label class="form-label">First Name *</label>
+          <input class="form-control" formControlName="firstName" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Last Name *</label>
+          <input class="form-control" formControlName="lastName" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email *</label>
+          <input class="form-control" type="email" formControlName="email" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Phone *</label>
+          <input class="form-control" formControlName="phone" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Gender *</label>
+          <select class="form-select" formControlName="gender">
+            <option value="male">male</option>
+            <option value="female">female</option>
+            <option value="other">other</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Date of Birth *</label>
+          <input class="form-control" type="date" formControlName="dob" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Role *</label>
+          <select class="form-select" formControlName="role">
+            <option *ngFor="let roleName of roleNamesForSelect" [value]="roleName">{{ roleName }}</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Address</label>
+          <input class="form-control" formControlName="address" />
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeCreateModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="creating">
+          {{ creating ? 'Creating...' : 'Create User' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="showDetailModal" class="modal-overlay" (click)="onBackdropClick($event, 'detail')">
+  <div class="modal-card modal-lg-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">User Detail</h5>
+      <button class="btn btn-sm btn-outline-secondary" (click)="closeDetailModal()">Close</button>
+    </div>
+
+    <div *ngIf="detailLoading" class="text-muted">Loading user details...</div>
+
+    <form *ngIf="!detailLoading && selectedUser" [formGroup]="editForm" (ngSubmit)="updateUser()">
+      <div class="row g-2">
+        <div class="col-md-6">
+          <label class="form-label">First Name *</label>
+          <input class="form-control" formControlName="firstName" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Last Name *</label>
+          <input class="form-control" formControlName="lastName" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email *</label>
+          <input class="form-control" type="email" formControlName="email" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Phone *</label>
+          <input class="form-control" formControlName="phone" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Gender *</label>
+          <select class="form-select" formControlName="gender">
+            <option value="male">male</option>
+            <option value="female">female</option>
+            <option value="other">other</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Date of Birth *</label>
+          <input class="form-control" type="date" formControlName="dob" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Status *</label>
+          <select class="form-select" formControlName="status">
+            <option value="active">active</option>
+            <option value="inactive">inactive</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Primary Role *</label>
+          <select class="form-select" formControlName="role">
+            <option *ngFor="let roleName of roleNamesForSelect" [value]="roleName">{{ roleName }}</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Address</label>
+          <input class="form-control" formControlName="address" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">New Password (optional)</label>
+          <input class="form-control" type="password" formControlName="password" />
+        </div>
+      </div>
+
+      <div class="role-section mt-4">
+        <h6 class="mb-2">Roles</h6>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <span class="badge role-pill" *ngFor="let role of selectedUser.roles">
+            {{ role.name }}
+            <button
+              type="button"
+              class="btn btn-sm btn-link text-danger p-0 ms-2 role-remove-btn"
+              [disabled]="removingRoleId === role.id"
+              (click)="removeRole(role.id)"
+            >
+              {{ removingRoleId === role.id ? '...' : 'x' }}
+            </button>
+          </span>
+          <span *ngIf="!selectedUser.roles?.length" class="text-muted small">No roles assigned</span>
+        </div>
+
+        <label class="form-label">Assign Roles</label>
+        <div class="assign-roles-grid mb-2">
+          <label class="assign-role-item" [class.role-disabled]="isRoleAssigned(role.id)" *ngFor="let role of availableRoles">
+            <input
+              type="checkbox"
+              class="form-check-input me-2"
+              [checked]="selectedAssignRoleIds.includes(role.id)"
+              [disabled]="isRoleAssigned(role.id)"
+              (change)="toggleAssignRole(role.id, $any($event.target).checked)"
+            />
+            <span class="fw-medium">{{ role.name }}</span>
+          </label>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            [disabled]="assigningRole || !selectedAssignRoleIds.length"
+            (click)="assignRoles()"
+          >
+            {{ assigningRole ? 'Assigning...' : 'Assign Selected Roles' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between mt-4 flex-wrap gap-2">
+        <button type="button" class="btn btn-outline-danger" [disabled]="deleting" (click)="deleteUser()">
+          {{ deleting ? 'Deleting...' : 'Delete User' }}
+        </button>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeDetailModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="updating">
+            {{ updating ? 'Updating...' : 'Update User' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

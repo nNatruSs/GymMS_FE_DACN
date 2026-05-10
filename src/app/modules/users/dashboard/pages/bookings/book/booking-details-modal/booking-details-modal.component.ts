@@ -70,6 +70,7 @@ export class BookingDetailsModalComponent implements OnInit {
   monthLabel = '';
 
   bookedSlots: { date: string; time: string }[] = [];
+  unavailableByClassSchedules: { date: string; time: string; reason: string }[] = [];
 
   loading = false;
 
@@ -126,18 +127,33 @@ export class BookingDetailsModalComponent implements OnInit {
     //     this.loading = false;
     //     });
 
+        const next7Dates: string[] = Array.from({ length: 7 }, (_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() + i);
+            return d.toISOString().split('T')[0];
+        });
+
+        const unavailableRequests = next7Dates.reduce((acc, date) => {
+            acc[date] = this.bookingService.getTrainerUnavailableFromClassSchedules(
+                this.item.trainerUserId,
+                date
+            );
+            return acc;
+        }, {} as Record<string, any>);
+
         forkJoin({
-            availability: this.bookingService.getTrainerAvailability(
-            this.item.trainerUserId,
-            this.item.branchId
-            ),
-            bookings: this.bookingService.getTrainerBookings(this.item.trainerUserId)
-        }).subscribe(({ availability, bookings }) => {
+            availability: this.bookingService.getTrainerAvailability(this.item.trainerUserId, this.item.branchId),
+            bookings: this.bookingService.getTrainerBookings(this.item.trainerUserId),
+            unavailable: forkJoin(unavailableRequests)
+        }).subscribe(({ availability, bookings, unavailable }) => {
             this.availability = availability;
             this.bookedSlots = bookings.map(b => ({
             date: b.date,
             time: b.time
             }));
+            this.unavailableByClassSchedules = Object.entries(unavailable).flatMap(([date, slots]: [string, any]) =>
+                (slots ?? []).map((s: any) => ({ date, time: s.time, reason: s.reason }))
+            );
 
             this.buildWeek();
             this.buildTimeSlots();
@@ -220,9 +236,16 @@ export class BookingDetailsModalComponent implements OnInit {
     isAvailable(date: string, time: string): boolean {
         if (this.isPast(date)) return false;
         if (this.isBooked(date, time)) return false;
+        if (this.isUnavailableByClassSchedule(date, time)) return false;
 
         const day = this.availability.find(a => a.date === date);
         return !!day && day.slots.includes(time);
+    }
+
+    isUnavailableByClassSchedule(date: string, time: string): boolean {
+        return this.unavailableByClassSchedules.some(
+            s => s.date === date && s.time === time
+        );
     }
 
     selectSlot(date: string, time: string) {

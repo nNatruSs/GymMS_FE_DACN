@@ -1,1 +1,9 @@
-<p>admin-dashboard works!  hehe</p>
+<div class="d-flex min-vh-100 bg-light">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <div class="flex-grow-1">
+    <div class="container-fluid p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

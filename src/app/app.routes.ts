@@ -5,6 +5,7 @@ import { SolutionsComponent } from './components/solutions/solutions.component';
 import { OurServicesComponent } from './components/our-services/our-services.component';
 import { HomeComponent } from './components/home/home.component';
 import { UserRegistrationComponent } from './auth/auth-components/user-registration/user-registration.component';
+import { VerifyEmailComponent } from './auth/auth-components/verify-email/verify-email.component';
 // import { OrganizerRegistrationComponent } from './auth/auth-components/organizer-registration/organizer-registration.component';
 // import { OrganizationThankYouComponent } from './auth/auth-components/organization-thank-you/organization-thank-you.component';
 
@@ -18,6 +19,8 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate:[preventAccessIfLoggedInGuardGuard] },
   { path: 'register', component: SignupComponent, canActivate:[preventAccessIfLoggedInGuardGuard] },
   { path: 'user-registration', component: UserRegistrationComponent, canActivate:[preventAccessIfLoggedInGuardGuard] },
+  { path: 'verify-email', component: VerifyEmailComponent },
+  { path: 'api/v1/user/verify-email', component: VerifyEmailComponent },
   // { path: 'organizer-thank-you', component: OrganizationThankYouComponent },
   // { path: 'organizer-registration', component: OrganizerRegistrationComponent, canActivate:[preventAccessIfLoggedInGuardGuard] },
   { 

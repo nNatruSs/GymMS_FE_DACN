@@ -31,3 +31,29 @@
 .nav-links li:hover {
   color: #4f46e5;
 }
+
+.notification-dropdown {
+  position: absolute;
+  right: 0;
+  top: 110%;
+  width: 320px;
+  max-height: 360px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+  z-index: 1100;
+}
+
+.notification-item:last-child {
+  border-bottom: 0 !important;
+}
+
+.notification-item {
+  color: inherit;
+}
+
+.tiny {
+  font-size: 0.75rem;
+}

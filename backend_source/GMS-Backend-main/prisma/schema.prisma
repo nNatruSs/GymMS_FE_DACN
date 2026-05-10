@@ -1,0 +1,815 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  firstName String   @map("first_name") @db.VarChar(255)
+  lastName  String   @map("last_name") @db.VarChar(255)
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  phone     String?  @db.VarChar(50)
+  gender    String?  @db.VarChar(20)
+  dob       DateTime? @db.Date
+  address   String?  @db.Text
+  status    String?  @db.VarChar(50)
+  avatarUrl String?  @map("avatar_url") @db.Text
+  ptSessionPrice30 Int @default(150000) @map("pt_session_price_30")
+  ptSessionPrice60 Int @default(250000) @map("pt_session_price_60")
+  ptSessionPrice90 Int @default(350000) @map("pt_session_price_90")
+  trainerSpecialization String? @map("trainer_specialization") @db.VarChar(255)
+  trainerExperienceYears Int? @map("trainer_experience_years")
+  trainerBiography String? @map("trainer_biography") @db.Text
+  trainerCertifications String[] @default([]) @map("trainer_certifications")
+  trainerAreasOfExpertise String[] @default([]) @map("trainer_areas_of_expertise")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  // extension for trainer
+  trainerAvailableTime Json? @map("trainer_available_time")
+  trainerAvailableDays String[] @map("trainer_available_days") @default([])
+  
+  // relations
+  userRole UserRole[]
+  userMembership UserMembership[]
+  classBookings ClassBooking[]
+  trainerBookingsAsMember TrainerBooking[] @relation("TrainerBookingMember")
+  trainerBookingsAsTrainer TrainerBooking[] @relation("TrainerBookingTrainer")
+  trainerConversationsAsTrainer TrainerConversation[] @relation("TrainerConversationTrainer")
+  trainerConversationsAsMember TrainerConversation[] @relation("TrainerConversationMember")
+  sentTrainerMessages TrainerConversationMessage[] @relation("TrainerConversationMessageSender")
+  payments Payment[]
+  sessions Session[]
+  trainerAvailabilities TrainerAvailability[]
+  trainerClientLinksCreated TrainerClientLink[] @relation("TrainerClientLinkTrainer")
+  memberCoachLinks TrainerClientLink[] @relation("TrainerClientLinkMember")
+  classSchedules ClassSchedule[]
+  feedbacks Feedback[]
+  notifications Notification[]
+  chatSessions ChatSession[] @relation("MemberChatSessions")
+  dietPlansCreated DietPlan[] @relation("DietPlanTrainer")
+  dietPlanAssignments DietPlanAssignment[] @relation("DietPlanMember")
+  workoutPlansCreated WorkoutPlan[] @relation("WorkoutPlanTrainer")
+  workoutPlanAssignments WorkoutPlanAssignment[] @relation("WorkoutPlanMember")
+  workoutSessions WorkoutSession[] @relation("WorkoutSessionMember")
+  @@map("users")
+}
+
+model UserMembership {
+  id String @id @default(uuid()) @db.Uuid
+  userId String  @db.Uuid
+  membershipId String @db.Uuid
+  membershipName String @map("membership_name")
+  membershipDescription String @map("membership_description")
+  paymentId String? @unique @map("payment_id") @db.Uuid
+  status String @default("normal") @map("status")
+  level MembershipLevel @default(BASIC) @map("level")
+
+  startDate DateTime @map("start_date")
+  endDate DateTime @map("end_date")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  // relations
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  membership Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  payment Payment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  // extension
+  updatedByAdmin Boolean @default(false) @map("updated_by_admin")
+
+  @@index([userId, membershipId])
+  @@index([membershipId])
+  @@index([userId])
+  @@map("user_memberships")
+}
+
+enum MembershipLevel {
+  BASIC
+  PREMIUM
+  ELITE
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum PaymentTargetType {
+  CLASS_BOOKING
+  MEMBERSHIP
+  TRAINER_BOOKING
+}
+
+enum NotificationType {
+  SYSTEM
+  BOOKING
+  MEMBERSHIP
+  PAYMENT
+}
+
+enum ChatSessionStatus {
+  OPEN
+  CLOSED
+}
+
+enum ChatMessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum ChatMessageSource {
+  USER
+  RULE
+  COHERE
+  FALLBACK
+  SYSTEM
+}
+
+enum TrainerClientLinkStatus {
+  ACTIVE
+  ENDED
+}
+
+enum TrainerBookingStatus {
+  PENDING_REVIEW
+  REJECTED
+  ACCEPTED_PENDING_PAYMENT
+  PAYMENT_FAILED
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+  EXPIRED
+}
+
+enum DietPlanStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum DietPlanVisibility {
+  PRIVATE
+  ASSIGNED
+}
+
+enum DietMealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+  PRE_WORKOUT
+  POST_WORKOUT
+  OTHER
+}
+
+enum DietPlanAssignmentStatus {
+  ACTIVE
+  ENDED
+  REMOVED
+}
+
+model Membership {
+  id String @id @default(uuid()) @db.Uuid
+  name String @unique
+  description String?
+  minPrice Int @map("min_price")
+  purchasePrice Int @default(0) @map("purchase_price")
+  level MembershipLevel @default(BASIC) @map("level")
+  userMembership UserMembership[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  @@map("memberships")
+  @@index([name])
+  @@index([minPrice])
+}
+
+model Payment {
+  id                String             @id @default(uuid()) @db.Uuid
+  userId            String             @map("user_id") @db.Uuid
+
+  // Polymorphic target
+  targetType        PaymentTargetType  @map("target_type")
+  targetId          String             @map("target_id") @db.Uuid
+
+  // Money
+  amount            Decimal            @map("amount") @db.Decimal(10, 2)
+  currency          String             @default("VND") @map("currency") @db.VarChar(3)
+
+  // Provider integration
+  provider          String             @default("STRIPE") @map("provider") @db.VarChar(20)
+  providerSessionId String?            @unique @map("provider_session_id")
+  providerPaymentId String?            @unique @map("provider_payment_id")
+  checkoutUrl       String?            @map("checkout_url")
+
+  // State
+  status            PaymentStatus      @default(PENDING) @map("status")
+  failureReason     String?            @map("failure_reason")
+  paidAt            DateTime?          @map("paid_at") @db.Timestamp(6)
+  metadata          Json?              @map("metadata")
+
+  // Timestamps
+  createdAt         DateTime           @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt         DateTime           @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  // Relations
+  user              User               @relation(fields: [userId], references: [id], onDelete: Restrict)
+  userMembership    UserMembership?
+  trainerBooking    TrainerBooking?
+
+  @@index([userId])
+  @@index([targetType, targetId])
+  @@index([status])
+  @@map("payments")
+}
+
+model Notification {
+  id          String           @id @default(uuid()) @db.Uuid
+  userId      String           @map("user_id") @db.Uuid
+  type        NotificationType @map("type")
+  title       String           @db.VarChar(255)
+  message     String           @db.Text
+  isRead      Boolean          @default(false) @map("is_read")
+  readAt      DateTime?        @map("read_at") @db.Timestamp(6)
+  referenceId String?          @map("reference_id") @db.Uuid
+  metadata    Json?            @map("metadata")
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamp(6)
+
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, isRead, createdAt])
+  @@map("notifications")
+}
+
+model Role {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @unique
+  description String?
+
+  userRole UserRole[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId String @db.Uuid
+  roleId String @db.Uuid
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([userId, roleId])
+  @@index([roleId])
+  @@index([userId])
+  @@map("user_roles")
+}
+
+// model Permission {
+
+// }
+
+// model RolePermission {
+
+// }
+model Session {
+  id     String @id @default(uuid())
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  refreshToken     String             @unique
+  ip               String?
+  expiredAt        DateTime
+  refreshTokenUsed RefreshTokenUsed[]
+
+  @@index([userId, expiredAt])
+  @@map("sessions")
+}
+
+model RefreshTokenUsed {
+  id           String  @id @default(uuid())
+  refreshToken String  @unique
+  sessionId    String
+  session      Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("refresh_token_used")
+}
+
+model ClassBooking {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId         String?   @map("user_id") @db.Uuid 
+  classScheduleId  String?   @map("class_schedule_id") @db.Uuid
+  bookingStartDate DateTime @map("booking_start_date") @db.Date
+  bookingEndDate   DateTime @map("booking_end_date") @db.Date
+  status           String   @default("pending") @db.VarChar(50)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  classSchedule ClassSchedule? @relation(fields: [classScheduleId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([classScheduleId])
+  @@index([classScheduleId, status])
+  @@unique([userId, classScheduleId, bookingStartDate], name: "unique_user_schedule_date_booking")
+  @@map("class_bookings")
+}
+
+model ClassSchedule {
+  id            String   @id @default(uuid()) @db.Uuid
+  classId       String   @map("class_id") @db.Uuid
+  trainerId     String   @map("trainer_id") @db.Uuid
+  
+  // Recurring schedule pattern - dayOfWeek kept for backward compatibility
+  // New schedules should use scheduleDays relation for multi-day support
+  dayOfWeek     DayOfWeek? @map("day_of_week")
+  startTime     DateTime @map("start_time") @db.Time
+  endTime       DateTime @map("end_time") @db.Time
+  
+  // Validity period
+  validFrom     DateTime? @map("valid_from") @db.Date
+  validUntil    DateTime? @map("valid_until") @db.Date
+  
+  // Capacity and location
+  location      String?  @db.VarChar(255)
+  capacity      Int      @default(20)
+  price         Int      @default(0) @map("price")
+  isActive      Boolean  @default(true) @map("is_active")
+  
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime? @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  // Relations
+  gymClass      GymClass @relation(fields: [classId], references: [id], onDelete: Restrict)
+  trainer       User     @relation(fields: [trainerId], references: [id], onDelete: Restrict)
+  classBookings ClassBooking[]
+  scheduleDays  ScheduleDay[]
+  scheduleExceptions ScheduleException[]
+
+  // Indexes
+  @@index([classId])
+  @@index([trainerId])
+  @@index([dayOfWeek, startTime])
+  @@index([dayOfWeek, isActive, capacity])
+  @@map("class_schedules")
+}
+
+// Junction table for multi-day schedules
+// Allows a single ClassSchedule to occur on multiple days (e.g., MON, WED, FRI)
+model ScheduleDay {
+  id          String    @id @default(uuid()) @db.Uuid
+  scheduleId  String    @map("schedule_id") @db.Uuid
+  dayOfWeek   DayOfWeek @map("day_of_week")
+  
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+
+  // Relations
+  schedule    ClassSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  // Unique constraint: same day cannot be added twice to same schedule
+  @@unique([scheduleId, dayOfWeek])
+  @@index([dayOfWeek])
+  @@index([scheduleId])
+  @@map("schedule_days")
+}
+
+// Exception dates for schedule (holidays, closures, rescheduling)
+// Allows marking specific dates as cancelled or rescheduled
+model ScheduleException {
+  id            String        @id @default(uuid()) @db.Uuid
+  scheduleId    String        @map("schedule_id") @db.Uuid
+  exceptionDate DateTime      @map("exception_date") @db.Date
+  type          ExceptionType @default(CANCELLED)
+  reason        String?       @db.VarChar(255)
+  
+  // For rescheduled exceptions - the new time for that specific date
+  newStartTime  DateTime?     @map("new_start_time") @db.Time
+  newEndTime    DateTime?     @map("new_end_time") @db.Time
+  
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime?     @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  // Relations
+  schedule      ClassSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  // Unique constraint: same date cannot have multiple exceptions for same schedule
+  @@unique([scheduleId, exceptionDate])
+  @@index([scheduleId])
+  @@index([exceptionDate])
+  @@map("schedule_exceptions")
+}
+
+// Exception types for schedule exceptions
+enum ExceptionType {
+  CANCELLED     // Class is cancelled on this date
+  RESCHEDULED   // Class is rescheduled to a different time on this date
+}
+
+// Class template/definition - stores class info without schedule details
+model GymClass {
+  id              String   @id @default(uuid()) @db.Uuid
+  className       String   @unique @map("class_name") @db.VarChar(100)
+  description     String?  @db.Text
+  difficultyLevel DifficultyLevel @default(Beginner) @map("difficulty_level")
+  category        String   @db.VarChar(50)
+  isActive        Boolean  @default(true) @map("is_active")
+  
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt       DateTime? @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  // Relations
+  schedules       ClassSchedule[]
+
+  @@index([category])
+  @@index([isActive])
+  @@map("gym_classes")
+}
+
+// Enums for class management
+enum DayOfWeek {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+  SUN
+}
+
+enum DifficultyLevel {
+  Beginner
+  Intermediate
+  Advanced
+}
+
+
+model TrainerAvailability {
+  id String @id @default(uuid()) @db.Uuid
+  trainerId String @map("trainer_id") @db.Uuid
+  dayOfWeek Int @map("day_of_week") // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime DateTime @map("start_time") @db.Time
+  endTime DateTime @map("end_time") @db.Time
+  isAvailable Boolean @default(true) @map("is_available")
+  
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  trainer User @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+
+  @@index([trainerId])
+  @@index([trainerId, dayOfWeek])
+  @@map("trainer_availabilities")
+}
+
+model TrainerClientLink {
+  id String @id @default(uuid()) @db.Uuid
+  trainerId String @map("trainer_id") @db.Uuid
+  memberId String @map("member_id") @db.Uuid
+  status TrainerClientLinkStatus @default(ACTIVE)
+  linkedAt DateTime @default(now()) @map("linked_at") @db.Timestamp(6)
+  endedAt DateTime? @map("ended_at") @db.Timestamp(6)
+  endReason String? @map("end_reason") @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  trainer User @relation("TrainerClientLinkTrainer", fields: [trainerId], references: [id], onDelete: Restrict)
+  member User @relation("TrainerClientLinkMember", fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([trainerId, memberId, status])
+  @@index([memberId, status])
+  @@map("trainer_client_links")
+}
+
+model TrainerBooking {
+  id String @id @default(uuid()) @db.Uuid
+  memberId String @map("member_id") @db.Uuid
+  trainerId String @map("trainer_id") @db.Uuid
+  startAt DateTime @map("start_at") @db.Timestamp(6)
+  endAt DateTime @map("end_at") @db.Timestamp(6)
+  status TrainerBookingStatus @default(PENDING_REVIEW)
+  price Decimal @db.Decimal(10, 2)
+  currency String @default("VND") @db.VarChar(3)
+  paymentId String? @unique @map("payment_id") @db.Uuid
+  notes String? @db.Text
+  cancelledAt DateTime? @map("cancelled_at") @db.Timestamp(6)
+  cancelReason String? @map("cancel_reason") @db.Text
+  rescheduledFromBookingId String? @map("rescheduled_from_booking_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  member User @relation("TrainerBookingMember", fields: [memberId], references: [id], onDelete: Cascade)
+  trainer User @relation("TrainerBookingTrainer", fields: [trainerId], references: [id], onDelete: Restrict)
+  payment Payment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  rescheduledFromBooking TrainerBooking? @relation("TrainerBookingReschedule", fields: [rescheduledFromBookingId], references: [id], onDelete: SetNull)
+  rescheduledBookings TrainerBooking[] @relation("TrainerBookingReschedule")
+
+  @@index([trainerId, startAt])
+  @@index([trainerId, status, startAt])
+  @@index([memberId, startAt])
+  @@index([memberId, status, startAt])
+  @@index([paymentId])
+  @@map("trainer_bookings")
+}
+
+model TrainerConversation {
+  id String @id @default(uuid()) @db.Uuid
+  trainerId String @map("trainer_id") @db.Uuid
+  memberId String @map("member_id") @db.Uuid
+  lastMessageAt DateTime? @map("last_message_at") @db.Timestamp(6)
+  lastMessagePreview String? @map("last_message_preview") @db.Text
+  memberLastReadAt DateTime? @map("member_last_read_at") @db.Timestamp(6)
+  trainerLastReadAt DateTime? @map("trainer_last_read_at") @db.Timestamp(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  trainer User @relation("TrainerConversationTrainer", fields: [trainerId], references: [id], onDelete: Restrict)
+  member User @relation("TrainerConversationMember", fields: [memberId], references: [id], onDelete: Cascade)
+  messages TrainerConversationMessage[]
+
+  @@unique([trainerId, memberId])
+  @@index([memberId, lastMessageAt])
+  @@index([trainerId, lastMessageAt])
+  @@map("trainer_conversations")
+}
+
+model TrainerConversationMessage {
+  id String @id @default(uuid()) @db.Uuid
+  conversationId String @map("conversation_id") @db.Uuid
+  senderUserId String @map("sender_user_id") @db.Uuid
+  content String @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  conversation TrainerConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender User @relation("TrainerConversationMessageSender", fields: [senderUserId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@index([senderUserId, createdAt])
+  @@map("trainer_conversation_messages")
+}
+
+model DietPlan {
+  id            String             @id @default(uuid()) @db.Uuid
+  trainerId     String             @map("trainer_id") @db.Uuid
+  title         String             @db.VarChar(255)
+  description   String?            @db.Text
+  durationDays  Int?               @map("duration_days")
+  calorieTarget Int?               @map("calorie_target")
+  status        DietPlanStatus     @default(DRAFT)
+  visibility    DietPlanVisibility @default(PRIVATE)
+  createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime?          @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  trainer       User               @relation("DietPlanTrainer", fields: [trainerId], references: [id], onDelete: Restrict)
+  meals         DietPlanMeal[]
+  assignments   DietPlanAssignment[]
+
+  @@index([trainerId, status])
+  @@index([trainerId, visibility])
+  @@index([status, visibility])
+  @@map("diet_plans")
+}
+
+model DietPlanMeal {
+  id            String       @id @default(uuid()) @db.Uuid
+  dietPlanId    String       @map("diet_plan_id") @db.Uuid
+  sequence      Int          @map("sequence")
+  mealType      DietMealType @map("meal_type")
+  mealTitle     String       @map("meal_title") @db.VarChar(255)
+  scheduledTime DateTime?    @map("scheduled_time") @db.Time
+  foodItemsText String?      @map("food_items_text") @db.Text
+  calories      Int          @map("calories")
+  proteinGrams  Decimal?     @map("protein_grams") @db.Decimal(6, 2)
+  carbsGrams    Decimal?     @map("carbs_grams") @db.Decimal(6, 2)
+  fatGrams      Decimal?     @map("fat_grams") @db.Decimal(6, 2)
+  notes         String?      @db.Text
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime?    @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  dietPlan      DietPlan     @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
+
+  @@unique([dietPlanId, sequence])
+  @@index([dietPlanId, sequence])
+  @@index([mealType])
+  @@map("diet_plan_meals")
+}
+
+model DietPlanAssignment {
+  id            String                   @id @default(uuid()) @db.Uuid
+  dietPlanId    String                   @map("diet_plan_id") @db.Uuid
+  memberId      String                   @map("member_id") @db.Uuid
+  effectiveFrom DateTime                 @map("effective_from") @db.Date
+  effectiveTo   DateTime?                @map("effective_to") @db.Date
+  status        DietPlanAssignmentStatus @default(ACTIVE)
+  assignedAt    DateTime                 @default(now()) @map("assigned_at") @db.Timestamp(6)
+  endedAt       DateTime?                @map("ended_at") @db.Timestamp(6)
+  endReason     String?                  @map("end_reason") @db.Text
+
+  dietPlan      DietPlan                 @relation(fields: [dietPlanId], references: [id], onDelete: Cascade)
+  member        User                     @relation("DietPlanMember", fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([dietPlanId, status])
+  @@index([memberId, status])
+  @@index([effectiveFrom, effectiveTo])
+  @@map("diet_plan_assignments")
+}
+
+model Feedback {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  subject   String   @db.VarChar(255)
+  message   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("feedbacks")
+}
+
+model ChatSession {
+  id        String            @id @default(uuid()) @db.Uuid
+  memberId  String            @map("member_id") @db.Uuid
+  status    ChatSessionStatus @default(OPEN)
+  createdAt DateTime          @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  closedAt  DateTime?         @map("closed_at") @db.Timestamp(6)
+
+  member    User              @relation("MemberChatSessions", fields: [memberId], references: [id], onDelete: Cascade)
+  messages  ChatMessage[]
+
+  @@index([memberId, status])
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id        String            @id @default(uuid()) @db.Uuid
+  sessionId String            @map("session_id") @db.Uuid
+  role      ChatMessageRole
+  content   String            @db.Text
+  intentKey String?           @map("intent_key") @db.VarChar(100)
+  source    ChatMessageSource
+  metadata  Json?             @map("metadata")
+  createdAt DateTime          @default(now()) @map("created_at") @db.Timestamp(6)
+
+  session   ChatSession       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+  @@map("chat_messages")
+}
+
+enum WorkoutPlanStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum WorkoutPlanVisibility {
+  PRIVATE
+  ASSIGNED
+  PUBLIC
+}
+
+enum WorkoutSessionStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+model Exercise {
+  id                String    @id @default(uuid()) @db.Uuid
+  name              String    @unique @db.VarChar(255)
+  description       String?   @db.Text
+  category          String    @db.VarChar(100)
+  equipmentRequired String?   @map("equipment_required") @db.VarChar(100)
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt         DateTime? @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  planItems PlanItem[]
+  setLogs   ExerciseSetLog[]
+
+  @@index([category])
+  @@map("exercises")
+}
+
+model WorkoutPlan {
+  id          String                @id @default(uuid()) @db.Uuid
+  trainerId   String                @map("trainer_id") @db.Uuid
+  title       String                @db.VarChar(255)
+  duration    Int?                  @map("duration_minutes")
+  status      WorkoutPlanStatus     @default(DRAFT)
+  visibility  WorkoutPlanVisibility @default(PRIVATE)
+  createdAt   DateTime              @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime?             @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  trainer     User                  @relation("WorkoutPlanTrainer", fields: [trainerId], references: [id], onDelete: Restrict)
+  planItems   PlanItem[]
+  sessions    WorkoutSession[]
+  assignments WorkoutPlanAssignment[]
+
+  @@index([trainerId, visibility])
+  @@index([trainerId, status])
+  @@index([visibility, status])
+  @@map("workout_plans")
+}
+
+model WorkoutPlanAssignment {
+  id            String      @id @default(uuid()) @db.Uuid
+  workoutPlanId String      @map("workout_plan_id") @db.Uuid
+  memberId      String      @map("member_id") @db.Uuid
+  assignedAt    DateTime    @default(now()) @map("assigned_at") @db.Timestamp(6)
+
+  workoutPlan   WorkoutPlan @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+  member        User        @relation("WorkoutPlanMember", fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([workoutPlanId, memberId])
+  @@index([memberId])
+  @@index([workoutPlanId])
+  @@map("workout_plan_assignments")
+}
+
+model PlanItem {
+  id            String      @id @default(uuid()) @db.Uuid
+  workoutPlanId String      @map("workout_plan_id") @db.Uuid
+  exerciseId    String      @map("exercise_id") @db.Uuid
+  sequence      Int         @map("sequence")
+  targetSet     Int?        @map("target_set")
+  targetRep     Int?        @map("target_rep")
+  targetWeight  Decimal?    @map("target_weight") @db.Decimal(6, 2)
+  dayOfWeek     DayOfWeek?  @map("day_of_week")
+  notes         String?     @db.Text
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime?   @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  workoutPlan   WorkoutPlan @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+  exercise      Exercise    @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+  setLogs       ExerciseSetLog[]
+
+  @@unique([workoutPlanId, sequence])
+  @@index([workoutPlanId, sequence])
+  @@index([exerciseId])
+  @@index([dayOfWeek])
+  @@map("plan_items")
+}
+
+model WorkoutSession {
+  id            String               @id @default(uuid()) @db.Uuid
+  memberId      String               @map("member_id") @db.Uuid
+  workoutPlanId String?              @map("workout_plan_id") @db.Uuid
+  startTime     DateTime             @map("start_time")
+  endTime       DateTime?            @map("end_time")
+  status        WorkoutSessionStatus @default(IN_PROGRESS)
+  notes         String?              @db.Text
+  createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime?            @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  member        User                 @relation("WorkoutSessionMember", fields: [memberId], references: [id], onDelete: Restrict)
+  workoutPlan   WorkoutPlan?         @relation(fields: [workoutPlanId], references: [id], onDelete: SetNull)
+  setLogs       ExerciseSetLog[]
+
+  @@index([memberId, startTime])
+  @@index([workoutPlanId])
+  @@index([status])
+  @@map("workout_sessions")
+}
+
+model ExerciseSetLog {
+  id               String         @id @default(uuid()) @db.Uuid
+  workoutSessionId String         @map("workout_session_id") @db.Uuid
+  exerciseId       String         @map("exercise_id") @db.Uuid
+  planItemId       String?        @map("plan_item_id") @db.Uuid
+  setNumber        Int            @map("set_number")
+  actualRep        Int            @map("actual_rep")
+  actualWeight     Decimal        @map("actual_weight") @db.Decimal(6, 2)
+  rpe              Int?           @db.SmallInt
+  completedAt      DateTime       @default(now()) @map("completed_at") @db.Timestamp(6)
+
+  session          WorkoutSession @relation(fields: [workoutSessionId], references: [id], onDelete: Cascade)
+  exercise         Exercise       @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+  planItem         PlanItem?      @relation(fields: [planItemId], references: [id], onDelete: SetNull)
+
+  @@index([workoutSessionId, setNumber])
+  @@index([exerciseId])
+  @@index([planItemId])
+  @@map("exercise_set_logs")
+}
+

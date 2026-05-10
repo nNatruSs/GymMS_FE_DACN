@@ -53,7 +53,7 @@
 /* Wrapper ensures tabs stay above content */
 .chrome-tabs-wrapper {
   position: relative;
-  z-index: 1; //10?
+  z-index: 1; /* 10? */
 }
 
 /* Chrome-style tab bar */
@@ -63,7 +63,7 @@
   background: #e9ecef;
   padding-left: 0.5rem;
   position: relative;
-  z-index: 1; //10?
+  z-index: 1; /* 10? */
 }
 
 /* Individual tab */
@@ -93,7 +93,7 @@
   color: #000;
   border-color: #dee2e6 #dee2e6 #ffffff;
   position: relative;
-  z-index: 1; //20?
+  z-index: 1; /* 20? */
 }
 
 /* Content area */

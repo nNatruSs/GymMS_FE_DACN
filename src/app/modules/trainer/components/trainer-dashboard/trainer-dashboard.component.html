@@ -1,17 +1,9 @@
-<section class="bg-light py-5"> 
-    <div class="container px-5">
-      <div class="row gx-5 justify-content-center">
-        <div class="col-xxl-12">
-          <div class="text-center my-5">
-           <h1>Dashboard</h1>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Cards Section -->
-      <div class="row g-4" id="fundraiserList">
-     
+<div class="d-flex min-vh-100 bg-light">
+  <app-trainer-sidebar></app-trainer-sidebar>
 
-      </div>
+  <div class="flex-grow-1">
+    <div class="container-fluid p-4">
+      <router-outlet></router-outlet>
     </div>
-  </section>
+  </div>
+</div>

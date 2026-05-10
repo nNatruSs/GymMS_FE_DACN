@@ -2,7 +2,9 @@ import { Routes } from "@angular/router";
 
 import { UserDashboardLayoutComponent } from "./layout/user-dashboard-layout.component";
 import { UserMembershipManagementComponent } from "./pages/membership-management/user-membership-management.component";
-
+import { UserFeedbackComponent } from "./pages/feedback/user-feedback.component";
+import { UserMessagesComponent } from "./pages/messages/user-messages.component";
+import { UserChatbotComponent } from "./pages/chatbot/user-chatbot.component";
 import { UserBookingsComponent } from './pages/bookings/user-bookings.component';
 import { BookingHistoryComponent } from './pages/bookings/history/booking-history.component';
 import { BookingCalendarComponent } from './pages/bookings/calendar/booking-calendar.component';
@@ -31,7 +33,19 @@ export const USER_DASHBOARD_ROUTES: Routes = [
         { path: 'book', component: BookingBookComponent },
         { path: '', redirectTo: 'calendar', pathMatch: 'full' }
         ]
-      }
+      },
+      {
+        path: 'feedback',
+        component: UserFeedbackComponent,
+      },
+      {
+        path: 'messages',
+        component: UserMessagesComponent,
+      },
+      {
+        path: 'chatbot',
+        component: UserChatbotComponent,
+      },
     ]
   }
 ];

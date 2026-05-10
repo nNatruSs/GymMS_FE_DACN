@@ -1,0 +1,64 @@
+<div class="chatbot-page">
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4 d-flex flex-column">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h4 class="fw-semibold mb-0">GymMS Assistant</h4>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          (click)="refreshSession()"
+          [disabled]="loading || sending || refreshing"
+        >
+          {{ refreshing ? 'Refreshing...' : 'Refresh Chat' }}
+        </button>
+      </div>
+      <p class="text-muted mb-3">Ask about plans, bookings, schedules, and support.</p>
+
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      <div *ngIf="loading" class="text-muted">Loading chatbot...</div>
+
+      <div *ngIf="!loading" class="chat-thread flex-grow-1 mb-3">
+        <div *ngIf="messages.length === 0" class="text-muted small">
+          No messages yet. Start by sending your first question.
+        </div>
+
+        <div
+          *ngFor="let msg of messages"
+          class="d-flex mb-2"
+          [class.justify-content-end]="!isAssistant(msg.role)"
+        >
+          <div class="chat-bubble" [class.assistant]="isAssistant(msg.role)" [class.member]="!isAssistant(msg.role)">
+            <div>{{ msg.content }}</div>
+            <small class="text-muted">{{ msg.createdAt | date: 'short' }}</small>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && suggestedTopics.length > 0" class="mb-3 d-flex flex-wrap gap-2">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          *ngFor="let topic of suggestedTopics"
+          (click)="sendSuggestedTopic(topic)"
+          [disabled]="sending"
+        >
+          {{ topic }}
+        </button>
+      </div>
+
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="draft"
+          [disabled]="sending || loading"
+          placeholder="Type your message..."
+          (keyup.enter)="send()"
+        />
+        <button class="btn btn-primary" [disabled]="sending || loading || !draft.trim()" (click)="send()">
+          {{ sending ? 'Sending...' : 'Send' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

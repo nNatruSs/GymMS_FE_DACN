@@ -1,26 +1,23 @@
-import { Component } from '@angular/core';
-import { MembershipService } from '../../../services/membership.service';
-import { StorageService } from '../../../../../auth/services/storage/storage.service';
 import { CommonModule } from '@angular/common';
-import { OnInit } from '@angular/core';
-import { forkJoin, of } from 'rxjs';
-import { delay, finalize } from 'rxjs/operators';
-import { ExtendMembershipModalComponent } from './extend-membership-modal/extend-membership-modal.component';
-import { ConfirmModalComponent } from './confirm-modal.component.html/confirm-modal.component';
+import { Component, OnInit } from '@angular/core';
+import { StorageService } from '../../../../../auth/services/storage/storage.service';
+import { MembershipService } from '../../../services/membership.service';
 
 @Component({
   selector: 'app-user-membership-management',
   standalone: true,
-  imports: [CommonModule, ExtendMembershipModalComponent, ConfirmModalComponent],
+  imports: [CommonModule],
   templateUrl: './user-membership-management.component.html',
   styleUrls: ['./user-membership-management.component.css']
 })
 export class UserMembershipManagementComponent implements OnInit {
-
   userId!: string;
   membership: any | null = null;
   plans: any[] = [];
   loading = true;
+  checkingOut = false;
+  showPlanModal = false;
+  selectedPlanId: string | null = null;
 
   constructor(
     private membershipService: MembershipService,
@@ -34,118 +31,113 @@ export class UserMembershipManagementComponent implements OnInit {
 
   loadData() {
     this.loading = true;
-
-    this.membershipService.getUserMembership(this.userId).subscribe(memberships => {
-      this.membership = memberships.length ? memberships[0] : null;
-
-      this.membershipService.getPlans().subscribe(plans => {
-        this.plans = plans;
+    this.membershipService.getUserMembership().subscribe({
+      next: (membership) => {
+        this.membership = membership;
+        this.membershipService.getPlans().subscribe({
+          next: (plans) => {
+            this.plans = plans;
+            this.loading = false;
+          },
+          error: () => {
+            this.loading = false;
+          },
+        });
+      },
+      error: () => {
         this.loading = false;
-      });
-    });
-
-    // forkJoin({
-    //   membership: this.membershipService.getUserMembership(this.userId),
-    //   plans: this.membershipService.getPlans(),
-
-    //   minDelay: of(true).pipe(delay(1000)) //remove later when use real backend
-    // })
-    // .pipe(
-    //   finalize(() => {
-    //     this.loading = false;
-    //   })
-    // )
-    // .subscribe(({ membership, plans }) => {
-    //   this.membership = membership.length ? membership[0] : null;
-    //   this.plans = plans;
-    // });
-
-  }
-
-  /** REGISTER NEW MEMBERSHIP */
-  register(plan: any) {
-    const newMembership = {
-      user_id: this.userId,
-      plan: plan.name,
-      start_date: new Date().toISOString().split('T')[0],
-      duration_days: plan.duration_days
-    };
-
-    this.membershipService.registerMembership(newMembership).subscribe(() => {
-      alert('Membership registered successfully');
-      this.loadData();
+      },
     });
   }
 
-  /** EXTEND MEMBERSHIP (add plan duration days) */
-  extend(planDays: number = 30) {
-    const updated = {
-      duration_days: this.membership.duration_days + planDays
-    };
-
-    this.membershipService.updateMembership(this.membership.id, updated).subscribe(() => {
-      this.loadData();
-    });
-  }
-
-  /** CANCEL MEMBERSHIP */
-  cancel() {
-    if (!confirm('Are you sure you want to cancel your membership?')) return;
-
-    this.membershipService.cancelMembership(this.membership.id).subscribe(() => {
-      this.loadData();
-    });
-  }
-
-  /** CALCULATE END DATE (days-based) */
   getEndDate(): string {
-    const start = new Date(this.membership.start_date);
-    start.setDate(start.getDate() + this.membership.duration_days);
-    return start.toISOString().split('T')[0];
+    if (!this.membership?.endDate) return '-';
+    return new Date(this.membership.endDate).toISOString().split('T')[0];
+  }
+
+  getTotalDays(): number {
+    if (!this.membership?.startDate || !this.membership?.endDate) return 0;
+    const start = new Date(this.membership.startDate);
+    const end = new Date(this.membership.endDate);
+    return Math.max(
+      Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)),
+      0
+    );
   }
 
   getRemainingDays(): number {
-  const start = new Date(this.membership.start_date);
-  const end = new Date(start);
-  end.setDate(end.getDate() + this.membership.duration_days);
-
-  const today = new Date();
-  return Math.max(
-    Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)),
-    0
-  );
-}
-
-getProgressPercent(): number {
-  const used =
-    this.membership.duration_days - this.getRemainingDays();
-
-  return Math.min((this.getRemainingDays() / this.membership.duration_days) * 100, 100);
-}
-
-///////////////
-
-  showExtendModal = false;
-  showCancelModal = false;
-
-  openExtendModal() {
-    this.showExtendModal = true;
+    if (!this.membership?.endDate) return 0;
+    const end = new Date(this.membership.endDate);
+    const today = new Date();
+    return Math.max(
+      Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)),
+      0
+    );
   }
 
-  openCancelModal() {
-    this.showCancelModal = true;
+  getProgressPercent(): number {
+    const total = this.getTotalDays();
+    if (total <= 0) return 0;
+    return Math.min((this.getRemainingDays() / total) * 100, 100);
   }
 
-  extendConfirmed(days: number) {
-    this.showExtendModal = false;
-    this.extend(days);
+  hasCurrentMembership(): boolean {
+    return !!this.membership;
   }
 
-  cancelConfirmed() {
-    this.showCancelModal = false;
-    this.cancel();
+  openMembershipModal() {
+    this.selectedPlanId = this.membership?.membershipId ?? null;
+    this.showPlanModal = true;
   }
 
+  closeMembershipModal() {
+    if (this.checkingOut) return;
+    this.showPlanModal = false;
+  }
 
+  onBackdropClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('membership-modal-overlay')) {
+      this.closeMembershipModal();
+    }
+  }
 
+  selectPlan(planId: string) {
+    this.selectedPlanId = planId;
+  }
+
+  proceedToCheckout() {
+    if (!this.selectedPlanId || this.checkingOut) return;
+    this.checkingOut = true;
+    this.membershipService.initiateCheckout(this.selectedPlanId).subscribe({
+      next: (res) => {
+        const checkoutUrl = res?.checkoutUrl ?? res?.data?.checkoutUrl;
+        if (checkoutUrl) {
+          window.location.href = checkoutUrl;
+          return;
+        }
+        this.checkingOut = false;
+        alert('Could not start Stripe checkout. Please try again.');
+      },
+      error: () => {
+        this.checkingOut = false;
+        alert('Could not start Stripe checkout. Please try again.');
+      },
+    });
+  }
+
+  formatPrice(plan: any): number {
+    return plan.purchasePrice || plan.minPrice || 0;
+  }
+
+  planLogoUrl(plan: any): string {
+    return plan?.logoUrl || plan?.image_url || 'assets/logo.svg';
+  }
+
+  currentMembershipLogoUrl(): string {
+    const fromMembershipObject = this.membership?.membership?.logoUrl;
+    if (fromMembershipObject) return fromMembershipObject;
+
+    const matchedPlan = this.plans.find((p) => p.id === this.membership?.membershipId);
+    return this.planLogoUrl(matchedPlan);
+  }
 }

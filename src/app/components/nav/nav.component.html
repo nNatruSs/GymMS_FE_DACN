@@ -39,6 +39,37 @@
           </a>
         </li>
 
+        <li *ngIf="isAnyRoleLoggedIn()" class="nav-item position-relative">
+          <button type="button" class="btn btn-link nav-link align-items-center" (click)="toggleNotifications()">
+            <i class="fas fa-bell me-1"></i>
+            <span *ngIf="unreadCount > 0" class="badge bg-danger rounded-pill ms-2">{{ unreadCount }}</span>
+          </button>
+
+          <div class="notification-dropdown shadow-sm" *ngIf="showNotifications">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <strong>Notifications</strong>
+              <button type="button" class="btn btn-sm btn-outline-primary" (click)="markAllNotificationsRead()">
+                Mark all read
+              </button>
+            </div>
+
+            <div *ngIf="loadingNotifications" class="small text-muted">Loading...</div>
+            <div *ngIf="!loadingNotifications && notifications.length === 0" class="small text-muted">
+              No notifications.
+            </div>
+
+            <button
+              type="button"
+              *ngFor="let n of notifications"
+              class="notification-item py-2 border-bottom text-start w-100 btn btn-link text-decoration-none"
+              (click)="markNotificationRead(n)"
+            >
+              <div class="small">{{ notificationText(n) }}</div>
+              <div class="text-muted tiny" *ngIf="n.createdAt">{{ n.createdAt | date:'short' }}</div>
+            </button>
+          </div>
+        </li>
+
         <!-- Show Sign In Button if not logged in -->
         <li *ngIf="!isUserLoggedIn && !isAdminLoggedIn && !isTrainerLoggedIn" class="nav-item">
           <a class="nav-link" routerLink="/login">

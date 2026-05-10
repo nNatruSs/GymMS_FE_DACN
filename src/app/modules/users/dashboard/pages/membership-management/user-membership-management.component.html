@@ -27,7 +27,7 @@
             </div>
             <div class="col-md-3 mb-3">
               <small class="text-muted">Start Date</small>
-              <div class="fw-medium">{{ membership.start_date }}</div>
+              <div class="fw-medium">{{ membership.starDate }}</div>
             </div>
             
             <div class="col-md-3 mb-3">
@@ -138,26 +138,33 @@
         <ng-container *ngIf="membership; else noMembership">
 
           <div class="row g-4 align-items-center">
+            <div class="col-md-2 d-flex justify-content-center">
+              <img
+                [src]="currentMembershipLogoUrl()"
+                alt="current membership logo"
+                class="membership-logo"
+              />
+            </div>
             <div class="col-md-3">
               <small class="text-muted">Plan</small>
               <div class="fs-4 fw-bold text-primary text-capitalize">
-                {{ membership.plan }}
+                {{ membership.membershipName }}
               </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
               <small class="text-muted">Duration</small>
-              <div class="fw-medium">{{ membership.duration_days }} days</div>
+              <div class="fw-medium">{{ getTotalDays() }} days</div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
               <small class="text-muted">Start Date</small>
-              <div class="fw-medium">{{ membership.start_date }}</div>
+              <div class="fw-medium">{{ membership.startDate | date:'yyyy-MM-dd' }}</div>
             </div>
 
             <div class="col-md-3">
               <small class="text-muted">End Date</small>
-              <div class="fw-medium">{{ getEndDate() }}</div>
+              <div class="fw-medium">{{ membership.endDate | date:'yyyy-MM-dd' }}</div>
             </div>
           </div>
 
@@ -182,16 +189,9 @@
           <div class="mt-4 d-flex gap-2 flex-wrap">
             <button
               class="btn btn-primary px-4"
-              (click)="openExtendModal()"
+              (click)="openMembershipModal()"
             >
-              Extend Membership
-            </button>
-
-            <button
-              class="btn btn-outline-danger px-4"
-              (click)="openCancelModal()"
-            >
-              Cancel Membership
+              Update Membership
             </button>
           </div>
 
@@ -200,6 +200,9 @@
         <ng-template #noMembership>
           <div class="alert alert-warning mb-0">
             You don’t currently have an active membership.
+            <button class="btn btn-sm btn-primary ms-3" (click)="openMembershipModal()">
+              Register Membership
+            </button>
           </div>
         </ng-template>
       </div>
@@ -214,7 +217,7 @@
           <div class="card-body">
 
             <img
-              [src]="plan.image_url"
+              [src]="planLogoUrl(plan)"
               class="plan-img mb-3"
               alt="{{ plan.name }}"
             />
@@ -222,24 +225,24 @@
             <h6 class="fw-bold text-capitalize">{{ plan.name }}</h6>
 
             <p class="text-muted small mb-3">
-              {{ plan.benefits }}
+              {{ plan.description }}
             </p>
 
             <div class="fs-4 fw-bold text-primary mb-3">
-              ${{ plan.price }}
-              <small class="fs-6 text-muted">/ {{ plan.duration_days }} days</small>
+              {{ plan.purchasePrice || plan.minPrice | number }} VND
+              <small class="fs-6 text-muted d-block">{{ plan.level }}</small>
             </div>
 
             <button
               *ngIf="!membership"
               class="btn btn-primary w-100"
-              (click)="register(plan)"
+              (click)="openMembershipModal()"
             >
               Register Membership
             </button>
 
             <span
-              *ngIf="membership?.plan === plan.name"
+              *ngIf="membership?.membershipId === plan.id"
               class="badge bg-success"
             >
               Current Plan
@@ -253,20 +256,58 @@
   </div>
 </div>
 
-<!-- ================= MODALS ================= -->
-<app-extend-membership-modal
-  *ngIf="showExtendModal"
-  [membership]="membership"
-  (close)="showExtendModal=false"
-  (confirm)="extendConfirmed($event)">
-</app-extend-membership-modal>
+<!-- ================= MODAL: SELECT PLAN + CHECKOUT ================= -->
+<div
+  *ngIf="showPlanModal"
+  class="membership-modal-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+  style="background: rgba(0,0,0,0.45); z-index: 1200;"
+  (click)="onBackdropClick($event)"
+>
+  <div class="bg-white rounded-4 shadow p-4" style="width: min(920px, 92vw); max-height: 90vh; overflow:auto;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">{{ hasCurrentMembership() ? 'Update Membership' : 'Register Membership' }}</h5>
+      <button class="btn btn-sm btn-outline-secondary" (click)="closeMembershipModal()" [disabled]="checkingOut">
+        Close
+      </button>
+    </div>
 
-<app-confirm-modal
-  *ngIf="showCancelModal"
-  title="Cancel Membership"
-  message="Are you sure you want to cancel your membership? This action cannot be undone."
-  confirmText="Yes, Cancel"
-  confirmType="danger"
-  (confirm)="cancelConfirmed()"
-  (close)="showCancelModal=false">
-</app-confirm-modal>
+    <p class="text-muted mb-3">
+      Choose a membership tier/plan, then proceed to Stripe checkout.
+    </p>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-6 col-lg-4" *ngFor="let plan of plans">
+        <button
+          type="button"
+          class="card w-100 h-100 border-2 text-start"
+          [class.border-primary]="selectedPlanId === plan.id"
+          [class.border-success]="membership?.membershipId === plan.id"
+          (click)="selectPlan(plan.id)"
+          style="background: white;"
+        >
+          <div class="card-body">
+            <div class="d-flex justify-content-center mb-2">
+              <img [src]="planLogoUrl(plan)" alt="{{ plan.name }}" class="modal-plan-logo" />
+            </div>
+            <div class="d-flex justify-content-between align-items-start">
+              <h6 class="fw-bold mb-1">{{ plan.name }}</h6>
+              <span *ngIf="membership?.membershipId === plan.id" class="badge bg-success">Current</span>
+            </div>
+            <div class="text-muted small mb-2">{{ plan.description || 'No description' }}</div>
+            <div class="fw-bold text-primary">{{ formatPrice(plan) | number }} VND</div>
+            <small class="text-muted">{{ plan.level }}</small>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-outline-secondary" (click)="closeMembershipModal()" [disabled]="checkingOut">
+        Cancel
+      </button>
+      <button class="btn btn-primary" [disabled]="!selectedPlanId || checkingOut" (click)="proceedToCheckout()">
+        {{ checkingOut ? 'Redirecting...' : 'Proceed to Stripe Checkout' }}
+      </button>
+    </div>
+  </div>
+</div>

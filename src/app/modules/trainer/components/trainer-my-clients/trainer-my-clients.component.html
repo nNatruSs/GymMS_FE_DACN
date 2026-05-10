@@ -1,0 +1,35 @@
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-4">
+    <h4 class="fw-semibold mb-2">My Clients</h4>
+
+    <div *ngIf="loading" class="text-muted">Loading clients...</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <div *ngIf="!loading && !errorMessage && clients.length === 0" class="text-muted">
+      You have no active clients yet.
+    </div>
+
+    <div class="table-responsive" *ngIf="!loading && clients.length > 0">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Email</th>
+            <th>Linked At</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let client of clients">
+            <td>{{ client.member.firstName }} {{ client.member.lastName }}</td>
+            <td>{{ client.member.email }}</td>
+            <td>{{ client.linkedAt | date:'yyyy-MM-dd HH:mm' }}</td>
+            <td>
+              <span class="badge bg-success">{{ client.status }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

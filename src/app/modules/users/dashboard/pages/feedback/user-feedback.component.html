@@ -1,0 +1,79 @@
+<div class="feedback-page">
+  <div class="mb-4">
+    <h4 class="fw-semibold mb-1">Send feedback</h4>
+    <p class="text-muted small mb-0">
+      Share suggestions, report issues, or ask for help. We read every message.
+    </p>
+  </div>
+
+  <div class="card shadow-sm border-0 feedback-card">
+    <div class="card-body p-4">
+      <div
+        *ngIf="successMessage"
+        class="alert alert-success"
+        role="status"
+      >
+        {{ successMessage }}
+      </div>
+
+      <div
+        *ngIf="errorMessage"
+        class="alert alert-danger"
+        role="alert"
+      >
+        {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="mb-3">
+          <label for="subject" class="form-label">Subject</label>
+          <input
+            id="subject"
+            type="text"
+            class="form-control"
+            formControlName="subject"
+            placeholder="Brief summary"
+            autocomplete="off"
+          />
+          <div
+            *ngIf="form.controls.subject.invalid && form.controls.subject.touched"
+            class="invalid-feedback d-block"
+          >
+            <span *ngIf="form.controls.subject.errors?.['required']">Subject is required.</span>
+            <span *ngIf="form.controls.subject.errors?.['maxlength']">Max 200 characters.</span>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="message" class="form-label">Message</label>
+          <textarea
+            id="message"
+            class="form-control"
+            rows="6"
+            formControlName="message"
+            placeholder="Describe your feedback in detail"
+          ></textarea>
+          <div
+            *ngIf="form.controls.message.invalid && form.controls.message.touched"
+            class="invalid-feedback d-block"
+          >
+            <span *ngIf="form.controls.message.errors?.['required']">Message is required.</span>
+            <span *ngIf="form.controls.message.errors?.['maxlength']">Max 5000 characters.</span>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary px-4"
+          [disabled]="submitting"
+        >
+          <span *ngIf="!submitting">Submit feedback</span>
+          <span *ngIf="submitting" class="d-inline-flex align-items-center gap-2">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Sending…
+          </span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+.messages-page {
+  min-height: 70vh;
+}
+
+.messages-thread {
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.message-bubble {
+  max-width: 75%;
+  background: #f1f3f5;
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.own-message {
+  background: #dbeafe;
+}
+
+.active-conversation {
+  background: #e9ecef;
+  border: 1px solid #ced4da;
+}

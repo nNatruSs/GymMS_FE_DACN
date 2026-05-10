@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { OnInit } from '@angular/core';
 import { BookingService } from '../../../../services/booking.service';
 import { StorageService } from '../../../../../../auth/services/storage/storage.service';
-import { forkJoin } from 'rxjs';
-import { BranchSelectorComponent } from './branch-selector/branch-selector.component';
 import { BookingModeSelectorComponent } from './booking-mode-selector/booking-mode-selector.component';
 import { BookingItemListComponent } from './booking-item-list/booking-item-list.component';
 import { MembershipService } from '../../../../services/membership.service';
@@ -12,13 +10,12 @@ import { MembershipService } from '../../../../services/membership.service';
 @Component({
   selector: 'app-booking-book',
   standalone: true,
-  imports: [CommonModule, BranchSelectorComponent, BookingModeSelectorComponent, BookingItemListComponent],
+  imports: [CommonModule, BookingModeSelectorComponent, BookingItemListComponent],
   templateUrl: './booking-book.component.html',
   styleUrls: ['./booking-book.component.css']
 })
 export class BookingBookComponent implements OnInit {
-  branches: any[] = [];
-  selectedBranch: any = null;
+  selectedBranch: any = { id: 'default', name: 'GymMS' };
   mode: 'class' | 'trainer' | null = null;
 
    hasMembership = false;
@@ -29,11 +26,9 @@ export class BookingBookComponent implements OnInit {
   ngOnInit() {
     this.userId = this.storage.getUserId();
 
-    this.bookingService.getBranches().subscribe(b => this.branches = b);
-
     this.membershipService
-      .getUserMembership(this.userId)
-      .subscribe(m => this.hasMembership = m.length > 0);
+      .getUserMembership()
+      .subscribe(m => this.hasMembership = !!m);
   }
 
   onBranchSelected(branch: any) {
@@ -47,7 +42,6 @@ export class BookingBookComponent implements OnInit {
   }
 
   reset() {
-    this.selectedBranch = null;
     this.mode = null;
   }
 

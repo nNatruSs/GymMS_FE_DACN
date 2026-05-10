@@ -1,0 +1,168 @@
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <h5 class="fw-semibold mb-0">Membership Tiers</h5>
+      <button class="btn btn-primary" (click)="openCreateModal()">Create New Membership Tier</button>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
+    <div *ngIf="loading" class="text-muted">Loading tiers...</div>
+    <div *ngIf="!loading && tiers.length === 0" class="text-muted">No membership tiers found.</div>
+
+    <div class="row g-3" *ngIf="!loading && tiers.length > 0">
+      <div class="col-lg-4 col-md-6" *ngFor="let tier of tiers">
+        <button type="button" class="tier-card w-100 text-start" (click)="openEditModal(tier)">
+          <div class="tier-logo-wrap mb-3">
+            <img *ngIf="logoUrlOf(tier); else noLogo" [src]="logoUrlOf(tier)!" alt="membership logo" class="tier-logo" />
+            <ng-template #noLogo>
+              <div class="tier-logo-placeholder">
+                <i class="bi bi-image"></i>
+              </div>
+            </ng-template>
+          </div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="fw-semibold mb-0">{{ tier.name }}</h6>
+            <span class="badge text-bg-light">{{ tier.level }}</span>
+          </div>
+          <p class="text-muted small mb-3">{{ tier.description || 'No description' }}</p>
+          <div class="small text-muted d-flex justify-content-between">
+            <span>Min price</span>
+            <span class="fw-semibold text-dark">{{ tier.minPrice | number }} VND</span>
+          </div>
+          <div class="small text-muted d-flex justify-content-between">
+            <span>Purchase price</span>
+            <span class="fw-semibold text-dark">{{ tier.purchasePrice | number }} VND</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="showCreateModal"
+  class="membership-modal-overlay"
+  (click)="onBackdropClick($event, 'create')"
+>
+  <div class="membership-modal-card">
+    <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Create Membership Tier</h5>
+      <button class="btn btn-sm btn-outline-secondary" type="button" (click)="closeCreateModal()">Close</button>
+    </div> -->
+
+    <form [formGroup]="createForm" (ngSubmit)="createTier()">
+      <div class="mb-3">
+        <label class="form-label">Name *</label>
+        <input class="form-control" formControlName="name" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description *</label>
+        <textarea class="form-control" rows="3" formControlName="description"></textarea>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Min Price *</label>
+          <input class="form-control" type="number" min="0" formControlName="minPrice" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Purchase Price *</label>
+          <input class="form-control" type="number" min="0" formControlName="purchasePrice" />
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Level *</label>
+        <select class="form-select" formControlName="level">
+          <option value="BASIC">BASIC</option>
+          <option value="PREMIUM">PREMIUM</option>
+          <option value="VIP">VIP</option>
+        </select>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeCreateModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="creating">
+          {{ creating ? 'Creating...' : 'Create New Tier' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div
+  *ngIf="showEditModal"
+  class="membership-modal-overlay"
+  (click)="onBackdropClick($event, 'edit')"
+>
+  <div class="membership-modal-card">
+    <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Update or Delete Membership Tier</h5>
+      <button class="btn btn-sm btn-outline-secondary" type="button" (click)="closeEditModal()">Close</button>
+    </div> -->
+
+    <form [formGroup]="editForm" (ngSubmit)="updateTier()">
+      <div class="mb-3">
+        <label class="form-label">Name *</label>
+        <input class="form-control" formControlName="name" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description *</label>
+        <textarea class="form-control" rows="3" formControlName="description"></textarea>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Min Price *</label>
+          <input class="form-control" type="number" min="0" formControlName="minPrice" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Purchase Price *</label>
+          <input class="form-control" type="number" min="0" formControlName="purchasePrice" />
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Level *</label>
+        <select class="form-select" formControlName="level">
+          <option value="BASIC">BASIC</option>
+          <option value="PREMIUM">PREMIUM</option>
+          <option value="VIP">VIP</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Membership Logo</label>
+        <div class="d-flex gap-2 align-items-center">
+          <input class="form-control" type="file" accept="image/*" (change)="onLogoFileSelected($event)" />
+          <button type="button" class="btn btn-outline-primary" [disabled]="!selectedLogoFile || uploadingLogo" (click)="uploadLogo()">
+            {{ uploadingLogo ? 'Uploading...' : 'Upload Logo' }}
+          </button>
+        </div>
+        <div class="mt-2" *ngIf="logoUrlOf(selectedTier)">
+          <img [src]="logoUrlOf(selectedTier)!" alt="current logo" class="tier-logo-preview" />
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between gap-2 flex-wrap">
+        <button
+          type="button"
+          class="btn btn-outline-danger"
+          [disabled]="deletingId === selectedTier?.id"
+          (click)="deleteTier(selectedTier?.id)"
+        >
+          {{ deletingId === selectedTier?.id ? 'Deleting...' : 'Delete Tier' }}
+        </button>
+
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeEditModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="updating">
+            {{ updating ? 'Updating...' : 'Update Tier' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

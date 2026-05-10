@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { TrainerSidebarComponent } from '../trainer-sidebar/trainer-sidebar.component';
 
 @Component({
   selector: 'app-trainer-dashboard',
   standalone: true,
-  imports: [],
+  imports: [RouterModule, TrainerSidebarComponent],
   templateUrl: './trainer-dashboard.component.html',
   styleUrl: './trainer-dashboard.component.css'
 })

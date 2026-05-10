@@ -1,0 +1,23 @@
+.chatbot-page {
+  min-height: 72vh;
+}
+
+.chat-thread {
+  max-height: 58vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.chat-bubble {
+  max-width: 75%;
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.chat-bubble.assistant {
+  background: #f1f5f9;
+}
+
+.chat-bubble.member {
+  background: #dbeafe;
+}

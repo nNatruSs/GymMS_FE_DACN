@@ -1,0 +1,95 @@
+.schedule-page {
+  max-width: 100%;
+}
+
+.hero-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(120deg, #ecfdf5 0%, #eef2ff 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.control-card,
+.list-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.schedule-table th {
+  white-space: nowrap;
+  color: #4b5563;
+}
+
+.row-clickable {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.row-clickable:hover {
+  background-color: #f8fafc;
+}
+
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.day-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: #fff;
+}
+
+.trainer-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.exception-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 14px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.55);
+  z-index: 1060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 860px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.modal-xl-card {
+  max-width: 1100px;
+}
+
+.schedule-page .btn:disabled,
+.schedule-page .btn.disabled {
+  background: #d1d5db !important;
+  border-color: #d1d5db !important;
+  color: #6b7280 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
