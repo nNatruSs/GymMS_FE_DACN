@@ -5,6 +5,7 @@ import { StorageService } from '../../auth/services/storage/storage.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { AppNotification, NotificationService } from '../../services/notification.service';
+import { TrainerService } from '../../modules/trainer/services/trainer.service';
 
 
 @Component({
@@ -24,13 +25,23 @@ export class NavComponent {
   notifications: AppNotification[] = [];
   unreadCount = 0;
   loadingNotifications = false;
+  showBookingRequestModal = false;
+  selectedBookingNotification: AppNotification | null = null;
+  selectedBookingDetail: any | null = null;
+  bookingActionLoading = false;
+  bookingActionError: string | null = null;
+  showBookingPaymentModal = false;
+  selectedPaymentNotification: AppNotification | null = null;
+  paymentCheckoutLoading = false;
+  paymentCheckoutError: string | null = null;
   
  private loginStatusSubscription!: Subscription;
  
   constructor(
     private router: Router,
     private storage: StorageService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private trainerService: TrainerService
   ) {}
 
   ngOnInit(): void {
@@ -120,6 +131,194 @@ export class NavComponent {
         this.loadNotifications();
       },
     });
+  }
+
+  onNotificationClick(notification: AppNotification): void {
+    this.markNotificationRead(notification);
+    const bookingId = notification?.['metadata']?.bookingId || notification?.['referenceId'];
+    const isBookingNotice = String(notification?.['type'] ?? '').toUpperCase() === 'BOOKING';
+    if (!bookingId || !isBookingNotice) return;
+
+    const eventKey = String(notification?.['metadata']?.eventKey ?? '').toLowerCase();
+    const bookingStatus = String(notification?.['metadata']?.bookingStatus ?? '').toUpperCase();
+
+    if (
+      this.isUserLoggedIn &&
+      (eventKey === 'notification.trainer-booking.accepted' ||
+        bookingStatus === 'ACCEPTED_PENDING_PAYMENT')
+    ) {
+      this.selectedPaymentNotification = notification;
+      this.paymentCheckoutError = null;
+      this.showBookingPaymentModal = true;
+      return;
+    }
+
+    if (!this.isTrainerLoggedIn) return;
+
+    this.selectedBookingNotification = notification;
+    this.selectedBookingDetail = null;
+    this.bookingActionError = null;
+    this.showBookingRequestModal = true;
+
+    this.trainerService.getTrainerMyBookings().subscribe({
+      next: (bookings) => {
+        this.selectedBookingDetail = (bookings ?? []).find((b) => b?.id === bookingId) ?? null;
+      },
+      error: () => {
+        this.selectedBookingDetail = null;
+      },
+    });
+  }
+
+  closeBookingRequestModal(): void {
+    if (this.bookingActionLoading) return;
+    this.showBookingRequestModal = false;
+    this.selectedBookingNotification = null;
+    this.selectedBookingDetail = null;
+    this.bookingActionError = null;
+  }
+
+  closeBookingPaymentModal(): void {
+    if (this.paymentCheckoutLoading) return;
+    this.showBookingPaymentModal = false;
+    this.selectedPaymentNotification = null;
+    this.paymentCheckoutError = null;
+  }
+
+  private currentBookingId(): string {
+    return (
+      this.selectedBookingNotification?.['metadata']?.bookingId ||
+      this.selectedBookingNotification?.['referenceId'] ||
+      ''
+    );
+  }
+
+  private currentTrainerId(): string {
+    return this.selectedBookingDetail?.trainerId || this.storage.getUserId() || '';
+  }
+
+  private currentMemberId(): string {
+    return this.selectedBookingDetail?.memberId || this.selectedBookingDetail?.member?.id || '';
+  }
+
+  acceptBookingFromNotification(): void {
+    const bookingId = this.currentBookingId();
+    if (!bookingId || this.bookingActionLoading) return;
+
+    this.bookingActionLoading = true;
+    this.bookingActionError = null;
+    this.trainerService.acceptTrainerBooking(bookingId).subscribe({
+      next: () => {
+        const trainerId = this.currentTrainerId();
+        const memberId = this.currentMemberId();
+        if (trainerId && memberId) {
+          this.trainerService.createTrainerClientLink(trainerId, memberId).subscribe({
+            next: () => {
+              this.bookingActionLoading = false;
+              this.closeBookingRequestModal();
+              this.loadNotifications();
+            },
+            error: () => {
+              this.bookingActionLoading = false;
+              this.bookingActionError =
+                'Booking accepted, but linking this member to trainer clients failed.';
+            },
+          });
+          return;
+        }
+
+        this.bookingActionLoading = false;
+        this.bookingActionError =
+          'Booking accepted, but member/trainer id was missing so client link was not created.';
+      },
+      error: () => {
+        this.bookingActionLoading = false;
+        this.bookingActionError = 'Could not accept this booking request.';
+      },
+    });
+  }
+
+  rejectBookingFromNotification(): void {
+    const bookingId = this.currentBookingId();
+    if (!bookingId || this.bookingActionLoading) return;
+
+    this.bookingActionLoading = true;
+    this.bookingActionError = null;
+    this.trainerService.rejectTrainerBooking(bookingId).subscribe({
+      next: () => {
+        this.bookingActionLoading = false;
+        this.closeBookingRequestModal();
+        this.loadNotifications();
+      },
+      error: () => {
+        this.bookingActionLoading = false;
+        this.bookingActionError = 'Could not reject this booking request.';
+      },
+    });
+  }
+
+  bookingStartAt(): string {
+    return (
+      this.selectedBookingNotification?.['metadata']?.startAt ||
+      this.selectedBookingDetail?.startAt ||
+      ''
+    );
+  }
+
+  bookingEndAt(): string {
+    return (
+      this.selectedBookingNotification?.['metadata']?.endAt ||
+      this.selectedBookingDetail?.endAt ||
+      ''
+    );
+  }
+
+  paymentBookingStartAt(): string {
+    return this.selectedPaymentNotification?.['metadata']?.startAt || '';
+  }
+
+  paymentBookingEndAt(): string {
+    return this.selectedPaymentNotification?.['metadata']?.endAt || '';
+  }
+
+  paymentTargetBookingId(): string {
+    return (
+      this.selectedPaymentNotification?.['metadata']?.bookingId ||
+      this.selectedPaymentNotification?.['referenceId'] ||
+      this.selectedPaymentNotification?.id ||
+      ''
+    );
+  }
+
+  startTrainerBookingCheckout(): void {
+    const targetId = this.paymentTargetBookingId();
+    if (!targetId || this.paymentCheckoutLoading) return;
+
+    this.paymentCheckoutLoading = true;
+    this.paymentCheckoutError = null;
+    this.notificationService
+      .checkoutPayment({
+        targetType: 'TRAINER_BOOKING',
+        targetId,
+        amount: 50000,
+        currency: 'VND',
+      })
+      .subscribe({
+        next: (res) => {
+          this.paymentCheckoutLoading = false;
+          const checkoutUrl = res?.checkoutUrl ?? res?.data?.checkoutUrl;
+          if (checkoutUrl) {
+            window.open(checkoutUrl, '_blank');
+            this.closeBookingPaymentModal();
+            return;
+          }
+          this.paymentCheckoutError = 'Checkout URL not returned from payment API.';
+        },
+        error: () => {
+          this.paymentCheckoutLoading = false;
+          this.paymentCheckoutError = 'Could not start checkout for this trainer booking.';
+        },
+      });
   }
 
   notificationText(notification: AppNotification): string {

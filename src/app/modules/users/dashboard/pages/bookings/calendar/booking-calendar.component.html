@@ -110,7 +110,7 @@
         *ngFor="let d of weekDates"
         class="calendar-cell"
         [class.class-booking]="isClass(d,time)"
-        [class.trainer-booking]="isTrainer(d,time)"
+        [class.past-day]="isPast(d)"
         (click)="getBooking(d,time) && openBooking(getBooking(d,time))"
       >
         {{ getBooking(d,time)?.title }}
@@ -120,8 +120,7 @@
 
   <!-- LEGEND -->
   <div class="calendar-legend">
-    <div><span class="dot class"></span> Class</div>
-    <div><span class="dot trainer"></span> Trainer</div>
+    <div><span class="dot class"></span> Class booking</div>
   </div>
 
 </div>

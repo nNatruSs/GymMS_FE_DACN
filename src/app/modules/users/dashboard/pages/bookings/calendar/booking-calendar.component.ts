@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { OnInit } from '@angular/core';
 import { BookingService } from '../../../../services/booking.service';
 import { StorageService } from '../../../../../../auth/services/storage/storage.service';
-import { switchMap } from 'rxjs';
 import { BookingCalendarModalComponent } from './booking-calendar-modal/booking-calendar-modal.component';
 
 @Component({
@@ -15,7 +14,7 @@ import { BookingCalendarModalComponent } from './booking-calendar-modal/booking-
   styleUrl: './booking-calendar.component.css'
 })
 export class BookingCalendarComponent implements OnInit {
-  bookings: any[] = [];
+  classBookings: any[] = [];
   loading = true;
 
   weekDates: string[] = [];
@@ -35,19 +34,14 @@ export class BookingCalendarComponent implements OnInit {
   constructor(private bookingService: BookingService, private storage: StorageService) {}
 
   ngOnInit() {
-    // this.bookingService
-    //   .getHistory()
-    //   .subscribe((data) => (this.bookings = data));
     this.buildWeek(this.currentWeek);
 
-    const userId = this.storage.getUserId();
     this.bookingService
-      .getUserBookings(userId)
-      .pipe(switchMap(b => this.bookingService.resolveBookings(b)))
-      .subscribe(resolved => {
-        this.bookings = resolved.filter(b => b.status !== 'cancelled');
+      .getMyClassBookings()
+      .subscribe(res => {
+        this.classBookings = (res?.data ?? []).filter((b: any) => b.status !== 'cancelled');
         this.loading = false;
-    });
+      });
   }
 
   prevWeek() {
@@ -78,17 +72,33 @@ export class BookingCalendarComponent implements OnInit {
   }
 
   getBooking(date: string, time: string) {
-    return this.bookings.find(
-      b => b.date === date && b.time.startsWith(time)
-    );
+    const match = this.classBookings.find((b: any) => this.isBookingOnCell(b, date, time));
+    if (!match) return null;
+    return {
+      ...match,
+      type: 'class',
+      title: match.classSchedule?.className || 'Class Session',
+      date,
+      time,
+      status: match.status || 'pending',
+      branchName: match.classSchedule?.location || '',
+      specialties: [],
+    };
   }
 
   isClass(date: string, time: string) {
-    return this.getBooking(date, time)?.type === 'class';
+    return !!this.getBooking(date, time);
   }
 
   isTrainer(date: string, time: string) {
-    return this.getBooking(date, time)?.type === 'trainer';
+    return false;
+  }
+
+  isPast(date: string): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const d = new Date(`${date}T00:00:00`);
+    return d.getTime() < today.getTime();
   }
 
   openBooking(booking: any) {
@@ -101,10 +111,62 @@ export class BookingCalendarComponent implements OnInit {
 
   cancelBooking(id: string) {
     this.bookingService.updateBooking(id, { status: 'cancelled' }).subscribe(() => {
-      this.bookings = this.bookings.filter(b => b.id !== id);
+      this.classBookings = this.classBookings.filter((b: any) => b.id !== id);
       this.closeModal();
 
       this.selectedBooking = null;
     });
+  }
+
+  private isBookingOnCell(booking: any, cellDate: string, cellTime: string): boolean {
+    const schedule = booking?.classSchedule;
+    if (!schedule) return false;
+
+    const startDate = this.toDateOnly(booking.bookingStartDate);
+    const endDate = this.toDateOnly(booking.bookingEndDate);
+    if (!startDate || !endDate) return false;
+    if (cellDate < startDate || cellDate > endDate) return false;
+
+    const dayCode = this.dayCodeFromDate(cellDate);
+    const scheduleDays: string[] = Array.isArray(schedule.daysOfWeek)
+      ? schedule.daysOfWeek
+      : [schedule.dayOfWeek].filter(Boolean);
+    if (scheduleDays.length && !scheduleDays.includes(dayCode)) return false;
+
+    const start = this.toHHmm(schedule.startTime);
+    const end = this.toHHmm(schedule.endTime);
+    if (!start || !end) return false;
+
+    const cellStart = this.toMinutes(cellTime);
+    const cellEnd = cellStart + 60;
+    const bookingStart = this.toMinutes(start);
+    const bookingEnd = this.toMinutes(end);
+    return bookingStart < cellEnd && bookingEnd > cellStart;
+  }
+
+  private toDateOnly(value: string): string {
+    if (!value) return '';
+    const d = new Date(value);
+    if (!Number.isNaN(d.getTime())) return d.toISOString().slice(0, 10);
+    return value.slice(0, 10);
+  }
+
+  private toHHmm(value: string): string {
+    if (!value) return '';
+    if (/^\d{2}:\d{2}/.test(value)) return value.slice(0, 5);
+    const d = new Date(value);
+    if (!Number.isNaN(d.getTime())) return d.toISOString().slice(11, 16);
+    return value.slice(0, 5);
+  }
+
+  private dayCodeFromDate(dateStr: string): string {
+    const dayEnum = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const d = new Date(`${dateStr}T12:00:00`);
+    return dayEnum[d.getDay()];
+  }
+
+  private toMinutes(hhmm: string): number {
+    const [h, m] = hhmm.split(':').map(Number);
+    return h * 60 + m;
   }
 }

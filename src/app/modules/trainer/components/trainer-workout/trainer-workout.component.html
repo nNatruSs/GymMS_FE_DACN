@@ -1,0 +1,264 @@
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <h4 class="fw-semibold mb-0">Workout</h4>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert alert-success py-2">{{ successMessage }}</div>
+    <div *ngIf="loading" class="text-muted">Loading workout resources...</div>
+
+    <div *ngIf="!loading" class="row g-4">
+      <!-- Exercises -->
+      <div class="col-lg-5">
+        <div class="section-card p-3 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">Exercises</h6>
+            <button class="btn btn-sm btn-primary" (click)="openCreateExerciseModal()">Add Exercise</button>
+          </div>
+
+          <div *ngIf="exercises.length === 0" class="text-muted small">No exercises yet.</div>
+          <div class="exercise-list" *ngIf="exercises.length > 0">
+            <button type="button" class="exercise-item" *ngFor="let ex of exercises" (click)="openExerciseDetail(ex)">
+              <div class="fw-semibold">{{ ex.name }}</div>
+              <small class="text-muted">{{ ex.category }} • {{ ex.equipmentRequired || 'No equipment info' }}</small>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workout plans -->
+      <div class="col-lg-7">
+        <div class="section-card p-3 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">Workout Plans</h6>
+            <button class="btn btn-sm btn-primary" (click)="openCreatePlanModal()">Create Plan</button>
+          </div>
+
+          <div *ngIf="bookedMembers.length === 0" class="alert alert-warning py-2 mb-2">
+            No booked members found from trainer bookings. You can create plans after members book sessions.
+          </div>
+
+          <div *ngIf="workoutPlans.length === 0" class="text-muted small">No workout plans yet.</div>
+          <div class="plan-list" *ngIf="workoutPlans.length > 0">
+            <button type="button" class="plan-item" *ngFor="let plan of workoutPlans" (click)="openPlanDetail(plan)">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">{{ plan.title || 'Workout Plan' }}</span>
+                <span class="badge bg-light text-dark">{{ plan.status || 'DRAFT' }}</span>
+              </div>
+              <small class="text-muted">Duration: {{ plan.duration || '-' }} min</small>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Exercise Modal -->
+<div *ngIf="showCreateExerciseModal" class="modal-overlay" (click)="closeExerciseModals()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <h5 class="mb-3">Create Exercise</h5>
+    <div class="mb-2">
+      <label class="form-label">Name *</label>
+      <input class="form-control" [(ngModel)]="exerciseForm.name" />
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" rows="3" [(ngModel)]="exerciseForm.description"></textarea>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Category</label>
+        <input class="form-control" [(ngModel)]="exerciseForm.category" />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Equipment</label>
+        <input class="form-control" [(ngModel)]="exerciseForm.equipmentRequired" />
+      </div>
+    </div>
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-outline-secondary" (click)="closeExerciseModals()">Cancel</button>
+      <button class="btn btn-primary" [disabled]="creatingExercise" (click)="createExercise()">
+        {{ creatingExercise ? 'Creating...' : 'Create' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise Detail Modal -->
+<div *ngIf="showExerciseDetailModal" class="modal-overlay" (click)="closeExerciseModals()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <h5 class="mb-3">Exercise Detail</h5>
+    <div class="mb-2">
+      <label class="form-label">Name *</label>
+      <input class="form-control" [(ngModel)]="exerciseForm.name" />
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" rows="3" [(ngModel)]="exerciseForm.description"></textarea>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Category</label>
+        <input class="form-control" [(ngModel)]="exerciseForm.category" />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Equipment</label>
+        <input class="form-control" [(ngModel)]="exerciseForm.equipmentRequired" />
+      </div>
+    </div>
+    <div class="d-flex justify-content-between gap-2">
+      <button class="btn btn-outline-danger" [disabled]="deletingExercise" (click)="deleteExercise()">
+        {{ deletingExercise ? 'Deleting...' : 'Delete' }}
+      </button>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary" (click)="closeExerciseModals()">Cancel</button>
+        <button class="btn btn-primary" [disabled]="updatingExercise" (click)="updateExercise()">
+          {{ updatingExercise ? 'Updating...' : 'Update' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Plan Modal -->
+<div *ngIf="showCreatePlanModal" class="modal-overlay" (click)="closePlanModals()">
+  <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
+    <h5 class="mb-3">Create Workout Plan</h5>
+
+    <div class="row g-2 mb-2">
+      <div class="col-md-6">
+        <label class="form-label">Title *</label>
+        <input class="form-control" [(ngModel)]="planForm.title" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Duration (min)</label>
+        <input class="form-control" type="number" min="1" [(ngModel)]="planForm.duration" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Status</label>
+        <select class="form-select" [(ngModel)]="planForm.status">
+          <option value="DRAFT">DRAFT</option>
+          <option value="ACTIVE">ACTIVE</option>
+          <option value="ARCHIVED">ARCHIVED</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Visibility</label>
+      <select class="form-select" [(ngModel)]="planForm.visibility">
+        <option value="PRIVATE">PRIVATE</option>
+        <option value="PUBLIC">PUBLIC</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Assign Booked Members *</label>
+      <div *ngIf="bookedMembers.length === 0" class="text-muted small">No booked members available.</div>
+      <div class="member-grid" *ngIf="bookedMembers.length > 0">
+        <label class="member-item" *ngFor="let member of bookedMembers">
+          <input
+            type="checkbox"
+            class="form-check-input me-2"
+            [checked]="planForm.assignedMemberIds.includes(member.id)"
+            (change)="toggleAssignedMember(member.id, $any($event.target).checked)"
+          />
+          <span>{{ member.name }}</span>
+          <small class="text-muted d-block">{{ member.email }}</small>
+        </label>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <label class="form-label mb-0">Plan Items</label>
+        <button class="btn btn-sm btn-outline-primary" type="button" (click)="addPlanItem()">Add Item</button>
+      </div>
+      <div class="plan-item-card mb-2" *ngFor="let item of planForm.planItems; index as i">
+        <div class="row g-2">
+          <div class="col-md-4">
+            <label class="form-label small">Exercise *</label>
+            <select class="form-select form-select-sm" [(ngModel)]="item.exerciseId" [ngModelOptions]="{standalone:true}">
+              <option value="">Select exercise</option>
+              <option *ngFor="let ex of exercises" [value]="ex.id">{{ ex.name }}</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small">Set</label>
+            <input class="form-control form-control-sm" type="number" min="1" [(ngModel)]="item.targetSet" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small">Rep</label>
+            <input class="form-control form-control-sm" type="number" min="1" [(ngModel)]="item.targetRep" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small">Weight</label>
+            <input class="form-control form-control-sm" type="number" min="0" [(ngModel)]="item.targetWeight" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small">Day</label>
+            <select class="form-select form-select-sm" [(ngModel)]="item.dayOfWeek" [ngModelOptions]="{standalone:true}">
+              <option value="MON">MON</option>
+              <option value="TUE">TUE</option>
+              <option value="WED">WED</option>
+              <option value="THU">THU</option>
+              <option value="FRI">FRI</option>
+              <option value="SAT">SAT</option>
+              <option value="SUN">SUN</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label small">Notes</label>
+            <input class="form-control form-control-sm" [(ngModel)]="item.notes" [ngModelOptions]="{standalone:true}" />
+          </div>
+        </div>
+        <div class="text-end mt-2">
+          <button class="btn btn-sm btn-outline-danger" type="button" (click)="removePlanItem(i)" [disabled]="planForm.planItems.length === 1">
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-outline-secondary" (click)="closePlanModals()">Cancel</button>
+      <button class="btn btn-primary" [disabled]="creatingPlan || bookedMembers.length===0" (click)="createWorkoutPlan()">
+        {{ creatingPlan ? 'Creating...' : 'Create Plan' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Plan Detail Modal -->
+<div *ngIf="showPlanDetailModal" class="modal-overlay" (click)="closePlanModals()">
+  <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
+    <h5 class="mb-3">Workout Plan Detail</h5>
+    <div *ngIf="loadingPlanDetail" class="text-muted">Loading plan details...</div>
+    <div *ngIf="!loadingPlanDetail && selectedPlanDetail">
+      <div class="mb-2"><strong>Title:</strong> {{ selectedPlanDetail.title }}</div>
+      <div class="mb-2"><strong>Status:</strong> {{ selectedPlanDetail.status }}</div>
+      <div class="mb-2"><strong>Visibility:</strong> {{ selectedPlanDetail.visibility }}</div>
+      <div class="mb-2"><strong>Duration:</strong> {{ selectedPlanDetail.duration }} min</div>
+
+      <h6 class="mt-3">Plan Items</h6>
+      <div *ngIf="!(selectedPlanDetail.planItems?.length)" class="text-muted small">No items.</div>
+      <div class="plan-item-card mb-2" *ngFor="let item of selectedPlanDetail.planItems">
+        <div class="small">
+          <strong>#{{ item.sequence }}</strong> • {{ item.exercise?.name || item.exerciseId }}
+          • Set {{ item.targetSet }} • Rep {{ item.targetRep }} • Weight {{ item.targetWeight }}
+          • {{ item.dayOfWeek }}
+          <span *ngIf="item.notes"> • {{ item.notes }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between gap-2 mt-3">
+      <button class="btn btn-outline-danger" [disabled]="deletingPlan || loadingPlanDetail" (click)="deleteWorkoutPlan()">
+        {{ deletingPlan ? 'Deleting...' : 'Delete Plan' }}
+      </button>
+      <button class="btn btn-outline-secondary" (click)="closePlanModals()">Close</button>
+    </div>
+  </div>
+</div>

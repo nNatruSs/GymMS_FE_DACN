@@ -1,0 +1,174 @@
+<div class="reporting-page">
+  <div class="hero-card shadow-sm">
+    <div>
+      <h4 class="mb-1">Reporting</h4>
+      <p class="text-muted mb-0">Summary KPIs, revenue analytics, and class performance.</p>
+    </div>
+    <button class="btn btn-sm btn-outline-primary" (click)="loadSummaryKpis(); loadRevenueAnalytics(); loadClassPerformance()">
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+
+  <div class="kpi-grid mt-3">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Revenue</div>
+      <div class="kpi-value" *ngIf="!loadingKpis; else kpiLoading">
+        {{ summaryKpis.totalRevenue | number }} VND
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Active Members</div>
+      <div class="kpi-value" *ngIf="!loadingKpis; else kpiLoading">
+        {{ summaryKpis.activeMembers | number }}
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Trainers</div>
+      <div class="kpi-value" *ngIf="!loadingKpis; else kpiLoading">
+        {{ summaryKpis.totalTrainers | number }}
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Today's Class Bookings</div>
+      <div class="kpi-value" *ngIf="!loadingKpis; else kpiLoading">
+        {{ summaryKpis.todaysClassBookings | number }}
+      </div>
+    </div>
+  </div>
+
+  <ng-template #kpiLoading>
+    <div class="text-muted">Loading...</div>
+  </ng-template>
+
+  <div class="section-card mt-4">
+    <div class="section-header">
+      <h5 class="mb-0">Revenue Analytics</h5>
+    </div>
+
+    <div class="filters-grid">
+      <div>
+        <label class="form-label small mb-1">Start Date</label>
+        <input class="form-control form-control-sm" type="date" [(ngModel)]="revenueFilters.startDate" />
+      </div>
+      <div>
+        <label class="form-label small mb-1">End Date</label>
+        <input class="form-control form-control-sm" type="date" [(ngModel)]="revenueFilters.endDate" />
+      </div>
+      <div>
+        <label class="form-label small mb-1">Interval</label>
+        <select class="form-select form-select-sm" [(ngModel)]="revenueFilters.interval">
+          <option value="day">Day</option>
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+        </select>
+      </div>
+      <div class="d-flex align-items-end">
+        <button class="btn btn-sm btn-primary w-100" (click)="loadRevenueAnalytics()">Apply</button>
+      </div>
+    </div>
+
+    <div *ngIf="loadingRevenue" class="text-muted mt-2">Loading revenue analytics...</div>
+    <div *ngIf="!loadingRevenue && revenueAnalytics.buckets.length === 0" class="text-muted mt-2">
+      No revenue analytics data in this date range.
+    </div>
+
+    <div class="table-responsive mt-3" *ngIf="!loadingRevenue && revenueAnalytics.buckets.length > 0">
+      <table class="table table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Bucket</th>
+            <th>Total Revenue</th>
+            <th>Membership Revenue</th>
+            <th>Class Booking Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let bucket of revenueAnalytics.buckets">
+            <td>{{ bucket.bucket | date:'yyyy-MM-dd' }}</td>
+            <td>{{ bucket.totalRevenue | number }} VND</td>
+            <td>{{ bucket.membershipRevenue | number }} VND</td>
+            <td>{{ bucket.classBookingRevenue | number }} VND</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-card mt-4">
+    <div class="section-header">
+      <h5 class="mb-0">Class Performance</h5>
+    </div>
+
+    <div class="filters-grid performance-filters">
+      <div>
+        <label class="form-label small mb-1">Start Date</label>
+        <input class="form-control form-control-sm" type="date" [(ngModel)]="performanceFilters.startDate" />
+      </div>
+      <div>
+        <label class="form-label small mb-1">End Date</label>
+        <input class="form-control form-control-sm" type="date" [(ngModel)]="performanceFilters.endDate" />
+      </div>
+      <div class="d-flex align-items-end">
+        <button class="btn btn-sm btn-primary w-100" (click)="loadClassPerformance()">Apply</button>
+      </div>
+    </div>
+
+    <div *ngIf="loadingClassPerformance" class="text-muted mt-2">Loading class performance...</div>
+
+    <div class="row g-3 mt-1" *ngIf="!loadingClassPerformance">
+      <div class="col-lg-6">
+        <div class="subsection-card">
+          <h6>Top Booked Classes</h6>
+          <div *ngIf="classPerformance.topBookedClasses.length === 0" class="text-muted small">
+            No class booking data.
+          </div>
+          <div class="table-responsive" *ngIf="classPerformance.topBookedClasses.length > 0">
+            <table class="table table-sm align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Class</th>
+                  <th>Category</th>
+                  <th>Bookings</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of classPerformance.topBookedClasses">
+                  <td>{{ item.className }}</td>
+                  <td>{{ item.category || '-' }}</td>
+                  <td>{{ item.bookingCount | number }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="subsection-card">
+          <h6>Revenue by Category</h6>
+          <div *ngIf="classPerformance.revenueByCategory.length === 0" class="text-muted small">
+            No category revenue data.
+          </div>
+          <div class="table-responsive" *ngIf="classPerformance.revenueByCategory.length > 0">
+            <table class="table table-sm align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Total Revenue</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of classPerformance.revenueByCategory">
+                  <td>{{ row.category }}</td>
+                  <td>{{ row.totalRevenue | number }} VND</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -285,6 +285,22 @@ export class BookingService {
     return new HttpHeaders({ Authorization: `Bearer ${this.storage.getToken()}` });
   }
 
+  private unwrapData<T>(response: any): T {
+    return (response?.data ?? response) as T;
+  }
+
+  private normalizeArrayResponse<T>(response: any): T[] {
+    const payload = this.unwrapData<any>(response);
+    if (Array.isArray(payload)) return payload as T[];
+    if (Array.isArray(payload?.docs)) return payload.docs as T[];
+    if (Array.isArray(payload?.items)) return payload.items as T[];
+    if (payload && typeof payload === 'object') {
+      const values = Object.values(payload).filter((v) => v && typeof v === 'object' && !Array.isArray(v));
+      if (values.length) return values as T[];
+    }
+    return [];
+  }
+
   // ─── CLASS BOOKINGS ───────────────────────────────────────────────────────
 
   /** GET /class-booking/my-bookings */
@@ -354,6 +370,23 @@ export class BookingService {
     return this.http.post<any>(`${BASE_URL}/class-booking/${id}/checkout`, {}, { headers: this.authHeaders() });
   }
 
+  /** GET /class-booking/list with pagination + filters */
+  getClassBookingsList(params: {
+    page?: number;
+    limit?: number;
+    sort?: 'asc' | 'desc';
+    q?: string;
+  }): Observable<any> {
+    const query = new URLSearchParams();
+    query.set('page', String(params.page ?? 1));
+    query.set('limit', String(params.limit ?? 10));
+    query.set('sort', params.sort ?? 'desc');
+    if (params.q) query.set('q', params.q);
+    return this.http.get<any>(`${BASE_URL}/class-booking/list?${query.toString()}`, {
+      headers: this.authHeaders(),
+    });
+  }
+
   // ─── CLASS SCHEDULES ──────────────────────────────────────────────────────
 
   getClassSchedules(params?: { page?: number; limit?: number; date?: string }): Observable<any> {
@@ -364,6 +397,47 @@ export class BookingService {
       `${BASE_URL}/class-schedule/list?page=${page}&limit=${limit}${dateParam}`,
       { headers: this.authHeaders() }
     );
+  }
+
+  listClassSchedules(params?: {
+    page?: number;
+    limit?: number;
+    sort?: 'asc' | 'desc' | '';
+    q?: string;
+    searchField?: string;
+    dayOfWeek?: string;
+    trainerId?: string;
+    classId?: string;
+  }): Observable<any> {
+    const query = new URLSearchParams();
+    query.set('page', String(params?.page ?? 1));
+    query.set('limit', String(params?.limit ?? 12));
+    if (params?.sort) query.set('sort', params.sort);
+    if (params?.q) query.set('q', params.q);
+    if (params?.searchField) query.set('searchField', params.searchField);
+    if (params?.dayOfWeek) query.set('dayOfWeek', params.dayOfWeek);
+    if (params?.trainerId) query.set('trainerId', params.trainerId);
+    if (params?.classId) query.set('classId', params.classId);
+
+    return this.http.get<any>(`${BASE_URL}/class-schedule/list?${query.toString()}`, {
+      headers: this.authHeaders(),
+    });
+  }
+
+  getClassTypes(): Observable<any[]> {
+    return this.http
+      .get<any>(`${BASE_URL}/class-schedule/classes`, { headers: this.authHeaders() })
+      .pipe(map((res) => res?.data ?? []));
+  }
+
+  createMyClassBookings(payload: {
+    bookingStartDate: string;
+    bookingEndDate: string;
+    classScheduleId: string[];
+  }): Observable<any> {
+    return this.http.post<any>(`${BASE_URL}/class-booking/my-bookings`, payload, {
+      headers: this.authHeaders(),
+    });
   }
 
   /** getClassesByBranch — legacy method, returns class schedules mapped to old shape */
@@ -398,24 +472,53 @@ export class BookingService {
   }
 
   /** GET /trainer-bookings/trainers */
-  getBookableTrainers(): Observable<any> {
-    return this.http.get<any>(`${BASE_URL}/trainer-bookings/trainers`, { headers: this.authHeaders() });
+  getBookableTrainers(params?: {
+    q?: string;
+    specialization?: string;
+    date?: string;
+    availableOnly?: boolean;
+    priceMin?: number | null;
+    priceMax?: number | null;
+  }): Observable<any> {
+    const query = new URLSearchParams();
+    const q = (params?.q ?? '').trim();
+    const specialization = (params?.specialization ?? '').trim();
+    const date = (params?.date ?? '').trim();
+
+    if (q) query.set('q', q);
+    if (specialization) query.set('specialization', specialization);
+    if (date) query.set('date', date);
+    query.set('availableOnly', String(params?.availableOnly ?? false));
+    if (params?.priceMin !== null && params?.priceMin !== undefined && !Number.isNaN(Number(params.priceMin))) {
+      query.set('priceMin', String(params.priceMin));
+    }
+    if (params?.priceMax !== null && params?.priceMax !== undefined && !Number.isNaN(Number(params.priceMax))) {
+      query.set('priceMax', String(params.priceMax));
+    }
+    return this.http.get<any>(`${BASE_URL}/trainer-bookings/trainers?${query.toString()}`, {
+      headers: this.authHeaders(),
+    });
   }
 
   /** getTrainersByBranch — legacy method, returns all bookable trainers */
   getTrainersByBranch(branchId: string): Observable<any[]> {
-    return this.getBookableTrainers().pipe(
+    return this.getBookableTrainers({
+      q: '',
+      specialization: '',
+      date: '',
+      availableOnly: false,
+    }).pipe(
       map(res => {
-        const trainers = res?.data ?? [];
+        const trainers = this.normalizeArrayResponse<any>(res);
         return trainers.map((t: any) => ({
           id: t.id,
           trainerUserId: t.userId ?? t.id,
-          name: `${t.firstName ?? ''} ${t.lastName ?? ''}`.trim(),
+          name: `${t.firstName ?? ''} ${t.lastName ?? ''}`.trim() || t.name || 'Trainer',
           specialization: t.specializations?.join(', ') ?? t.bio ?? '',
           bio: t.bio ?? '',
-          thumbnail: t.profileImage ?? null,
-          images: t.profileImage ? [t.profileImage] : [],
-          price: t.hourlyRate ?? 0,
+          thumbnail: t.profileImage ?? t.avatarUrl ?? null,
+          images: t.profileImage ? [t.profileImage] : (t.avatarUrl ? [t.avatarUrl] : []),
+          price: t.hourlyRate ?? t.ptSessionPrice60 ?? 0,
           rating: t.rating ?? null,
         }));
       })
@@ -423,14 +526,16 @@ export class BookingService {
   }
 
   getTrainerProfile(trainerId: string): Observable<any> {
-    return this.http.get<any>(`${BASE_URL}/trainer-bookings/trainers/${trainerId}`, { headers: this.authHeaders() });
+    return this.http
+      .get<any>(`${BASE_URL}/trainer-bookings/trainers/${trainerId}`, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
   }
 
-  getTrainerSlots(trainerId: string, date: string): Observable<any> {
-    return this.http.get<any>(
-      `${BASE_URL}/trainer-bookings/trainers/${trainerId}/slots?date=${date}`,
-      { headers: this.authHeaders() }
-    );
+  getTrainerSlots(trainerId: string, date?: string): Observable<any[]> {
+    const suffix = date ? `?date=${encodeURIComponent(date)}` : '';
+    return this.http
+      .get<any>(`${BASE_URL}/trainer-bookings/trainers/${trainerId}/slots${suffix}`, { headers: this.authHeaders() })
+      .pipe(map((res) => this.normalizeArrayResponse<any>(res)));
   }
 
   /**
@@ -484,7 +589,18 @@ export class BookingService {
     });
 
     const requests = dates.reduce((acc, date) => {
-      acc[date] = this.getTrainerSlots(trainerUserId, date).pipe(map(res => (res?.data ?? []) as string[]));
+      acc[date] = this.getTrainerSlots(trainerUserId, date).pipe(
+        map((rows: any[]) =>
+          (rows ?? []).map((slot: any) => {
+            if (typeof slot === 'string') return slot.slice(0, 5);
+            const start = slot?.startAt ?? slot?.startTime ?? slot?.time ?? '';
+            if (!start) return '';
+            if (/^\d{2}:\d{2}/.test(start)) return start.slice(0, 5);
+            const d = new Date(start);
+            return Number.isNaN(d.getTime()) ? String(start).slice(0, 5) : d.toISOString().slice(11, 16);
+          }).filter(Boolean) as string[]
+        )
+      );
       return acc;
     }, {} as Record<string, Observable<string[]>>);
 
@@ -513,9 +629,8 @@ export class BookingService {
   /** POST /trainer-bookings */
   createTrainerBooking(payload: {
     trainerId: string;
-    date: string;
-    startTime: string;
-    durationMinutes: number;
+    startAt: string;
+    endAt: string;
     notes?: string;
   }): Observable<any> {
     return this.http.post<any>(`${BASE_URL}/trainer-bookings`, payload, { headers: this.authHeaders() });
@@ -551,11 +666,13 @@ export class BookingService {
     notes?: string;
   }): Observable<any> {
     if (booking.type === 'trainer') {
+      const startAt = `${booking.date}T${booking.time}:00.000Z`;
+      const startDate = new Date(startAt);
+      const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
       return this.createTrainerBooking({
         trainerId: booking.ref_id,
-        date: booking.date,
-        startTime: booking.time,
-        durationMinutes: 60,
+        startAt,
+        endAt: endDate.toISOString(),
         notes: booking.notes,
       });
     }

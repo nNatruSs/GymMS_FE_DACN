@@ -1,0 +1,73 @@
+.section-card {
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.exercise-list,
+.plan-list {
+  display: grid;
+  gap: 0.5rem;
+  max-height: 420px;
+  overflow: auto;
+}
+
+.exercise-item,
+.plan-item {
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  background: #fff;
+  transition: all 0.15s ease;
+}
+
+.exercise-item:hover,
+.plan-item:hover {
+  border-color: #0d6efd;
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.12);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1080;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.modal-card {
+  width: min(760px, 96vw);
+  max-height: 92vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+}
+
+.modal-wide {
+  width: min(980px, 98vw);
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.5rem;
+}
+
+.member-item {
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 0.5rem 0.65rem;
+  background: #fafafa;
+}
+
+.plan-item-card {
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  padding: 0.6rem;
+  background: #fcfcfd;
+}

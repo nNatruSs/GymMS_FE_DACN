@@ -60,4 +60,22 @@ export class NotificationService {
         )
       );
   }
+
+  checkoutPayment(payload: {
+    targetType: 'TRAINER_BOOKING' | string;
+    targetId: string;
+    amount: number;
+    currency?: string;
+  }): Observable<any> {
+    return this.http.post<any>(
+      `${BASE_URL}/payments/checkout`,
+      {
+        targetType: payload.targetType,
+        targetId: payload.targetId,
+        amount: payload.amount,
+        currency: payload.currency ?? 'VND',
+      },
+      { headers: this.authHeaders() }
+    );
+  }
 }

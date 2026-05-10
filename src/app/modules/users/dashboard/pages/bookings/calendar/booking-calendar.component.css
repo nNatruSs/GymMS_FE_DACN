@@ -61,10 +61,16 @@
   border-left: 4px solid #dc3545;
 }
 
-.trainer-booking {
-  background: #e7f1ff;
-  border-left: 4px solid #0d6efd;
+.calendar-cell.past-day {
+  background: repeating-linear-gradient(
+    -45deg,
+    #f3f4f6,
+    #f3f4f6 8px,
+    #e5e7eb 8px,
+    #e5e7eb 16px
+  );
 }
+
 
 .calendar-cell span {
   font-weight: 600;
@@ -165,4 +171,3 @@
 }
 
 .dot.class { background: #dc3545; }
-.dot.trainer { background: #0d6efd; }

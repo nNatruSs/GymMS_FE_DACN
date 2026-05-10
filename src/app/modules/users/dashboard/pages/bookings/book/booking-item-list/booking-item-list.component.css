@@ -80,3 +80,49 @@
 .card:hover .thumb-wrapper img {
   transform: scale(1.06);
 }
+
+.class-modal {
+  width: min(860px, 92vw);
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.trainer-modal {
+  width: min(900px, 94vw);
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.class-logo {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.trainer-slot-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.trainer-slot-chip {
+  border: 1px solid #dbe2ea;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  transition: all .2s ease;
+}
+
+.trainer-slot-chip:hover {
+  border-color: #0d6efd;
+  color: #0d6efd;
+}
+
+.trainer-slot-chip.active {
+  border-color: #0d6efd;
+  background: #0d6efd;
+  color: #fff;
+}

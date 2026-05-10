@@ -9,6 +9,7 @@ import { UserBookingsComponent } from './pages/bookings/user-bookings.component'
 import { BookingHistoryComponent } from './pages/bookings/history/booking-history.component';
 import { BookingCalendarComponent } from './pages/bookings/calendar/booking-calendar.component';
 import { BookingBookComponent } from "./pages/bookings/book/booking-book.component";
+import { UserWorkoutSessionsComponent } from './pages/workout-sessions/user-workout-sessions.component';
 
 export const USER_DASHBOARD_ROUTES: Routes = [
   {
@@ -37,6 +38,10 @@ export const USER_DASHBOARD_ROUTES: Routes = [
       {
         path: 'feedback',
         component: UserFeedbackComponent,
+      },
+      {
+        path: 'workout-sessions',
+        component: UserWorkoutSessionsComponent,
       },
       {
         path: 'messages',

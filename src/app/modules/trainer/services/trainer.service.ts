@@ -77,6 +77,63 @@ export interface TrainerBookingSlot {
   } | null;
 }
 
+export interface ExercisePayload {
+  name: string;
+  description: string;
+  category: string;
+  equipmentRequired: string;
+}
+
+export interface WorkoutPlanPayload {
+  title: string;
+  duration: number;
+  status: string;
+  visibility: string;
+  assignedMemberIds: string[];
+  planItems: Array<{
+    exerciseId: string;
+    sequence: number;
+    targetSet: number;
+    targetRep: number;
+    targetWeight: number;
+    dayOfWeek: string;
+    notes?: string;
+  }>;
+}
+
+export interface DietPlanMealPayload {
+  sequence: number;
+  mealType: string;
+  mealTitle: string;
+  scheduledTime: string;
+  foodItemsText: string;
+  calories: number;
+  proteinGrams: number;
+  carbsGrams: number;
+  fatGrams: number;
+  notes?: string;
+}
+
+export interface DietPlanPayload {
+  title: string;
+  description: string;
+  durationDays: number;
+  calorieTarget: number;
+  meals: DietPlanMealPayload[];
+}
+
+export interface DietPlanUpdatePayload extends DietPlanPayload {
+  status: string;
+}
+
+export interface DietPlanAssignmentPayload {
+  assignments: Array<{
+    memberId: string;
+    effectiveFrom: string;
+    effectiveTo: string;
+  }>;
+}
+
 export interface TrainerClassScheduleBlock {
   scheduleId: string;
   className: string;
@@ -110,6 +167,21 @@ export class TrainerService {
 
   private unwrapData<T>(response: any): T {
     return (response?.data ?? response) as T;
+  }
+
+  private normalizeArrayResponse<T>(response: any): T[] {
+    const payload = this.unwrapData<any>(response);
+    if (Array.isArray(payload)) return payload as T[];
+    if (Array.isArray(payload?.docs)) return payload.docs as T[];
+    if (Array.isArray(payload?.items)) return payload.items as T[];
+
+    if (payload && typeof payload === 'object') {
+      const values = Object.values(payload).filter(
+        (value) => value && typeof value === 'object' && !Array.isArray(value)
+      );
+      if (values.length) return values as T[];
+    }
+    return [];
   }
 
   private formatTime(value: string): string {
@@ -174,6 +246,36 @@ export class TrainerService {
     return this.http
       .get<any>(`${BASE_URL}/trainer-bookings/trainer/me`, { headers: this.authHeaders() })
       .pipe(map((res) => this.unwrapData<TrainerBookingSlot[]>(res) ?? []));
+  }
+
+  acceptTrainerBooking(bookingId: string) {
+    return this.http
+      .post<any>(`${BASE_URL}/trainer-bookings/${bookingId}/accept`, {}, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  rejectTrainerBooking(bookingId: string) {
+    return this.http
+      .post<any>(`${BASE_URL}/trainer-bookings/${bookingId}/reject`, {}, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  completeTrainerBooking(bookingId: string) {
+    return this.http
+      .post<any>(`${BASE_URL}/trainer-bookings/${bookingId}/complete`, {}, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  createTrainerClientLink(trainerId: string, memberId: string) {
+    return this.http
+      .post<any>(`${BASE_URL}/trainer/${trainerId}/clients`, { memberId }, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  endTrainerClientLink(trainerId: string, linkId: string) {
+    return this.http
+      .patch<any>(`${BASE_URL}/trainer/${trainerId}/clients/${linkId}/end`, {}, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
   }
 
   getTrainerClassSchedules(trainerId: string) {
@@ -260,5 +362,129 @@ export class TrainerService {
       {},
       { headers: this.authHeaders() }
     );
+  }
+
+  // ─── Workout: Exercises ───────────────────────────────────────────────────
+  listExercises() {
+    return this.http
+      .get<any>(`${BASE_URL}/exercises`, { headers: this.authHeaders() })
+      .pipe(map((res) => this.normalizeArrayResponse<any>(res)));
+  }
+
+  createExercise(payload: ExercisePayload) {
+    return this.http
+      .post<any>(`${BASE_URL}/exercises`, payload, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  updateExercise(exerciseId: string, payload: ExercisePayload) {
+    return this.http
+      .patch<any>(`${BASE_URL}/exercises/${exerciseId}`, payload, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  deleteExercise(exerciseId: string) {
+    return this.http
+      .delete<any>(`${BASE_URL}/exercises/${exerciseId}`, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  // ─── Workout: Plans ───────────────────────────────────────────────────────
+  listWorkoutPlans() {
+    return this.http
+      .get<any>(`${BASE_URL}/workout-plans`, { headers: this.authHeaders() })
+      .pipe(map((res) => this.normalizeArrayResponse<any>(res)));
+  }
+
+  getWorkoutPlanById(planId: string) {
+    return this.http
+      .get<any>(`${BASE_URL}/workout-plans/${planId}`, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  createWorkoutPlan(payload: WorkoutPlanPayload) {
+    return this.http
+      .post<any>(`${BASE_URL}/workout-plans`, payload, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  deleteWorkoutPlan(planId: string) {
+    return this.http
+      .delete<any>(`${BASE_URL}/workout-plans/${planId}`, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  // ─── Diet Plans ────────────────────────────────────────────────────────────
+  listDietPlans(params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    includeArchived?: boolean;
+  }) {
+    const page = params?.page ?? 1;
+    const limit = params?.limit ?? 10;
+    const status = params?.status ?? 'ACTIVE';
+    const includeArchived = params?.includeArchived ?? false;
+
+    const query =
+      `page=${encodeURIComponent(String(page))}` +
+      `&limit=${encodeURIComponent(String(limit))}` +
+      `&status=${encodeURIComponent(status)}` +
+      `&includeArchived=${encodeURIComponent(String(includeArchived))}`;
+
+    return this.http
+      .get<any>(`${BASE_URL}/diet-plans?${query}`, { headers: this.authHeaders() })
+      .pipe(
+        map((res) => this.unwrapData<any>(res)),
+        map((payload) => ({
+          docs: payload?.docs ?? this.normalizeArrayResponse<any>({ data: payload }),
+          totalDocs: Number(payload?.totalDocs ?? payload?.docsCount ?? 0),
+          totalPages: Number(payload?.totalPages ?? 1),
+          currentPage: Number(payload?.currentPage ?? page),
+          limit: Number(payload?.limit ?? limit),
+          hasNext: Boolean(payload?.hasNext ?? false),
+          hasPrev: Boolean(payload?.hasPrev ?? false),
+          nextPage: payload?.nextPage ?? null,
+          previousPage: payload?.previousPage ?? null,
+        }))
+      );
+  }
+
+  getDietPlanById(planId: string) {
+    return this.http
+      .get<any>(`${BASE_URL}/diet-plans/${planId}`, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  createDietPlan(payload: DietPlanPayload) {
+    return this.http
+      .post<any>(`${BASE_URL}/diet-plans`, payload, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  updateDietPlan(planId: string, payload: DietPlanUpdatePayload) {
+    return this.http
+      .patch<any>(`${BASE_URL}/diet-plans/${planId}`, payload, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  deleteDietPlan(planId: string) {
+    return this.http
+      .delete<any>(`${BASE_URL}/diet-plans/${planId}`, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  assignDietPlan(planId: string, payload: DietPlanAssignmentPayload) {
+    return this.http
+      .post<any>(`${BASE_URL}/diet-plans/${planId}/assignments`, payload, {
+        headers: this.authHeaders(),
+      })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  archiveDietPlan(planId: string) {
+    return this.http
+      .post<any>(`${BASE_URL}/diet-plans/${planId}/archive`, {}, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
   }
 }

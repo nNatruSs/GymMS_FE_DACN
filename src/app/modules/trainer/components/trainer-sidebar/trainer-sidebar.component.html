@@ -21,6 +21,20 @@
       </a>
     </li>
 
+    <li class="nav-item">
+      <a routerLink="/trainer/dashboard/workout" routerLinkActive="active" class="nav-link text-white">
+        <i class="bi bi-activity me-2"></i>
+        <span *ngIf="!collapsed">Workout</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a routerLink="/trainer/dashboard/diet-plans" routerLinkActive="active" class="nav-link text-white">
+        <i class="bi bi-egg-fried me-2"></i>
+        <span *ngIf="!collapsed">Diet Plans</span>
+      </a>
+    </li>
+
     <li class="sidebar-divider my-3"></li>
 
     <li class="nav-item">

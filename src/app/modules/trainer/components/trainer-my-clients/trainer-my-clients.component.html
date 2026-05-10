@@ -4,6 +4,7 @@
 
     <div *ngIf="loading" class="text-muted">Loading clients...</div>
     <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div *ngIf="actionMessage" class="alert alert-success">{{ actionMessage }}</div>
 
     <div *ngIf="!loading && !errorMessage && clients.length === 0" class="text-muted">
       You have no active clients yet.
@@ -26,6 +27,45 @@
             <td>{{ client.linkedAt | date:'yyyy-MM-dd HH:mm' }}</td>
             <td>
               <span class="badge bg-success">{{ client.status }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="my-4" />
+
+    <h5 class="fw-semibold mb-2">Booked Sessions</h5>
+    <div *ngIf="loadingBookings" class="text-muted">Loading booked sessions...</div>
+    <div *ngIf="!loadingBookings && bookings.length === 0" class="text-muted">
+      No booked sessions found.
+    </div>
+
+    <div class="table-responsive" *ngIf="!loadingBookings && bookings.length > 0">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Status</th>
+            <th class="text-end">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of bookings">
+            <td>{{ booking.member?.firstName }} {{ booking.member?.lastName }}</td>
+            <td>{{ booking.startAt | date:'yyyy-MM-dd HH:mm' }}</td>
+            <td>{{ booking.endAt | date:'yyyy-MM-dd HH:mm' }}</td>
+            <td><span class="badge bg-secondary">{{ booking.status }}</span></td>
+            <td class="text-end">
+              <button
+                class="btn btn-sm btn-outline-primary"
+                [disabled]="!canCompleteBooking(booking) || completingBookingId === booking.id"
+                (click)="completeSession(booking)"
+              >
+                {{ completingBookingId === booking.id ? 'Completing...' : 'Complete Session' }}
+              </button>
             </td>
           </tr>
         </tbody>

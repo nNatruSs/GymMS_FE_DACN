@@ -82,6 +82,15 @@
       </a>
     </li>
 
+    <li class="nav-item">
+      <a routerLink="/user/dashboard/workout-sessions"
+         routerLinkActive="active"
+         class="nav-link text-white">
+        <i class="bi bi-heart-pulse me-2"></i>
+        <span *ngIf="!collapsed">Workout Sessions</span>
+      </a>
+    </li>
+
 
     <li class="nav-item">
       <a routerLink="/user/dashboard/feedback"

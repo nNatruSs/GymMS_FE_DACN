@@ -1,0 +1,311 @@
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <h4 class="fw-semibold mb-0">Diet Plans</h4>
+      <button class="btn btn-primary btn-sm" (click)="openCreateModal()">Create Diet Plan</button>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert alert-success py-2">{{ successMessage }}</div>
+
+    <div class="filter-row mb-3">
+      <div>
+        <label class="form-label mb-1">Status</label>
+        <select class="form-select form-select-sm" [(ngModel)]="filters.status" (change)="applyFilters()">
+          <option value="ACTIVE">ACTIVE</option>
+          <option value="DRAFT">DRAFT</option>
+          <option value="ARCHIVED">ARCHIVED</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label mb-1">Limit</label>
+        <select class="form-select form-select-sm" [(ngModel)]="filters.limit" (change)="applyFilters()">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="20">20</option>
+          <option [ngValue]="50">50</option>
+        </select>
+      </div>
+      <div class="include-archived">
+        <input
+          id="includeArchived"
+          type="checkbox"
+          class="form-check-input"
+          [(ngModel)]="filters.includeArchived"
+          (change)="applyFilters()"
+        />
+        <label for="includeArchived" class="form-check-label ms-2">Include Archived</label>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-muted">Loading diet plans...</div>
+    <div *ngIf="!loading && dietPlans.length === 0" class="text-muted">No diet plans found.</div>
+
+    <div class="diet-list" *ngIf="!loading && dietPlans.length > 0">
+      <button type="button" class="diet-item" *ngFor="let plan of dietPlans" (click)="openDetail(plan)">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="fw-semibold">{{ plan.title || 'Diet Plan' }}</div>
+          <span class="badge" [ngClass]="{
+            'bg-success-subtle text-success': (plan.status || '').toUpperCase() === 'ACTIVE',
+            'bg-warning-subtle text-warning-emphasis': (plan.status || '').toUpperCase() === 'DRAFT',
+            'bg-secondary-subtle text-secondary-emphasis': (plan.status || '').toUpperCase() === 'ARCHIVED'
+          }">{{ plan.status || 'ACTIVE' }}</span>
+        </div>
+        <small class="text-muted">
+          {{ plan.durationDays || '-' }} days • {{ plan.calorieTarget || '-' }} kcal
+        </small>
+      </button>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between mt-3 pt-2 border-top" *ngIf="!loading">
+      <small class="text-muted">
+        Page {{ pageInfo.currentPage }} / {{ pageInfo.totalPages }} • {{ pageInfo.totalDocs }} items
+      </small>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary btn-sm" [disabled]="!pageInfo.hasPrev" (click)="goToPrevious()">Previous</button>
+        <button class="btn btn-outline-secondary btn-sm" [disabled]="!pageInfo.hasNext" (click)="goToNext()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Modal -->
+<div *ngIf="showCreateModal" class="modal-overlay" (click)="closeCreateModal()">
+  <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
+    <h5 class="mb-3">Create Diet Plan</h5>
+
+    <div class="row g-2 mb-2">
+      <div class="col-md-6">
+        <label class="form-label">Title *</label>
+        <input class="form-control" [(ngModel)]="createForm.title" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Duration (days)</label>
+        <input class="form-control" type="number" min="1" [(ngModel)]="createForm.durationDays" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Calorie target</label>
+        <input class="form-control" type="number" min="0" [(ngModel)]="createForm.calorieTarget" />
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" rows="2" [(ngModel)]="createForm.description"></textarea>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <label class="form-label mb-0">Meals</label>
+      <button type="button" class="btn btn-sm btn-outline-primary" (click)="addCreateMeal()">Add meal</button>
+    </div>
+
+    <div class="meal-card mb-2" *ngFor="let meal of createForm.meals; index as i">
+      <div class="row g-2">
+        <div class="col-md-2">
+          <label class="form-label small">Type</label>
+          <select class="form-select form-select-sm" [(ngModel)]="meal.mealType" [ngModelOptions]="{standalone:true}">
+            <option value="BREAKFAST">BREAKFAST</option>
+            <option value="LUNCH">LUNCH</option>
+            <option value="DINNER">DINNER</option>
+            <option value="SNACK">SNACK</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">Meal title</label>
+          <input class="form-control form-control-sm" [(ngModel)]="meal.mealTitle" [ngModelOptions]="{standalone:true}" />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small">Time</label>
+          <input class="form-control form-control-sm" type="time" step="1" [(ngModel)]="meal.scheduledTime" [ngModelOptions]="{standalone:true}" />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small">Calories</label>
+          <input class="form-control form-control-sm" type="number" min="0" [(ngModel)]="meal.calories" [ngModelOptions]="{standalone:true}" />
+        </div>
+        <div class="col-md-1">
+          <label class="form-label small">P</label>
+          <input class="form-control form-control-sm" type="number" min="0" [(ngModel)]="meal.proteinGrams" [ngModelOptions]="{standalone:true}" />
+        </div>
+        <div class="col-md-1">
+          <label class="form-label small">C</label>
+          <input class="form-control form-control-sm" type="number" min="0" [(ngModel)]="meal.carbsGrams" [ngModelOptions]="{standalone:true}" />
+        </div>
+        <div class="col-md-1">
+          <label class="form-label small">F</label>
+          <input class="form-control form-control-sm" type="number" min="0" [(ngModel)]="meal.fatGrams" [ngModelOptions]="{standalone:true}" />
+        </div>
+        <div class="col-12">
+          <label class="form-label small">Food items</label>
+          <input class="form-control form-control-sm" [(ngModel)]="meal.foodItemsText" [ngModelOptions]="{standalone:true}" />
+        </div>
+        <div class="col-12">
+          <label class="form-label small">Notes</label>
+          <input class="form-control form-control-sm" [(ngModel)]="meal.notes" [ngModelOptions]="{standalone:true}" />
+        </div>
+      </div>
+      <div class="text-end mt-2">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          [disabled]="createForm.meals.length === 1"
+          (click)="removeCreateMeal(i)"
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button class="btn btn-outline-secondary" (click)="closeCreateModal()">Cancel</button>
+      <button class="btn btn-primary" [disabled]="submitting" (click)="createDietPlan()">
+        {{ submitting ? 'Creating...' : 'Create' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div *ngIf="showDetailModal" class="modal-overlay" (click)="closeDetailModal()">
+  <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
+    <h5 class="mb-3">Diet Plan Detail</h5>
+    <div *ngIf="loadingDetail" class="text-muted">Loading detail...</div>
+
+    <div *ngIf="!loadingDetail && selectedPlanDetail">
+      <div class="row g-2 mb-2">
+        <div class="col-md-5">
+          <label class="form-label">Title</label>
+          <input class="form-control" [(ngModel)]="editForm.title" />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Duration</label>
+          <input class="form-control" type="number" min="1" [(ngModel)]="editForm.durationDays" />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Calories</label>
+          <input class="form-control" type="number" min="0" [(ngModel)]="editForm.calorieTarget" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Status</label>
+          <select class="form-select" [(ngModel)]="editForm.status">
+            <option value="DRAFT">DRAFT</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="ARCHIVED">ARCHIVED</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" rows="2" [(ngModel)]="editForm.description"></textarea>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <label class="form-label mb-0">Meals</label>
+        <button type="button" class="btn btn-sm btn-outline-primary" (click)="addEditMeal()">Add meal</button>
+      </div>
+
+      <div class="meal-card mb-2" *ngFor="let meal of editForm.meals; index as i">
+        <div class="row g-2">
+          <div class="col-md-2">
+            <label class="form-label small">Type</label>
+            <select class="form-select form-select-sm" [(ngModel)]="meal.mealType" [ngModelOptions]="{standalone:true}">
+              <option value="BREAKFAST">BREAKFAST</option>
+              <option value="LUNCH">LUNCH</option>
+              <option value="DINNER">DINNER</option>
+              <option value="SNACK">SNACK</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small">Meal title</label>
+            <input class="form-control form-control-sm" [(ngModel)]="meal.mealTitle" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small">Time</label>
+            <input class="form-control form-control-sm" type="time" step="1" [(ngModel)]="meal.scheduledTime" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small">Calories</label>
+            <input class="form-control form-control-sm" type="number" min="0" [(ngModel)]="meal.calories" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="col-md-1">
+            <label class="form-label small">P</label>
+            <input class="form-control form-control-sm" type="number" min="0" [(ngModel)]="meal.proteinGrams" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="col-md-1">
+            <label class="form-label small">C</label>
+            <input class="form-control form-control-sm" type="number" min="0" [(ngModel)]="meal.carbsGrams" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="col-md-1">
+            <label class="form-label small">F</label>
+            <input class="form-control form-control-sm" type="number" min="0" [(ngModel)]="meal.fatGrams" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="col-12">
+            <label class="form-label small">Food items</label>
+            <input class="form-control form-control-sm" [(ngModel)]="meal.foodItemsText" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="col-12">
+            <label class="form-label small">Notes</label>
+            <input class="form-control form-control-sm" [(ngModel)]="meal.notes" [ngModelOptions]="{standalone:true}" />
+          </div>
+        </div>
+        <div class="text-end mt-2">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            [disabled]="editForm.meals.length === 1"
+            (click)="removeEditMeal(i)"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+
+      <div class="assign-card mt-3">
+        <h6 class="mb-2">Assign to booked members (ACTIVE only)</h6>
+        <div *ngIf="bookedMembers.length === 0" class="text-muted small">No booked members available.</div>
+        <div class="member-grid" *ngIf="bookedMembers.length > 0">
+          <label class="member-item" *ngFor="let member of bookedMembers">
+            <input
+              type="checkbox"
+              class="form-check-input me-2"
+              [checked]="assignment.memberIds.includes(member.id)"
+              (change)="toggleAssignmentMember(member.id, $any($event.target).checked)"
+            />
+            <span>{{ member.name }}</span>
+            <small class="text-muted d-block">{{ member.email }}</small>
+          </label>
+        </div>
+        <div class="row g-2 mt-2">
+          <div class="col-md-6">
+            <label class="form-label small">Effective from</label>
+            <input class="form-control form-control-sm" type="date" [(ngModel)]="assignment.effectiveFrom" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small">Effective to</label>
+            <input class="form-control form-control-sm" type="date" [(ngModel)]="assignment.effectiveTo" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-between gap-2 mt-3">
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-danger" [disabled]="!canDeleteSelected() || deleting" (click)="deleteDietPlan()">
+          {{ deleting ? 'Deleting...' : 'Delete DRAFT Private' }}
+        </button>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary" (click)="closeDetailModal()">Close</button>
+        <button class="btn btn-outline-primary" [disabled]="!canUpdateSelected() || submitting" (click)="updateDietPlan()">
+          {{ submitting ? 'Updating...' : 'Update (ACTIVE + Never Assigned)' }}
+        </button>
+        <button
+          class="btn btn-primary"
+          [disabled]="assigning || bookedMembers.length === 0"
+          (click)="assignAndArchive()"
+        >
+          {{ assigning ? 'Assigning...' : 'Assign + Archive' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

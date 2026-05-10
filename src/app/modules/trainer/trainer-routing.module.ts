@@ -4,6 +4,8 @@ import { TrainerDashboardComponent } from './components/trainer-dashboard/traine
 import { TrainerMyClientsComponent } from './components/trainer-my-clients/trainer-my-clients.component';
 import { TrainerMessagesComponent } from './components/trainer-messages/trainer-messages.component';
 import { TrainerScheduleComponent } from './components/trainer-schedule/trainer-schedule.component';
+import { TrainerDietPlansComponent } from './components/trainer-diet-plans/trainer-diet-plans.component';
+import { TrainerWorkoutComponent } from './components/trainer-workout/trainer-workout.component';
 
 const routes: Routes = [
   {
@@ -13,6 +15,8 @@ const routes: Routes = [
       { path: '', redirectTo: 'schedule', pathMatch: 'full' },
       { path: 'schedule', component: TrainerScheduleComponent },
       { path: 'my-clients', component: TrainerMyClientsComponent },
+      { path: 'workout', component: TrainerWorkoutComponent },
+      { path: 'diet-plans', component: TrainerDietPlansComponent },
       { path: 'messages', component: TrainerMessagesComponent },
     ],
   },

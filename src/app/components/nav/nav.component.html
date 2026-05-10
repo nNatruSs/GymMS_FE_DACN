@@ -62,7 +62,7 @@
               type="button"
               *ngFor="let n of notifications"
               class="notification-item py-2 border-bottom text-start w-100 btn btn-link text-decoration-none"
-              (click)="markNotificationRead(n)"
+              (click)="onNotificationClick(n)"
             >
               <div class="small">{{ notificationText(n) }}</div>
               <div class="text-muted tiny" *ngIf="n.createdAt">{{ n.createdAt | date:'short' }}</div>
@@ -92,3 +92,67 @@
     </div>
   </div>
 </nav>
+
+<div
+  *ngIf="showBookingRequestModal"
+  class="booking-request-modal-overlay"
+  (click)="closeBookingRequestModal()"
+>
+  <div class="booking-request-modal-card" (click)="$event.stopPropagation()">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5 class="mb-0">Trainer Booking Request</h5>
+      <button class="btn btn-sm btn-outline-secondary" (click)="closeBookingRequestModal()">Close</button>
+    </div>
+
+    <div class="small mb-3">
+      <div><strong>Title:</strong> {{ selectedBookingNotification?.title || 'New trainer booking request' }}</div>
+      <div><strong>Message:</strong> {{ selectedBookingNotification?.message || '-' }}</div>
+      <div><strong>Start:</strong> {{ bookingStartAt() | date:'yyyy-MM-dd HH:mm' }}</div>
+      <div><strong>End:</strong> {{ bookingEndAt() | date:'yyyy-MM-dd HH:mm' }}</div>
+      <div><strong>Booking ID:</strong> {{ selectedBookingNotification?.['metadata']?.bookingId || selectedBookingNotification?.['referenceId'] }}</div>
+      <div *ngIf="selectedBookingDetail?.member"><strong>Member:</strong> {{ selectedBookingDetail.member.firstName }} {{ selectedBookingDetail.member.lastName }} ({{ selectedBookingDetail.member.email }})</div>
+    </div>
+
+    <div *ngIf="bookingActionError" class="alert alert-warning py-2 mb-2">{{ bookingActionError }}</div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-outline-danger" [disabled]="bookingActionLoading" (click)="rejectBookingFromNotification()">
+        Reject
+      </button>
+      <button class="btn btn-primary" [disabled]="bookingActionLoading" (click)="acceptBookingFromNotification()">
+        {{ bookingActionLoading ? 'Processing...' : 'Accept' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="showBookingPaymentModal"
+  class="booking-request-modal-overlay"
+  (click)="closeBookingPaymentModal()"
+>
+  <div class="booking-request-modal-card" (click)="$event.stopPropagation()">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5 class="mb-0">Trainer Booking Accepted</h5>
+      <button class="btn btn-sm btn-outline-secondary" (click)="closeBookingPaymentModal()">Close</button>
+    </div>
+
+    <div class="small mb-3">
+      <div><strong>Title:</strong> {{ selectedPaymentNotification?.title || 'Trainer booking accepted' }}</div>
+      <div><strong>Message:</strong> {{ selectedPaymentNotification?.message || '-' }}</div>
+      <div><strong>Start:</strong> {{ paymentBookingStartAt() | date:'yyyy-MM-dd HH:mm' }}</div>
+      <div><strong>End:</strong> {{ paymentBookingEndAt() | date:'yyyy-MM-dd HH:mm' }}</div>
+      <div><strong>Booking ID:</strong> {{ paymentTargetBookingId() }}</div>
+      <div><strong>Amount:</strong> 50,000 VND</div>
+    </div>
+
+    <div *ngIf="paymentCheckoutError" class="alert alert-warning py-2 mb-2">{{ paymentCheckoutError }}</div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-outline-secondary" [disabled]="paymentCheckoutLoading" (click)="closeBookingPaymentModal()">Cancel</button>
+      <button class="btn btn-primary" [disabled]="paymentCheckoutLoading" (click)="startTrainerBookingCheckout()">
+        {{ paymentCheckoutLoading ? 'Redirecting...' : 'Checkout' }}
+      </button>
+    </div>
+  </div>
+</div>

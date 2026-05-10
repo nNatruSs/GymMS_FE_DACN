@@ -6,6 +6,7 @@ import { AdminMembershipManagementComponent } from './components/admin-membershi
 import { AdminUserManagementComponent } from './components/admin-user-management/admin-user-management.component';
 import { AdminRoleManagementComponent } from './components/admin-role-management/admin-role-management.component';
 import { AdminClassScheduleManagementComponent } from './components/admin-class-schedule-management/admin-class-schedule-management.component';
+import { AdminReportingComponent } from './components/admin-reporting/admin-reporting.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
       { path: 'roles', component: AdminRoleManagementComponent },
       { path: 'class-schedules', component: AdminClassScheduleManagementComponent },
       { path: 'memberships', component: AdminMembershipManagementComponent },
+      { path: 'reporting', component: AdminReportingComponent },
     ],
   }
 ];

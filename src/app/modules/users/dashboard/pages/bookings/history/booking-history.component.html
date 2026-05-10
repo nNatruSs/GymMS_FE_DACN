@@ -39,38 +39,157 @@
   <div class="spinner-border text-primary"></div>
 </div>
 
-<div *ngIf="!loading" class="card shadow-sm border-0">
+<div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
+
+<div class="card shadow-sm border-0 mb-3">
+  <div class="card-body d-flex flex-wrap gap-2 align-items-center">
+    <button class="btn btn-sm" [class.btn-primary]="mode==='class'" [class.btn-outline-primary]="mode!=='class'" (click)="setMode('class')">
+      Class Bookings
+    </button>
+    <button class="btn btn-sm" [class.btn-primary]="mode==='trainer'" [class.btn-outline-primary]="mode!=='trainer'" (click)="setMode('trainer')">
+      Personal Sessions
+    </button>
+
+    <ng-container *ngIf="mode==='class'">
+      <div class="ms-auto d-flex gap-2 flex-wrap">
+        <select class="form-select form-select-sm" style="width: 160px;" [(ngModel)]="sort">
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+        <input class="form-control form-control-sm" style="width: 180px;" placeholder="Category (q)" [(ngModel)]="q" />
+        <button class="btn btn-sm btn-outline-secondary" (click)="applyClassFilters()">Apply</button>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div *ngIf="!loading && mode==='class'" class="card shadow-sm border-0">
   <div class="card-body p-0">
     <table class="table table-hover align-middle mb-0">
       <thead class="table-light">
         <tr>
-          <th>Type</th>
-          <th>Title</th>
-          <th>Date</th>
-          <th>Time</th>
+          <th>Class</th>
+          <th>Category</th>
+          <th>Booking Range</th>
+          <th>Schedule Time</th>
           <th>Status</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let b of bookings">
-          <td class="text-capitalize">{{ b.type }}</td>
-          <td class="fw-semibold">{{ b.title }}</td>
-          <td>{{ b.date }}</td>
-          <td>{{ b.time }}</td>
-          <td>
-            <span
-              class="badge"
-              [ngClass]="{
-                'bg-success': b.status === 'completed',
-                'bg-warning text-dark': b.status === 'upcoming',
-                'bg-danger': b.status === 'cancelled'
-              }"
-            >
-              {{ b.status }}
-            </span>
-          </td>
+        <tr *ngFor="let b of classBookings" class="history-row-clickable" (click)="openClassBookingDetail(b)">
+          <td class="fw-semibold">{{ b.classSchedule?.className || 'Class' }}</td>
+          <td>{{ b.classSchedule?.category || '-' }}</td>
+          <td>{{ b.bookingStartDate | date:'yyyy-MM-dd' }} → {{ b.bookingEndDate | date:'yyyy-MM-dd' }}</td>
+          <td>{{ displayTime(b.classSchedule?.startTime) }} - {{ displayTime(b.classSchedule?.endTime) }}</td>
+          <td><span class="badge bg-secondary">{{ b.status }}</span></td>
         </tr>
       </tbody>
     </table>
+  </div>
+</div>
+
+<div *ngIf="!loading && mode==='class'" class="d-flex justify-content-between align-items-center mt-2">
+  <small class="text-muted">Total {{ totalDocs }} • Page {{ page }} / {{ totalPages }}</small>
+  <div class="d-flex gap-2">
+    <button class="btn btn-sm btn-outline-secondary" [disabled]="!hasPrev" (click)="prevPage()">Previous</button>
+    <button class="btn btn-sm btn-outline-secondary" [disabled]="!hasNext" (click)="nextPage()">Next</button>
+  </div>
+</div>
+
+<div *ngIf="!loading && mode==='trainer'" class="card shadow-sm border-0">
+  <div class="card-body p-0">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Trainer</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of trainerBookings" class="history-row-clickable" (click)="openTrainerBookingDetail(b)">
+          <td class="fw-semibold">{{ b.trainer?.firstName }} {{ b.trainer?.lastName }}</td>
+          <td>{{ b.startAt | date:'yyyy-MM-dd HH:mm' }}</td>
+          <td>{{ b.endAt | date:'yyyy-MM-dd HH:mm' }}</td>
+          <td><span class="badge bg-secondary">{{ b.status }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="selectedTrainerBooking" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center booking-history-modal-overlay" (click)="closeTrainerBookingDetail()">
+  <div class="bg-white rounded-4 shadow booking-history-modal" (click)="$event.stopPropagation()">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Trainer Booking</h5>
+      <button class="btn btn-sm btn-outline-secondary" (click)="closeTrainerBookingDetail()">Close</button>
+    </div>
+
+    <div class="small mb-3">
+      <div><strong>Trainer:</strong> {{ selectedTrainerBooking.trainer?.firstName }} {{ selectedTrainerBooking.trainer?.lastName }}</div>
+      <div><strong>Start:</strong> {{ selectedTrainerBooking.startAt | date:'yyyy-MM-dd HH:mm' }}</div>
+      <div><strong>End:</strong> {{ selectedTrainerBooking.endAt | date:'yyyy-MM-dd HH:mm' }}</div>
+      <div><strong>Status:</strong> {{ selectedTrainerBooking.status }}</div>
+      <div><strong>Notes:</strong> {{ selectedTrainerBooking.notes || '-' }}</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Cancel reason</label>
+      <textarea class="form-control" rows="2" [(ngModel)]="trainerCancelReason" placeholder="Trainer unavailable due to event"></textarea>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-outline-secondary" (click)="closeTrainerBookingDetail()">Close</button>
+      <button
+        class="btn btn-danger"
+        [disabled]="cancellingTrainerBooking || !canCancelTrainerBooking(selectedTrainerBooking)"
+        (click)="cancelSelectedTrainerBooking()"
+      >
+        {{ cancellingTrainerBooking ? 'Cancelling...' : 'Cancel Booking' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="selectedClassBooking" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center booking-history-modal-overlay" (click)="closeClassBookingDetail()">
+  <div class="bg-white rounded-4 shadow booking-history-modal" (click)="$event.stopPropagation()">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">{{ selectedClassBooking.classSchedule?.className || 'Class Booking' }}</h5>
+      <button class="btn btn-sm btn-outline-secondary" (click)="closeClassBookingDetail()">Close</button>
+    </div>
+
+    <div class="d-flex gap-3 align-items-start flex-wrap mb-3">
+      <img [src]="bookingImage(selectedClassBooking)" class="booking-history-modal-img" alt="class image" />
+      <div class="small">
+        <div><strong>Category:</strong> {{ selectedClassBooking.classSchedule?.category || '-' }}</div>
+        <div><strong>Difficulty:</strong> {{ selectedClassBooking.classSchedule?.difficultyLevel || '-' }}</div>
+        <div><strong>Description:</strong> {{ selectedClassBooking.classSchedule?.description || '-' }}</div>
+        <div><strong>Location:</strong> {{ selectedClassBooking.classSchedule?.location || '-' }}</div>
+        <div>
+          <strong>Schedule:</strong>
+          {{ selectedClassBooking.classSchedule?.dayOfWeek || '-' }}
+          • {{ displayTime(selectedClassBooking.classSchedule?.startTime) }} - {{ displayTime(selectedClassBooking.classSchedule?.endTime) }}
+        </div>
+        <div>
+          <strong>Booking range:</strong>
+          {{ selectedClassBooking.bookingStartDate | date:'yyyy-MM-dd' }}
+          →
+          {{ selectedClassBooking.bookingEndDate | date:'yyyy-MM-dd' }}
+        </div>
+        <div><strong>Status:</strong> {{ selectedClassBooking.status }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-outline-secondary" (click)="closeClassBookingDetail()">Close</button>
+      <button
+        class="btn btn-danger"
+        [disabled]="cancellingClassBooking || selectedClassBooking.status === 'cancelled'"
+        (click)="cancelSelectedClassBooking()"
+      >
+        {{ cancellingClassBooking ? 'Cancelling...' : 'Cancel Booking' }}
+      </button>
+    </div>
   </div>
 </div>

@@ -1,0 +1,146 @@
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="fw-semibold mb-0">Workout Sessions</h4>
+      <button class="btn btn-sm btn-primary" (click)="openStartModal()">Start Workout Session</button>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert alert-success py-2">{{ successMessage }}</div>
+
+    <div *ngIf="loading" class="text-muted">Loading workout sessions...</div>
+    <div *ngIf="!loading && sessions.length === 0" class="text-muted">
+      No accessible workout sessions found.
+    </div>
+
+    <div class="table-responsive" *ngIf="!loading && sessions.length > 0">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Session ID</th>
+            <th>Workout Plan ID</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let session of sessions" class="row-clickable" (click)="openSessionDetail(session)">
+            <td>{{ session.id }}</td>
+            <td>{{ resolvePlanId(session) }}</td>
+            <td>{{ displayDateTime(session.startTime) }}</td>
+            <td>{{ displayDateTime(session.endTime) }}</td>
+            <td>
+              <span class="badge bg-secondary">{{ session.status || 'IN_PROGRESS' }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Start Session Modal -->
+<div *ngIf="showStartModal" class="overlay" (click)="closeStartModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Start Workout Session</h5>
+      <button class="btn btn-sm btn-outline-secondary" (click)="closeStartModal()">Close</button>
+    </div>
+
+    <div class="mb-2">
+      <label class="form-label">Workout Plan ID *</label>
+      <input class="form-control" [(ngModel)]="startForm.workoutPlanId" />
+    </div>
+
+    <div class="mb-2">
+      <label class="form-label">Start Time *</label>
+      <input class="form-control" type="datetime-local" [(ngModel)]="startForm.startTime" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Notes</label>
+      <textarea class="form-control" rows="2" [(ngModel)]="startForm.notes"></textarea>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-outline-secondary" (click)="closeStartModal()">Cancel</button>
+      <button class="btn btn-primary" [disabled]="starting" (click)="startSession()">
+        {{ starting ? 'Starting...' : 'Start Session' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Session Detail Modal -->
+<div *ngIf="showDetailModal && selectedSession" class="overlay" (click)="closeSessionDetail()">
+  <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Workout Session Detail</h5>
+      <button class="btn btn-sm btn-outline-secondary" (click)="closeSessionDetail()">Close</button>
+    </div>
+
+    <div class="small mb-3">
+      <div><strong>Session ID:</strong> {{ selectedSession.id }}</div>
+      <div><strong>Workout Plan ID:</strong> {{ resolvePlanId(selectedSession) }}</div>
+      <div><strong>Status:</strong> {{ selectedSession.status || 'IN_PROGRESS' }}</div>
+      <div><strong>Start:</strong> {{ displayDateTime(selectedSession.startTime) }}</div>
+      <div><strong>End:</strong> {{ displayDateTime(selectedSession.endTime) }}</div>
+      <div><strong>Notes:</strong> {{ selectedSession.notes || '-' }}</div>
+    </div>
+
+    <div class="sub-card mb-3">
+      <h6 class="mb-2">Log Completed Set</h6>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <label class="form-label small">Exercise ID *</label>
+          <input class="form-control form-control-sm" [(ngModel)]="setForm.exerciseId" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small">Plan Item ID *</label>
+          <input class="form-control form-control-sm" [(ngModel)]="setForm.planItemId" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">Set Number</label>
+          <input class="form-control form-control-sm" type="number" min="1" [(ngModel)]="setForm.setNumber" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">Actual Rep</label>
+          <input class="form-control form-control-sm" type="number" min="1" [(ngModel)]="setForm.actualRep" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">Actual Weight</label>
+          <input class="form-control form-control-sm" type="number" min="0" [(ngModel)]="setForm.actualWeight" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small">RPE</label>
+          <input class="form-control form-control-sm" type="number" min="1" max="10" [(ngModel)]="setForm.rpe" />
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mt-2">
+        <button class="btn btn-sm btn-outline-primary" [disabled]="loggingSet" (click)="logSet()">
+          {{ loggingSet ? 'Logging...' : 'Log Set' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <h6 class="mb-2">Complete Session</h6>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <label class="form-label small">End Time *</label>
+          <input class="form-control form-control-sm" type="datetime-local" [(ngModel)]="completeForm.endTime" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small">Notes</label>
+          <input class="form-control form-control-sm" [(ngModel)]="completeForm.notes" />
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mt-2">
+        <button class="btn btn-sm btn-success" [disabled]="completing" (click)="completeSession()">
+          {{ completing ? 'Completing...' : 'Complete Session' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

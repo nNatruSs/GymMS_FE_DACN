@@ -1,0 +1,27 @@
+tbody .history-row-clickable {
+  cursor: pointer;
+}
+
+tbody .history-row-clickable:hover {
+  background-color: #f8fafc;
+}
+
+.booking-history-modal-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1200;
+}
+
+.booking-history-modal {
+  width: min(760px, 92vw);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 20px;
+}
+
+.booking-history-modal-img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}

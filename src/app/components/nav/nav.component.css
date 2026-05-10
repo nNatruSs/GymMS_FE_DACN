@@ -57,3 +57,23 @@
 .tiny {
   font-size: 0.75rem;
 }
+
+.booking-request-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1600;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.booking-request-modal-card {
+  width: min(680px, 94vw);
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
