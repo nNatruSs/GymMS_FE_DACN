@@ -45,6 +45,7 @@ export class NavComponent {
   ) {}
 
   ngOnInit(): void {
+    this.handleStripeReturnFallback();
     this.isLoggedIn = this.storage.isUserLoggedIn();
 
     this.loginStatusSubscription = this.storage.loggedInSubject$.subscribe((status) => {
@@ -296,12 +297,17 @@ export class NavComponent {
 
     this.paymentCheckoutLoading = true;
     this.paymentCheckoutError = null;
+    const origin = window.location.origin;
+    const successUrl = `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${origin}/payment/cancel`;
     this.notificationService
       .checkoutPayment({
         targetType: 'TRAINER_BOOKING',
         targetId,
         amount: 50000,
         currency: 'VND',
+        successUrl,
+        cancelUrl,
       })
       .subscribe({
         next: (res) => {
@@ -319,6 +325,29 @@ export class NavComponent {
           this.paymentCheckoutError = 'Could not start checkout for this trainer booking.';
         },
       });
+  }
+
+  private handleStripeReturnFallback(): void {
+    const currentPath = window.location.pathname.toLowerCase();
+    const isResultPath =
+      currentPath.startsWith('/payment/success') ||
+      currentPath.startsWith('/payment/fail') ||
+      currentPath.startsWith('/payment/cancel');
+    if (isResultPath) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    const canceled = params.get('canceled');
+    const redirectStatus = (params.get('redirect_status') || '').toLowerCase();
+
+    if (sessionId) {
+      this.router.navigate(['/payment/success'], { queryParams: { session_id: sessionId } });
+      return;
+    }
+
+    if (canceled === 'true' || redirectStatus === 'failed' || redirectStatus === 'canceled') {
+      this.router.navigate(['/payment/cancel']);
+    }
   }
 
   notificationText(notification: AppNotification): string {

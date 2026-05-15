@@ -1,0 +1,19 @@
+<div class="payment-result-page d-flex align-items-center justify-content-center py-5">
+  <div class="card border-0 shadow-sm payment-result-card">
+    <div class="card-body p-4 text-center">
+      <div class="result-icon fail mb-2">&#10005;</div>
+      <h4 class="mb-2">Payment Failed or Cancelled</h4>
+      <p class="text-muted mb-3">
+        Your payment did not complete. You can try checkout again.
+      </p>
+      <p class="small text-muted mb-4" *ngIf="sessionId">
+        Session ID: <span class="text-dark">{{ sessionId }}</span>
+      </p>
+
+      <div class="d-flex justify-content-center gap-2">
+        <a class="btn btn-primary btn-sm" routerLink="/user/dashboard/bookings/history">Back to Bookings</a>
+        <a class="btn btn-outline-secondary btn-sm" routerLink="/home">Go Home</a>
+      </div>
+    </div>
+  </div>
+</div>

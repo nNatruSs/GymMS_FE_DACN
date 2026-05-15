@@ -17,32 +17,32 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label class="form-label">First Name *</label>
-                <input formControlName="firstName" type="text" class="form-control" placeholder="First name" />
+                <input data-testid="register-first-name" formControlName="firstName" type="text" class="form-control" placeholder="First name" />
                 <div *ngIf="signUpForm.controls['firstName'].touched && signUpForm.controls['firstName'].errors?.['required']" class="text-danger small">First name is required</div>
               </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label">Last Name *</label>
-                <input formControlName="lastName" type="text" class="form-control" placeholder="Last name" />
+                <input data-testid="register-last-name" formControlName="lastName" type="text" class="form-control" placeholder="Last name" />
                 <div *ngIf="signUpForm.controls['lastName'].touched && signUpForm.controls['lastName'].errors?.['required']" class="text-danger small">Last name is required</div>
               </div>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Email *</label>
-              <input formControlName="email" type="email" class="form-control" placeholder="your@email.com" />
+              <input data-testid="register-email" formControlName="email" type="email" class="form-control" placeholder="your@email.com" />
               <div *ngIf="signUpForm.controls['email'].touched && signUpForm.controls['email'].errors?.['required']" class="text-danger small">Email is required</div>
               <div *ngIf="signUpForm.controls['email'].touched && signUpForm.controls['email'].errors?.['email']" class="text-danger small">Please enter a valid email</div>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Phone (optional)</label>
-              <input formControlName="phone" type="tel" class="form-control" placeholder="+84 xxx xxx xxx" />
+              <input data-testid="register-phone" formControlName="phone" type="tel" class="form-control" placeholder="+84 xxx xxx xxx" />
             </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label class="form-label">Gender *</label>
-                <select formControlName="gender" class="form-select">
+                <select data-testid="register-gender" formControlName="gender" class="form-select">
                   <option value="" disabled selected>Select gender</option>
                   <option value="MALE">Male</option>
                   <option value="FEMALE">Female</option>
@@ -52,31 +52,32 @@
               </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label">Date of Birth *</label>
-                <input formControlName="dateOfBirth" type="date" class="form-control" />
+                <input data-testid="register-dob" formControlName="dateOfBirth" type="date" class="form-control" />
                 <div *ngIf="signUpForm.controls['dateOfBirth'].touched && signUpForm.controls['dateOfBirth'].errors?.['required']" class="text-danger small">Date of birth is required</div>
               </div>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Address (optional)</label>
-              <input formControlName="address" type="text" class="form-control" placeholder="Street, ward, district, city" />
+              <input data-testid="register-address" formControlName="address" type="text" class="form-control" placeholder="Street, ward, district, city" />
             </div>
 
             <div class="mb-3">
               <label class="form-label">Password * <small class="text-muted">(min 8 characters)</small></label>
-              <input formControlName="password" type="password" class="form-control" placeholder="Create a password" />
+              <input data-testid="register-password" formControlName="password" type="password" class="form-control" placeholder="Create a password" />
               <div *ngIf="signUpForm.controls['password'].touched && signUpForm.controls['password'].errors?.['required']" class="text-danger small">Password is required</div>
               <div *ngIf="signUpForm.controls['password'].touched && signUpForm.controls['password'].errors?.['minlength']" class="text-danger small">Password must be at least 8 characters</div>
             </div>
 
             <div class="mb-4">
               <label class="form-label">Confirm Password *</label>
-              <input formControlName="confirmPassword" type="password" class="form-control" placeholder="Repeat your password" />
+              <input data-testid="register-confirm-password" formControlName="confirmPassword" type="password" class="form-control" placeholder="Repeat your password" />
               <div *ngIf="signUpForm.controls['confirmPassword'].touched && signUpForm.controls['confirmPassword'].errors?.['required']" class="text-danger small">Please confirm your password</div>
               <div *ngIf="signUpForm.controls['confirmPassword'].touched && signUpForm.controls['confirmPassword'].errors?.['confirm']" class="text-danger small">Passwords do not match</div>
             </div>
 
             <button
+              data-testid="register-submit"
               type="button"
               class="btn btn-primary w-100"
               (click)="signup()"

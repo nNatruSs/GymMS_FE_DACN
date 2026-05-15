@@ -66,15 +66,21 @@ export class NotificationService {
     targetId: string;
     amount: number;
     currency?: string;
+    successUrl?: string;
+    cancelUrl?: string;
   }): Observable<any> {
+    const body: any = {
+      targetType: payload.targetType,
+      targetId: payload.targetId,
+      amount: payload.amount,
+      currency: payload.currency ?? 'VND',
+    };
+    if (payload.successUrl) body.successUrl = payload.successUrl;
+    if (payload.cancelUrl) body.cancelUrl = payload.cancelUrl;
+
     return this.http.post<any>(
       `${BASE_URL}/payments/checkout`,
-      {
-        targetType: payload.targetType,
-        targetId: payload.targetId,
-        amount: payload.amount,
-        currency: payload.currency ?? 'VND',
-      },
+      body,
       { headers: this.authHeaders() }
     );
   }

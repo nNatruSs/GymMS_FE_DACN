@@ -6,6 +6,8 @@ import { OurServicesComponent } from './components/our-services/our-services.com
 import { HomeComponent } from './components/home/home.component';
 import { UserRegistrationComponent } from './auth/auth-components/user-registration/user-registration.component';
 import { VerifyEmailComponent } from './auth/auth-components/verify-email/verify-email.component';
+import { PaymentSuccessComponent } from './components/payment-success/payment-success.component';
+import { PaymentFailComponent } from './components/payment-fail/payment-fail.component';
 // import { OrganizerRegistrationComponent } from './auth/auth-components/organizer-registration/organizer-registration.component';
 // import { OrganizationThankYouComponent } from './auth/auth-components/organization-thank-you/organization-thank-you.component';
 
@@ -21,6 +23,9 @@ export const routes: Routes = [
   { path: 'user-registration', component: UserRegistrationComponent, canActivate:[preventAccessIfLoggedInGuardGuard] },
   { path: 'verify-email', component: VerifyEmailComponent },
   { path: 'api/v1/user/verify-email', component: VerifyEmailComponent },
+  { path: 'payment/success', component: PaymentSuccessComponent },
+  { path: 'payment/fail', component: PaymentFailComponent },
+  { path: 'payment/cancel', component: PaymentFailComponent },
   // { path: 'organizer-thank-you', component: OrganizationThankYouComponent },
   // { path: 'organizer-registration', component: OrganizerRegistrationComponent, canActivate:[preventAccessIfLoggedInGuardGuard] },
   { 

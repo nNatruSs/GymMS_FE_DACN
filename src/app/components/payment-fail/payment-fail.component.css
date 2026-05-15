@@ -1,0 +1,23 @@
+.payment-result-page {
+  min-height: 70vh;
+}
+
+.payment-result-card {
+  width: min(520px, 92vw);
+}
+
+.result-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.result-icon.fail {
+  background: #fee2e2;
+  color: #991b1b;
+}

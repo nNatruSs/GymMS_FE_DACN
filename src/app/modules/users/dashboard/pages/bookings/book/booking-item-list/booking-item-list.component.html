@@ -151,6 +151,7 @@
 <div class="row g-3" *ngIf="!loading">
   <div class="col-md-4" *ngFor="let i of items">
     <div
+      data-testid="booking-item-card"
       class="card item-card h-100"
       [class.disabled]="!hasMembership"
       (click)="open(i)">
@@ -238,7 +239,7 @@
   </div>
 </div>
 
-<div *ngIf="selectedClass" class="membership-modal-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,.5); z-index:1200;" (click)="close()">
+<div *ngIf="selectedClass" data-testid="class-booking-modal" class="membership-modal-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,.5); z-index:1200;" (click)="close()">
   <div class="bg-white rounded-4 shadow p-4 class-modal" (click)="$event.stopPropagation()">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="mb-0">{{ selectedClass.className }}</h5>
@@ -264,14 +265,14 @@
     <div class="row g-2 mb-3">
       <div class="col-md-6">
         <label class="form-label">Booking start date *</label>
-        <input class="form-control" type="date"
+        <input data-testid="class-booking-start-date" class="form-control" type="date"
           [min]="toDateInput(selectedClass.validFrom)"
           [max]="toDateInput(selectedClass.validUntil)"
           [(ngModel)]="bookingStartDate" />
       </div>
       <div class="col-md-6">
         <label class="form-label">Booking end date *</label>
-        <input class="form-control" type="date"
+        <input data-testid="class-booking-end-date" class="form-control" type="date"
           [min]="toDateInput(selectedClass.validFrom)"
           [max]="toDateInput(selectedClass.validUntil)"
           [(ngModel)]="bookingEndDate" />
@@ -280,7 +281,7 @@
 
     <div class="d-flex justify-content-end gap-2">
       <button class="btn btn-outline-secondary" (click)="close()">Cancel</button>
-      <button class="btn btn-primary" [disabled]="!canBookClass() || bookingClassSubmitting" (click)="confirmClassBooking()">
+      <button data-testid="class-booking-submit" class="btn btn-primary" [disabled]="!canBookClass() || bookingClassSubmitting" (click)="confirmClassBooking()">
         {{ bookingClassSubmitting ? 'Booking...' : 'Book Class' }}
       </button>
     </div>

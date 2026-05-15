@@ -1,2 +1,126 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global minimalist theme */
+:root {
+  --app-bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-muted: #f9fafb;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --border: #e5e7eb;
+  --primary: #334155;
+  --primary-hover: #1f2937;
+  --success: #3f5f4f;
+  --danger: #7f1d1d;
+}
+
+html,
+body {
+  background: var(--app-bg);
+  color: var(--text-primary);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.card,
+.modal-content,
+.dropdown-menu,
+.table,
+.list-group-item {
+  border-color: var(--border) !important;
+}
+
+.card,
+.modal-content,
+.dropdown-menu {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04) !important;
+}
+
+.text-muted,
+small,
+.small {
+  color: var(--text-secondary) !important;
+}
+
+.form-control,
+.form-select {
+  border-color: var(--border);
+  background-color: var(--surface);
+  color: var(--text-primary);
+  box-shadow: none !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #cbd5e1;
+  box-shadow: 0 0 0 0.12rem rgba(100, 116, 139, 0.16) !important;
+}
+
+.table thead th {
+  color: #475569;
+  font-weight: 600;
+  background: var(--surface-muted);
+}
+
+.btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  box-shadow: none !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-outline-primary {
+  color: var(--primary);
+  border-color: #94a3b8;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  color: #fff;
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-success {
+  background-color: var(--success);
+  border-color: var(--success);
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* Universal disabled state */
+button:disabled,
+.btn:disabled,
+.btn.disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: #e5e7eb !important;
+  border-color: #d1d5db !important;
+  color: #9ca3af !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+a.disabled,
+.nav-link.disabled {
+  color: #9ca3af !important;
+  pointer-events: none !important;
+}
 
