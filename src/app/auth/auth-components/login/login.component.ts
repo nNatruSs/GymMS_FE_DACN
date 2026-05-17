@@ -174,9 +174,9 @@ export class LoginComponent {
           roles: payload.roles ?? [],    // e.g. ['ADMIN'] | ['MEMBER'] | ['TRAINER']
         };
 
+        this.storage.saveUser(user);
         this.storage.saveToken(accessToken);
         this.storage.saveRefreshToken(newRefreshToken);
-        this.storage.saveUser(user);
 
         this.spinning = false;
 

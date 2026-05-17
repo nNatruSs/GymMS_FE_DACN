@@ -2,10 +2,11 @@
 import { Component } from '@angular/core';
 import { RouterModule, Router  } from '@angular/router';
 import { StorageService } from '../../auth/services/storage/storage.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { AppNotification, NotificationService } from '../../services/notification.service';
 import { TrainerService } from '../../modules/trainer/services/trainer.service';
+import { Inject, PLATFORM_ID } from '@angular/core';
 
 
 @Component({
@@ -41,7 +42,8 @@ export class NavComponent {
     private router: Router,
     private storage: StorageService,
     private notificationService: NotificationService,
-    private trainerService: TrainerService
+    private trainerService: TrainerService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
@@ -294,6 +296,7 @@ export class NavComponent {
   startTrainerBookingCheckout(): void {
     const targetId = this.paymentTargetBookingId();
     if (!targetId || this.paymentCheckoutLoading) return;
+    if (!isPlatformBrowser(this.platformId)) return;
 
     this.paymentCheckoutLoading = true;
     this.paymentCheckoutError = null;
@@ -328,10 +331,11 @@ export class NavComponent {
   }
 
   private handleStripeReturnFallback(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const currentPath = window.location.pathname.toLowerCase();
     const isResultPath =
       currentPath.startsWith('/payment/success') ||
-      currentPath.startsWith('/payment/fail') ||
       currentPath.startsWith('/payment/cancel');
     if (isResultPath) return;
 

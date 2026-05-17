@@ -24,8 +24,8 @@ export const routes: Routes = [
   { path: 'verify-email', component: VerifyEmailComponent },
   { path: 'api/v1/user/verify-email', component: VerifyEmailComponent },
   { path: 'payment/success', component: PaymentSuccessComponent },
-  { path: 'payment/fail', component: PaymentFailComponent },
   { path: 'payment/cancel', component: PaymentFailComponent },
+  { path: 'payment/fail', redirectTo: 'payment/cancel' },
   // { path: 'organizer-thank-you', component: OrganizationThankYouComponent },
   // { path: 'organizer-registration', component: OrganizerRegistrationComponent, canActivate:[preventAccessIfLoggedInGuardGuard] },
   { 
