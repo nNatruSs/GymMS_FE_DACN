@@ -5,7 +5,7 @@
 
         <div class="card shadow-sm mb-4 p-4" id="userRegistrationDiv">
 
-          <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+          <div *ngIf="errorMessage" data-testid="register-error-message" class="alert alert-danger" role="alert">
             {{ errorMessage }}
           </div>
 

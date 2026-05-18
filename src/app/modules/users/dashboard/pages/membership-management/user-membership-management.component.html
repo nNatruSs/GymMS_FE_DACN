@@ -9,7 +9,7 @@
   <div *ngIf="!loading" class="container-lg">
 
  
-    <div class="card shadow-sm border-0 mb-5 membership-card">
+    <div data-testid="membership-status-card" class="card shadow-sm border-0 mb-5 membership-card">
       <div class="card-body">
         <h5 class="card-title fw-semibold mb-4">My Membership Status</h5>
 
@@ -131,7 +131,7 @@
   <div *ngIf="!loading" class="container-lg">
 
     <!-- ================= CURRENT MEMBERSHIP ================= -->
-    <div class="card shadow-sm border-0 mb-5 membership-card">
+    <div data-testid="membership-status-card" class="card shadow-sm border-0 mb-5 membership-card">
       <div class="card-body">
         <h5 class="fw-semibold mb-4">My Membership Status</h5>
 
@@ -188,6 +188,7 @@
           <!-- ACTIONS -->
           <div class="mt-4 d-flex gap-2 flex-wrap">
             <button
+              data-testid="membership-update-btn"
               class="btn btn-primary px-4"
               (click)="openMembershipModal()"
             >
@@ -198,9 +199,9 @@
         </ng-container>
 
         <ng-template #noMembership>
-          <div class="alert alert-warning mb-0">
+          <div data-testid="membership-empty-state" class="alert alert-warning mb-0">
             You don’t currently have an active membership.
-            <button class="btn btn-sm btn-primary ms-3" (click)="openMembershipModal()">
+            <button data-testid="membership-register-cta" class="btn btn-sm btn-primary ms-3" (click)="openMembershipModal()">
               Register Membership
             </button>
           </div>
@@ -212,7 +213,7 @@
     <h5 class="fw-semibold mb-4">Available Membership Plans</h5>
 
     <div class="row g-4">
-      <div class="col-md-6 col-lg-4" *ngFor="let plan of plans">
+      <div data-testid="membership-plan-card" class="col-md-6 col-lg-4" *ngFor="let plan of plans">
         <div class="card plan-card h-100 border-0 shadow-sm text-center">
           <div class="card-body">
 
@@ -258,6 +259,7 @@
 
 <!-- ================= MODAL: SELECT PLAN + CHECKOUT ================= -->
 <div
+  data-testid="membership-plan-modal"
   *ngIf="showPlanModal"
   class="membership-modal-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
   style="background: rgba(0,0,0,0.45); z-index: 1200;"
@@ -266,7 +268,7 @@
   <div class="bg-white rounded-4 shadow p-4" style="width: min(920px, 92vw); max-height: 90vh; overflow:auto;">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="mb-0">{{ hasCurrentMembership() ? 'Update Membership' : 'Register Membership' }}</h5>
-      <button class="btn btn-sm btn-outline-secondary" (click)="closeMembershipModal()" [disabled]="checkingOut">
+      <button data-testid="membership-modal-close" class="btn btn-sm btn-outline-secondary" (click)="closeMembershipModal()" [disabled]="checkingOut">
         Close
       </button>
     </div>
@@ -278,12 +280,12 @@
     <div class="row g-3 mb-3">
       <div class="col-md-6 col-lg-4" *ngFor="let plan of plans">
         <button
+          data-testid="membership-modal-plan-option"
           type="button"
-          class="card w-100 h-100 border-2 text-start"
-          [class.border-primary]="selectedPlanId === plan.id"
-          [class.border-success]="membership?.membershipId === plan.id"
+          class="card w-100 h-100 border-2 text-start modal-plan-card"
+          [class.is-selected]="selectedPlanId === plan.id"
+          [class.is-current]="membership?.membershipId === plan.id"
           (click)="selectPlan(plan.id)"
-          style="background: white;"
         >
           <div class="card-body">
             <div class="d-flex justify-content-center mb-2">
@@ -302,10 +304,10 @@
     </div>
 
     <div class="d-flex justify-content-end gap-2">
-      <button class="btn btn-outline-secondary" (click)="closeMembershipModal()" [disabled]="checkingOut">
+      <button data-testid="membership-modal-cancel" class="btn btn-outline-secondary" (click)="closeMembershipModal()" [disabled]="checkingOut">
         Cancel
       </button>
-      <button class="btn btn-primary" [disabled]="!selectedPlanId || checkingOut" (click)="proceedToCheckout()">
+      <button data-testid="membership-proceed-checkout" class="btn btn-primary" [disabled]="!selectedPlanId || checkingOut" (click)="proceedToCheckout()">
         {{ checkingOut ? 'Redirecting...' : 'Proceed to Stripe Checkout' }}
       </button>
     </div>

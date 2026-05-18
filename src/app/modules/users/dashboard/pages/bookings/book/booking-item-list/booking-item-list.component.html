@@ -189,7 +189,7 @@
   </div>
 </div>
 
-<div *ngIf="selectedItem && mode==='trainer'" class="membership-modal-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,.5); z-index:1200;" (click)="close()">
+<div data-testid="trainer-booking-modal" *ngIf="selectedItem && mode==='trainer'" class="membership-modal-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,.5); z-index:1200;" (click)="close()">
   <div class="bg-white rounded-4 shadow p-4 trainer-modal" (click)="$event.stopPropagation()">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="mb-0">Trainer Detail</h5>
@@ -214,6 +214,7 @@
       <div *ngIf="trainerSlots.length === 0" class="text-muted small mb-3">No available slots.</div>
       <div class="trainer-slot-list mb-3" *ngIf="trainerSlots.length > 0">
         <button
+          data-testid="trainer-slot-option"
           type="button"
           class="trainer-slot-chip"
           [class.active]="selectedTrainerSlot === slot"
@@ -226,12 +227,12 @@
 
       <div class="mb-3">
         <label class="form-label">Notes (optional)</label>
-        <textarea class="form-control" rows="2" [(ngModel)]="trainerBookingNotes" placeholder="Focus on deadlift form"></textarea>
+        <textarea data-testid="trainer-booking-notes" class="form-control" rows="2" [(ngModel)]="trainerBookingNotes" placeholder="Focus on deadlift form"></textarea>
       </div>
 
       <div class="d-flex justify-content-end gap-2">
         <button class="btn btn-outline-secondary" (click)="close()">Cancel</button>
-        <button class="btn btn-primary" [disabled]="!selectedTrainerSlot || trainerBookingSubmitting" (click)="confirmTrainerBooking()">
+        <button data-testid="trainer-booking-submit" class="btn btn-primary" [disabled]="!selectedTrainerSlot || trainerBookingSubmitting" (click)="confirmTrainerBooking()">
           {{ trainerBookingSubmitting ? 'Booking...' : 'Create Booking Request' }}
         </button>
       </div>

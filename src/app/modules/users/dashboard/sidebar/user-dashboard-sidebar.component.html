@@ -44,6 +44,7 @@
   <div class="d-flex align-items-center justify-content-between mb-4">
     <span class="fs-5 fw-bold" *ngIf="!collapsed">Dashboard</span>
     <button
+      data-testid="user-sidebar-toggle"
       class="btn btn-sm btn-outline-light ms-1"
       (click)="toggleSidebar()"
     >
@@ -65,7 +66,7 @@
     </li> -->
 
     <li class="nav-item">
-      <a routerLink="/user/dashboard/membership-management"
+      <a data-testid="nav-memberships" routerLink="/user/dashboard/membership-management"
          routerLinkActive="active"
          class="nav-link text-white">
         <i class="bi bi-credit-card me-2"></i>
@@ -74,7 +75,7 @@
     </li>
 
     <li class="nav-item">
-      <a routerLink="/user/dashboard/bookings"
+      <a data-testid="nav-bookings" routerLink="/user/dashboard/bookings"
          routerLinkActive="active"
          class="nav-link text-white">
         <i class="bi bi-calendar-check me-2"></i>
@@ -83,7 +84,7 @@
     </li>
 
     <li class="nav-item">
-      <a routerLink="/user/dashboard/workout-sessions"
+      <a data-testid="nav-workout-sessions" routerLink="/user/dashboard/workout-sessions"
          routerLinkActive="active"
          class="nav-link text-white">
         <i class="bi bi-heart-pulse me-2"></i>
@@ -93,7 +94,7 @@
 
 
     <li class="nav-item">
-      <a routerLink="/user/dashboard/feedback"
+      <a data-testid="nav-feedback" routerLink="/user/dashboard/feedback"
          routerLinkActive="active"
          class="nav-link text-white">
         <i class="bi bi-chat-dots me-2"></i>
@@ -106,7 +107,7 @@
 
     <!-- MESSAGES -->
     <li class="nav-item">
-      <a routerLink="/user/dashboard/messages"
+      <a data-testid="nav-messages" routerLink="/user/dashboard/messages"
          routerLinkActive="active"
          class="nav-link text-white d-flex align-items-center">
         <i class="bi bi-chat-left-text me-2"></i>
@@ -114,15 +115,16 @@
 
         <!-- BADGE -->
         <span
-          *ngIf="!collapsed"
+          data-testid="nav-messages-unread-badge"
+          *ngIf="!collapsed && unreadMessages > 0"
           class="badge bg-danger rounded-pill ms-auto"
         >
-          2
+          {{ unreadMessages }}
         </span>
       </a>
     </li>
     <li class="nav-item">
-      <a routerLink="/user/dashboard/chatbot"
+      <a data-testid="nav-chatbot" routerLink="/user/dashboard/chatbot"
          routerLinkActive="active"
          class="nav-link text-white">
         <i class="bi bi-robot me-2"></i>

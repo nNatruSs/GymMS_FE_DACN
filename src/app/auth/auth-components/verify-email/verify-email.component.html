@@ -8,20 +8,20 @@
             Confirm your email address to activate your account.
           </p>
 
-          <div *ngIf="loading" class="text-center py-4">
+          <div *ngIf="loading" data-testid="verify-loading" class="text-center py-4">
             <div class="spinner-border text-primary" role="status"></div>
             <p class="small text-muted mt-2 mb-0">Checking verification link...</p>
           </div>
 
           <div *ngIf="!loading">
-            <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-            <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+            <div *ngIf="errorMessage" data-testid="verify-error-message" class="alert alert-danger">{{ errorMessage }}</div>
+            <div *ngIf="successMessage" data-testid="verify-success-message" class="alert alert-success">{{ successMessage }}</div>
 
-            <form *ngIf="!successMessage" [formGroup]="form" (ngSubmit)="verify()">
+            <form *ngIf="!successMessage" data-testid="verify-form" [formGroup]="form" (ngSubmit)="verify()">
               <ng-container *ngIf="requiresPasswordSetup">
                 <div class="mb-3">
                   <label class="form-label">Password *</label>
-                  <input type="password" class="form-control" formControlName="password" placeholder="Create password" />
+                  <input data-testid="verify-password" type="password" class="form-control" formControlName="password" placeholder="Create password" />
                   <div class="text-danger small mt-1" *ngIf="form.get('password')?.touched && form.get('password')?.errors?.['required']">
                     Password is required.
                   </div>
@@ -32,7 +32,7 @@
 
                 <div class="mb-3">
                   <label class="form-label">Confirm Password *</label>
-                  <input type="password" class="form-control" formControlName="confirmPassword" placeholder="Confirm password" />
+                  <input data-testid="verify-confirm-password" type="password" class="form-control" formControlName="confirmPassword" placeholder="Confirm password" />
                   <div class="text-danger small mt-1" *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.errors?.['required']">
                     Confirm password is required.
                   </div>
@@ -42,7 +42,7 @@
                 </div>
               </ng-container>
 
-              <button class="btn btn-primary w-100" type="submit" [disabled]="submitting">
+              <button data-testid="verify-submit" class="btn btn-primary w-100" type="submit" [disabled]="submitting">
                 <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
                 {{ submitting ? 'Verifying...' : (requiresPasswordSetup ? 'Set Password and Verify' : 'Verify Email') }}
               </button>

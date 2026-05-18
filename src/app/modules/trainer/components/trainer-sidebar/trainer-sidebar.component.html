@@ -1,35 +1,35 @@
 <nav class="sidebar d-flex flex-column p-3 text-white" [class.collapsed]="collapsed">
   <div class="d-flex align-items-center justify-content-between mb-4">
     <span class="fs-5 fw-bold" *ngIf="!collapsed">Trainer</span>
-    <button class="btn btn-sm btn-outline-light ms-1" (click)="toggleSidebar()">
+    <button data-testid="trainer-sidebar-toggle" class="btn btn-sm btn-outline-light ms-1" (click)="toggleSidebar()">
       <i class="bi bi-list"></i>
     </button>
   </div>
 
   <ul class="nav nav-pills flex-column gap-1 flex-grow-1">
     <li class="nav-item">
-      <a routerLink="/trainer/dashboard/schedule" routerLinkActive="active" class="nav-link text-white">
+      <a data-testid="trainer-nav-schedule" routerLink="/trainer/dashboard/schedule" routerLinkActive="active" class="nav-link text-white">
         <i class="bi bi-calendar-week me-2"></i>
         <span *ngIf="!collapsed">Schedule</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a routerLink="/trainer/dashboard/my-clients" routerLinkActive="active" class="nav-link text-white">
+      <a data-testid="trainer-nav-clients" routerLink="/trainer/dashboard/my-clients" routerLinkActive="active" class="nav-link text-white">
         <i class="bi bi-people me-2"></i>
         <span *ngIf="!collapsed">My Clients</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a routerLink="/trainer/dashboard/workout" routerLinkActive="active" class="nav-link text-white">
+      <a data-testid="trainer-nav-workout" routerLink="/trainer/dashboard/workout" routerLinkActive="active" class="nav-link text-white">
         <i class="bi bi-activity me-2"></i>
         <span *ngIf="!collapsed">Workout</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a routerLink="/trainer/dashboard/diet-plans" routerLinkActive="active" class="nav-link text-white">
+      <a data-testid="trainer-nav-diet-plans" routerLink="/trainer/dashboard/diet-plans" routerLinkActive="active" class="nav-link text-white">
         <i class="bi bi-egg-fried me-2"></i>
         <span *ngIf="!collapsed">Diet Plans</span>
       </a>
@@ -38,9 +38,12 @@
     <li class="sidebar-divider my-3"></li>
 
     <li class="nav-item">
-      <a routerLink="/trainer/dashboard/messages" routerLinkActive="active" class="nav-link text-white d-flex align-items-center">
+      <a data-testid="trainer-nav-messages" routerLink="/trainer/dashboard/messages" routerLinkActive="active" class="nav-link text-white d-flex align-items-center">
         <i class="bi bi-chat-left-text me-2"></i>
         <span *ngIf="!collapsed" class="flex-grow-1">Messages</span>
+        <span data-testid="trainer-nav-unread-badge" *ngIf="!collapsed && unreadMessages > 0" class="badge bg-danger rounded-pill ms-auto">
+          {{ unreadMessages }}
+        </span>
       </a>
     </li>
   </ul>

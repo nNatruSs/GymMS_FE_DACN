@@ -28,7 +28,7 @@
 
 <div class="modal-backdrop-custom" (click)="close.emit()"></div>
 
-<div class="modal-container">
+<div data-testid="calendar-booking-modal" class="modal-container">
   <div class="modal-card">
 
     <!-- HEADER -->
@@ -113,6 +113,7 @@
     <div class="modal-footer">
 
       <button
+        data-testid="calendar-cancel-booking"
         *ngIf="booking.status === 'upcoming'"
         class="btn btn-danger"
         (click)="cancelBooking()"

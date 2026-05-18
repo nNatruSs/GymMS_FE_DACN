@@ -43,10 +43,10 @@
 
 <div class="card shadow-sm border-0 mb-3">
   <div class="card-body d-flex flex-wrap gap-2 align-items-center">
-    <button class="btn btn-sm" [class.btn-primary]="mode==='class'" [class.btn-outline-primary]="mode!=='class'" (click)="setMode('class')">
+    <button data-testid="history-mode-class" class="btn btn-sm" [class.btn-primary]="mode==='class'" [class.btn-outline-primary]="mode!=='class'" (click)="setMode('class')">
       Class Bookings
     </button>
-    <button class="btn btn-sm" [class.btn-primary]="mode==='trainer'" [class.btn-outline-primary]="mode!=='trainer'" (click)="setMode('trainer')">
+    <button data-testid="history-mode-trainer" class="btn btn-sm" [class.btn-primary]="mode==='trainer'" [class.btn-outline-primary]="mode!=='trainer'" (click)="setMode('trainer')">
       Personal Sessions
     </button>
 
@@ -57,7 +57,7 @@
           <option value="desc">Descending</option>
         </select>
         <input class="form-control form-control-sm" style="width: 180px;" placeholder="Category (q)" [(ngModel)]="q" />
-        <button class="btn btn-sm btn-outline-secondary" (click)="applyClassFilters()">Apply</button>
+        <button data-testid="history-apply-class-filter" class="btn btn-sm btn-outline-secondary" (click)="applyClassFilters()">Apply</button>
       </div>
     </ng-container>
   </div>
@@ -76,7 +76,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let b of classBookings" class="history-row-clickable" (click)="openClassBookingDetail(b)">
+        <tr data-testid="history-class-row" *ngFor="let b of classBookings" class="history-row-clickable" (click)="openClassBookingDetail(b)">
           <td class="fw-semibold">{{ b.classSchedule?.className || 'Class' }}</td>
           <td>{{ b.classSchedule?.category || '-' }}</td>
           <td>{{ b.bookingStartDate | date:'yyyy-MM-dd' }} → {{ b.bookingEndDate | date:'yyyy-MM-dd' }}</td>
@@ -91,8 +91,8 @@
 <div *ngIf="!loading && mode==='class'" class="d-flex justify-content-between align-items-center mt-2">
   <small class="text-muted">Total {{ totalDocs }} • Page {{ page }} / {{ totalPages }}</small>
   <div class="d-flex gap-2">
-    <button class="btn btn-sm btn-outline-secondary" [disabled]="!hasPrev" (click)="prevPage()">Previous</button>
-    <button class="btn btn-sm btn-outline-secondary" [disabled]="!hasNext" (click)="nextPage()">Next</button>
+    <button data-testid="history-prev-page" class="btn btn-sm btn-outline-secondary" [disabled]="!hasPrev" (click)="prevPage()">Previous</button>
+    <button data-testid="history-next-page" class="btn btn-sm btn-outline-secondary" [disabled]="!hasNext" (click)="nextPage()">Next</button>
   </div>
 </div>
 
@@ -108,7 +108,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let b of trainerBookings" class="history-row-clickable" (click)="openTrainerBookingDetail(b)">
+        <tr data-testid="history-trainer-row" *ngFor="let b of trainerBookings" class="history-row-clickable" (click)="openTrainerBookingDetail(b)">
           <td class="fw-semibold">{{ b.trainer?.firstName }} {{ b.trainer?.lastName }}</td>
           <td>{{ b.startAt | date:'yyyy-MM-dd HH:mm' }}</td>
           <td>{{ b.endAt | date:'yyyy-MM-dd HH:mm' }}</td>
@@ -119,7 +119,7 @@
   </div>
 </div>
 
-<div *ngIf="selectedTrainerBooking" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center booking-history-modal-overlay" (click)="closeTrainerBookingDetail()">
+<div data-testid="history-trainer-modal" *ngIf="selectedTrainerBooking" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center booking-history-modal-overlay" (click)="closeTrainerBookingDetail()">
   <div class="bg-white rounded-4 shadow booking-history-modal" (click)="$event.stopPropagation()">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="mb-0">Trainer Booking</h5>
@@ -142,6 +142,7 @@
     <div class="d-flex justify-content-end gap-2">
       <button class="btn btn-outline-secondary" (click)="closeTrainerBookingDetail()">Close</button>
       <button
+        data-testid="history-cancel-trainer-booking"
         class="btn btn-danger"
         [disabled]="cancellingTrainerBooking || !canCancelTrainerBooking(selectedTrainerBooking)"
         (click)="cancelSelectedTrainerBooking()"
@@ -152,7 +153,7 @@
   </div>
 </div>
 
-<div *ngIf="selectedClassBooking" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center booking-history-modal-overlay" (click)="closeClassBookingDetail()">
+<div data-testid="history-class-modal" *ngIf="selectedClassBooking" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center booking-history-modal-overlay" (click)="closeClassBookingDetail()">
   <div class="bg-white rounded-4 shadow booking-history-modal" (click)="$event.stopPropagation()">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="mb-0">{{ selectedClassBooking.classSchedule?.className || 'Class Booking' }}</h5>
@@ -184,6 +185,7 @@
     <div class="d-flex justify-content-end gap-2">
       <button class="btn btn-outline-secondary" (click)="closeClassBookingDetail()">Close</button>
       <button
+        data-testid="history-cancel-class-booking"
         class="btn btn-danger"
         [disabled]="cancellingClassBooking || selectedClassBooking.status === 'cancelled'"
         (click)="cancelSelectedClassBooking()"

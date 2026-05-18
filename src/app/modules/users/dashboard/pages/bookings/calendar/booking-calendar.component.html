@@ -90,9 +90,9 @@
 
   <!-- WEEK NAV -->
   <div class="calendar-nav">
-    <button class="nav-btn" (click)="prevWeek()">‹</button>
+    <button data-testid="calendar-prev-week" class="nav-btn" (click)="prevWeek()">‹</button>
     <span class="fw-semibold">{{ monthLabel }}</span>
-    <button class="nav-btn" (click)="nextWeek()">›</button>
+    <button data-testid="calendar-next-week" class="nav-btn" (click)="nextWeek()">›</button>
   </div>
 
   <!-- GRID -->
@@ -107,6 +107,7 @@
       <div class="time-label">{{ time }}</div>
 
       <div
+        data-testid="calendar-cell"
         *ngFor="let d of weekDates"
         class="calendar-cell"
         [class.class-booking]="isClass(d,time)"

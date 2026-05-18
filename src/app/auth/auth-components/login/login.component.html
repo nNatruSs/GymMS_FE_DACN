@@ -6,6 +6,9 @@
           <div *ngIf="successMessage" data-testid="login-success-message" class="alert alert-success mt-4" role="alert">
             {{ successMessage }}
           </div>
+          <div *ngIf="message" data-testid="login-error-message" class="alert alert-danger mt-4" role="alert">
+            {{ message }}
+          </div>
           
         </div>
 

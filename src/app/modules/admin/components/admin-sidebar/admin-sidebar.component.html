@@ -1,7 +1,7 @@
 <nav class="sidebar d-flex flex-column p-3 text-white" [class.collapsed]="collapsed">
   <div class="d-flex align-items-center justify-content-between mb-4">
     <span class="fs-5 fw-bold" *ngIf="!collapsed">Dashboard</span>
-    <button class="btn btn-sm btn-outline-light ms-1" (click)="toggleSidebar()">
+    <button data-testid="admin-sidebar-toggle" class="btn btn-sm btn-outline-light ms-1" (click)="toggleSidebar()">
       <i class="bi bi-list"></i>
     </button>
   </div>
@@ -15,35 +15,35 @@
     </li> -->
 
     <li class="nav-item">
-      <a routerLink="/admin/dashboard/memberships" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link text-white">
+      <a data-testid="admin-nav-memberships" routerLink="/admin/dashboard/memberships" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active" class="nav-link text-white">
         <i class="bi bi-credit-card me-2"></i>
         <span *ngIf="!collapsed">Memberships</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a routerLink="/admin/dashboard/users" routerLinkActive="active" class="nav-link text-white">
+      <a data-testid="admin-nav-users" routerLink="/admin/dashboard/users" routerLinkActive="active" class="nav-link text-white">
         <i class="bi bi-people me-2"></i>
         <span *ngIf="!collapsed">Users</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a routerLink="/admin/dashboard/roles" routerLinkActive="active" class="nav-link text-white">
+      <a data-testid="admin-nav-roles" routerLink="/admin/dashboard/roles" routerLinkActive="active" class="nav-link text-white">
         <i class="bi bi-shield-lock me-2"></i>
         <span *ngIf="!collapsed">Roles</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a routerLink="/admin/dashboard/class-schedules" routerLinkActive="active" class="nav-link text-white">
+      <a data-testid="admin-nav-class-schedules" routerLink="/admin/dashboard/class-schedules" routerLinkActive="active" class="nav-link text-white">
         <i class="bi bi-calendar-week me-2"></i>
         <span *ngIf="!collapsed">Class Scheduling</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a routerLink="/admin/dashboard/reporting" routerLinkActive="active" class="nav-link text-white">
+      <a data-testid="admin-nav-reporting" routerLink="/admin/dashboard/reporting" routerLinkActive="active" class="nav-link text-white">
         <i class="bi bi-graph-up-arrow me-2"></i>
         <span *ngIf="!collapsed">Reporting</span>
       </a>
