@@ -1,4 +1,4 @@
-/* Global minimalist theme */
+
 :root {
   --app-bg: #f6f7f9;
   --surface: #ffffff;
@@ -103,7 +103,7 @@ small,
   border-color: var(--danger);
 }
 
-/* Universal disabled state */
+
 button:disabled,
 .btn:disabled,
 .btn.disabled,

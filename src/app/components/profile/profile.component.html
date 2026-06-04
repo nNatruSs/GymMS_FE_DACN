@@ -1,0 +1,93 @@
+<div class="profile-page">
+  <div class="profile-card">
+    <h4 class="mb-3">My Profile</h4>
+    <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert alert-success py-2">{{ successMessage }}</div>
+    <div *ngIf="loading" class="text-muted">Loading profile...</div>
+
+    <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="saveProfile()">
+      <div class="avatar-row mb-3">
+        <img *ngIf="avatarPreviewUrl; else initialsAvatar" [src]="avatarPreviewUrl" class="avatar-preview" alt="avatar" />
+        <ng-template #initialsAvatar>
+          <div class="avatar-placeholder">
+            {{ (form.controls.firstName.value || '?').slice(0,1).toUpperCase() }}{{ (form.controls.lastName.value || '').slice(0,1).toUpperCase() }}
+          </div>
+        </ng-template>
+        <div class="avatar-actions">
+          <input type="file" accept="image/*" (change)="onAvatarFileSelected($event)" />
+          <button type="button" class="btn btn-outline-primary btn-sm mt-2" [disabled]="!selectedAvatarFile || uploadingAvatar" (click)="uploadAvatar()">
+            {{ uploadingAvatar ? 'Uploading...' : 'Upload Avatar' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-2">
+        <div class="col-md-6">
+          <label class="form-label">First Name *</label>
+          <input class="form-control" formControlName="firstName" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Last Name *</label>
+          <input class="form-control" formControlName="lastName" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email *</label>
+          <input class="form-control" type="email" formControlName="email" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Phone *</label>
+          <input class="form-control" formControlName="phone" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Gender *</label>
+          <select class="form-select" formControlName="gender">
+            <option value="male">male</option>
+            <option value="female">female</option>
+            <option value="other">other</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Date of Birth *</label>
+          <input class="form-control" type="date" formControlName="dob" />
+        </div>
+        <div class="col-md-12">
+          <label class="form-label">Address</label>
+          <input class="form-control" formControlName="address" />
+        </div>
+
+        <ng-container *ngIf="isTrainer()">
+          <div class="col-md-6">
+            <label class="form-label">Private Session Pricing (60 mins)</label>
+            <input class="form-control" type="number" min="0" formControlName="ptSessionPrice60" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Specialization</label>
+            <input class="form-control" formControlName="specialization" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Experience Years</label>
+            <input class="form-control" type="number" min="0" formControlName="experienceYears" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Certifications (comma separated)</label>
+            <input class="form-control" formControlName="certifications" />
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Areas of Expertise (comma separated)</label>
+            <input class="form-control" formControlName="areasOfExpertise" />
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Biography</label>
+            <textarea class="form-control" rows="3" formControlName="biography"></textarea>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="d-flex justify-content-end mt-4">
+        <button type="submit" class="btn btn-primary" [disabled]="saving">
+          {{ saving ? 'Saving...' : 'Save Profile' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

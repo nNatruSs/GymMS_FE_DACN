@@ -50,17 +50,27 @@ export class VerifyEmailComponent implements OnInit {
       return;
     }
 
-    this.authService.verifyEmailLanding(this.token).subscribe({
-      next: (html) => {
-        this.requiresPasswordSetup = /name="password"/i.test(html);
+    this.authService.verifyEmailContext(this.token).subscribe({
+      next: (ctx) => {
+        this.requiresPasswordSetup = Boolean(ctx?.requiresPasswordSetup);
         this.configurePasswordValidators();
         this.loading = false;
       },
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage =
-          err?.error?.message ||
-          'Verification link is invalid or expired. Please request a new verification email.';
+      error: () => {
+        
+        this.authService.verifyEmailLanding(this.token).subscribe({
+          next: (html) => {
+            this.requiresPasswordSetup = /name="password"/i.test(html);
+            this.configurePasswordValidators();
+            this.loading = false;
+          },
+          error: (err) => {
+            this.loading = false;
+            this.errorMessage =
+              err?.error?.message ||
+              'Verification link is invalid or expired. Please request a new verification email.';
+          },
+        });
       },
     });
   }

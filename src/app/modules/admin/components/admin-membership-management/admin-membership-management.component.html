@@ -45,10 +45,7 @@
   (click)="onBackdropClick($event, 'create')"
 >
   <div class="membership-modal-card">
-    <!-- <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">Create Membership Tier</h5>
-      <button class="btn btn-sm btn-outline-secondary" type="button" (click)="closeCreateModal()">Close</button>
-    </div> -->
+    
 
     <form [formGroup]="createForm" (ngSubmit)="createTier()">
       <div class="mb-3">
@@ -97,10 +94,7 @@
   (click)="onBackdropClick($event, 'edit')"
 >
   <div class="membership-modal-card">
-    <!-- <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">Update or Delete Membership Tier</h5>
-      <button class="btn btn-sm btn-outline-secondary" type="button" (click)="closeEditModal()">Close</button>
-    </div> -->
+    
 
     <form [formGroup]="editForm" (ngSubmit)="updateTier()">
       <div class="mb-3">

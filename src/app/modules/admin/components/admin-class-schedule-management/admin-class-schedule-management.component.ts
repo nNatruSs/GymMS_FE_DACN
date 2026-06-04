@@ -9,6 +9,7 @@ import {
   ScheduleExceptionPayload,
   TrainerItem,
 } from '../../services/admin-class-schedule.service';
+import { ConfirmDialogService } from '../../../../services/confirm-dialog.service';
 
 type DayCode = 'SUN' | 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT';
 
@@ -22,6 +23,7 @@ type DayCode = 'SUN' | 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT';
 export class AdminClassScheduleManagementComponent {
   private fb = inject(FormBuilder);
   private scheduleService = inject(AdminClassScheduleService);
+  private confirmDialog = inject(ConfirmDialogService);
 
   readonly days: { code: DayCode; label: string }[] = [
     { code: 'MON', label: 'Monday' },
@@ -65,7 +67,7 @@ export class AdminClassScheduleManagementComponent {
   trainers: TrainerItem[] = [];
   trainerFilterOptions: TrainerItem[] = [];
 
-  // list filters
+  
   sort: 'asc' | 'desc' | '' = 'desc';
   q = '';
   searchField = 'className';
@@ -399,9 +401,13 @@ export class AdminClassScheduleManagementComponent {
     });
   }
 
-  deleteSchedule(): void {
+  async deleteSchedule(): Promise<void> {
     if (!this.selectedSchedule?.id || this.deleting) return;
-    if (!confirm('Delete this schedule?')) return;
+    const confirmed = await this.confirmDialog.confirm('Delete this schedule?', {
+      title: 'Confirm Delete Schedule',
+      confirmText: 'Delete',
+    });
+    if (!confirmed) return;
 
     this.deleting = true;
     this.scheduleService.deleteSchedule(this.selectedSchedule.id).subscribe({
@@ -512,9 +518,13 @@ export class AdminClassScheduleManagementComponent {
     });
   }
 
-  deleteException(exceptionId: string): void {
+  async deleteException(exceptionId: string): Promise<void> {
     if (!exceptionId || this.deletingExceptionId) return;
-    if (!confirm('Delete this schedule exception?')) return;
+    const confirmed = await this.confirmDialog.confirm('Delete this schedule exception?', {
+      title: 'Confirm Delete Exception',
+      confirmText: 'Delete',
+    });
+    if (!confirmed) return;
 
     this.deletingExceptionId = exceptionId;
     this.scheduleService.deleteException(exceptionId).subscribe({

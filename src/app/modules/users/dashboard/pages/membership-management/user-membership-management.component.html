@@ -1,136 +1,16 @@
-<!-- 
+
+
+
 <div class="container-fluid py-4 bg-light min-vh-100">
-
-
-  <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 300px;">
-    <div class="spinner-border text-primary" role="status"></div>
-  </div>
-
-  <div *ngIf="!loading" class="container-lg">
-
- 
-    <div data-testid="membership-status-card" class="card shadow-sm border-0 mb-5 membership-card">
-      <div class="card-body">
-        <h5 class="card-title fw-semibold mb-4">My Membership Status</h5>
-
-        <ng-container *ngIf="membership; else noMembership">
-          <div class="row text-center text-md-start">
-            <div class="col-md-3 mb-3">
-              <small class="text-muted">Plan</small>
-              <div class="fs-5 fw-semibold text-primary text-capitalize">
-                {{ membership.plan }}
-              </div>
-            </div>
-            <div class="col-md-3 mb-3">
-              <small class="text-muted">Duration</small>
-              <div class="fw-medium">{{ membership.duration_days }} days</div>
-            </div>
-            <div class="col-md-3 mb-3">
-              <small class="text-muted">Start Date</small>
-              <div class="fw-medium">{{ membership.starDate }}</div>
-            </div>
-            
-            <div class="col-md-3 mb-3">
-              <small class="text-muted">End Date</small>
-              <div class="fw-medium">{{ getEndDate() }}</div>
-            </div>
-          </div>
-
-          <div class="mt-2 pb-1 px-5">
-            <small class="text-muted">Membership Progress</small>
-            <div class="progress mt-1" style="height: 12px;">
-              <div
-                class="progress-bar bg-primary"
-                [style.width.%]="getProgressPercent()"
-              ></div>
-            </div>
-
-            <small class="text-muted">
-              {{ getRemainingDays() }} days remaining
-            </small>
-          </div>
-
-          <div class="mt-4 d-flex gap-2 flex-wrap">
-            <button
-              class="btn btn-primary px-4"
-              (click)="extend()"
-            >
-              Extend Membership
-            </button>
-
-            <button
-              class="btn btn-outline-danger px-4"
-              (click)="cancel()"
-            >
-              Cancel Membership
-            </button>
-          </div>
-        </ng-container>
-
-        <ng-template #noMembership>
-          <p class="text-muted fst-italic mb-0">
-            You don’t currently have an active membership.
-          </p>
-        </ng-template>
-      </div>
-    </div>
 
   
-
-
-    <h5 class="fw-semibold mb-4">Available Membership Plans</h5>
-
-    <div class="row g-4">
-      <div
-        class="col-md-6 col-lg-4"
-        *ngFor="let plan of plans"
-      >
-        <div class="card h-100 border-0 shadow-sm plan-card">
-          <div class="card-body text-center">
-            <img
-              [src]="plan.image_url"
-              alt="{{ plan.name }}"
-              class="img-fluid mb-3 plan-img"
-              style="height: 80px;"
-            />
-
-            <h6 class="fw-semibold text-capitalize">{{ plan.name }}</h6>
-
-            <p class="text-muted small">
-              {{ plan.benefits }}
-            </p>
-
-            <div class="fs-4 fw-bold text-primary mb-3">
-              ${{ plan.price }}
-              <small class="fs-6 text-muted">/ {{ plan.duration_days }} days</small>
-            </div>
-
-            <button
-              *ngIf="!membership"
-              class="btn btn-primary w-100"
-              (click)="register(plan)"
-            >
-              Register Membership
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div> -->
-
-
-<div class="container-fluid py-4 bg-light min-vh-100">
-
-  <!-- LOADING -->
   <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 300px;">
     <div class="spinner-border text-primary"></div>
   </div>
 
   <div *ngIf="!loading" class="container-lg">
 
-    <!-- ================= CURRENT MEMBERSHIP ================= -->
+    
     <div data-testid="membership-status-card" class="card shadow-sm border-0 mb-5 membership-card">
       <div class="card-body">
         <h5 class="fw-semibold mb-4">My Membership Status</h5>
@@ -168,7 +48,7 @@
             </div>
           </div>
 
-          <!-- PROGRESS -->
+          
           <div class="mt-4">
             <div class="d-flex justify-content-between mb-1">
               <small class="text-muted">Membership Progress</small>
@@ -185,7 +65,7 @@
             </div>
           </div>
 
-          <!-- ACTIONS -->
+          
           <div class="mt-4 d-flex gap-2 flex-wrap">
             <button
               data-testid="membership-update-btn"
@@ -209,7 +89,7 @@
       </div>
     </div>
 
-    <!-- ================= PLANS ================= -->
+    
     <h5 class="fw-semibold mb-4">Available Membership Plans</h5>
 
     <div class="row g-4">
@@ -234,13 +114,7 @@
               <small class="fs-6 text-muted d-block">{{ plan.level }}</small>
             </div>
 
-            <button
-              *ngIf="!membership"
-              class="btn btn-primary w-100"
-              (click)="openMembershipModal()"
-            >
-              Register Membership
-            </button>
+            
 
             <span
               *ngIf="membership?.membershipId === plan.id"
@@ -257,7 +131,7 @@
   </div>
 </div>
 
-<!-- ================= MODAL: SELECT PLAN + CHECKOUT ================= -->
+
 <div
   data-testid="membership-plan-modal"
   *ngIf="showPlanModal"

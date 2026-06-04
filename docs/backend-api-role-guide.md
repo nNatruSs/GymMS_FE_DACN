@@ -1242,7 +1242,7 @@ null
   "trainerId": "550e8400-e29b-41d4-a716-446655440000",
   "startAt": "2026-04-10T09:00:00.000Z",
   "endAt": "2026-04-10T10:00:00.000Z",
-  "notes": "Focus on deadlift form"
+  "notes": "Note"
 }
 ```
 - Response example: not defined in OpenAPI schema

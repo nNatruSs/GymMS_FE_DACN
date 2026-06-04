@@ -19,7 +19,7 @@ export class SignupComponent {
    
 
   }
-   // Custom Validator Function
+   
  confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
   if (!control.value) {
     return { require: true };

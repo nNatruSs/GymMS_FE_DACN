@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import { RouterOutlet } from '@angular/router';
+
 import { BookingService } from '../../../../services/booking.service';
 import { StorageService } from '../../../../../../auth/services/storage/storage.service';
 import { OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ConfirmDialogService } from '../../../../../../services/confirm-dialog.service';
 
 @Component({
   selector: 'app-booking-history',
@@ -20,7 +21,7 @@ export class BookingHistoryComponent implements OnInit{
   loading = true;
   errorMessage = '';
 
-  // class booking list filters
+  
   page = 1;
   limit = 10;
   sort: 'asc' | 'desc' = 'desc';
@@ -35,7 +36,11 @@ export class BookingHistoryComponent implements OnInit{
   cancellingTrainerBooking = false;
   trainerCancelReason = '';
 
-  constructor(private bookingService: BookingService, private storage: StorageService) {}
+  constructor(
+    private bookingService: BookingService,
+    private storage: StorageService,
+    private confirmDialog: ConfirmDialogService
+  ) {}
 
 
   ngOnInit() {
@@ -73,7 +78,7 @@ export class BookingHistoryComponent implements OnInit{
           this.loading = false;
         },
         error: () => {
-          // Fallback to member-owned endpoint if list endpoint is unavailable for this role.
+          
           this.bookingService.getMyClassBookings().subscribe({
             next: (res) => {
               const allRows = (res?.data ?? []) as any[];
@@ -155,10 +160,14 @@ export class BookingHistoryComponent implements OnInit{
     this.selectedClassBooking = null;
   }
 
-  cancelSelectedClassBooking(): void {
+  async cancelSelectedClassBooking(): Promise<void> {
     const bookingId = this.selectedClassBooking?.id;
     if (!bookingId || this.cancellingClassBooking) return;
-    if (!confirm('Are you sure you want to cancel this class booking?')) return;
+    const confirmed = await this.confirmDialog.confirm('Are you sure you want to cancel this class booking?', {
+      title: 'Confirm Cancel Class Booking',
+      confirmText: 'Cancel Booking',
+    });
+    if (!confirmed) return;
 
     this.cancellingClassBooking = true;
     this.bookingService.cancelClassBooking(bookingId).subscribe({
@@ -193,10 +202,14 @@ export class BookingHistoryComponent implements OnInit{
     return !['cancelled', 'completed', 'rejected'].includes(status);
   }
 
-  cancelSelectedTrainerBooking(): void {
+  async cancelSelectedTrainerBooking(): Promise<void> {
     const bookingId = this.selectedTrainerBooking?.id;
     if (!bookingId || this.cancellingTrainerBooking || !this.canCancelTrainerBooking(this.selectedTrainerBooking)) return;
-    if (!confirm('Are you sure you want to cancel this trainer booking?')) return;
+    const confirmed = await this.confirmDialog.confirm('Are you sure you want to cancel this trainer booking?', {
+      title: 'Confirm Cancel Trainer Booking',
+      confirmText: 'Cancel Booking',
+    });
+    if (!confirmed) return;
 
     this.cancellingTrainerBooking = true;
     this.bookingService.cancelTrainerBooking(bookingId, this.trainerCancelReason?.trim() || undefined).subscribe({

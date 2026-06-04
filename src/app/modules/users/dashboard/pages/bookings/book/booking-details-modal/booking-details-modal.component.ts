@@ -17,30 +17,30 @@ interface CalendarCell {
   templateUrl: './booking-details-modal.component.html',
   styleUrls: ['./booking-details-modal.component.css'],
 })
-// export class BookingDetailsModalComponent {
-//   @Input() item: any;
-//   @Input() mode!: 'class' | 'trainer';
 
-//   @Output() close = new EventEmitter<void>();
-//   @Output() confirm = new EventEmitter<void>();
 
-//   currentIndex = 0;
 
-//   get images(): string[] {
-//     return this.item.images?.length
-//       ? this.item.images
-//       : [this.item.thumbnail];
-//   }
 
-//   next() {
-//     this.currentIndex = (this.currentIndex + 1) % this.images.length;
-//   }
 
-//   prev() {
-//     this.currentIndex =
-//       (this.currentIndex - 1 + this.images.length) % this.images.length;
-//   }
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export class BookingDetailsModalComponent implements OnInit {
   @Input() item: any;
   @Input() mode!: 'class' | 'trainer';
@@ -89,8 +89,8 @@ export class BookingDetailsModalComponent implements OnInit {
 
     if (this.mode === 'trainer') {
         this.loadAvailability();
-        // console.log('availability 2', this.availability);
-        // console.log('item', this.item.trainerUserId, this.item.branchId);
+        
+        
     }
   }
 
@@ -103,7 +103,7 @@ export class BookingDetailsModalComponent implements OnInit {
 
     this.autoSlideInterval = setInterval(() => {
       this.next();
-    }, 4500); // 4.5s feels premium
+    }, 4500); 
   }
 
   stopAutoSlide() {
@@ -115,17 +115,17 @@ export class BookingDetailsModalComponent implements OnInit {
   loadAvailability() {
         this.loading = true;
 
-    // this.bookingService
-    //     .getTrainerAvailability(this.item.trainerUserId, this.item.branchId)
-    //     .subscribe(data => {
-    //     this.availability = data;
-    //     console.log('availability 1', this.availability);
+    
+    
+    
+    
+    
 
-    //     this.buildWeek();
-    //     this.buildTimeSlots();
+    
+    
 
-    //     this.loading = false;
-    //     });
+    
+    
 
         const next7Dates: string[] = Array.from({ length: 7 }, (_, i) => {
             const d = new Date();
@@ -165,10 +165,10 @@ export class BookingDetailsModalComponent implements OnInit {
     buildWeek(start?: Date) {
         const base = start ?? new Date();
 
-        // normalize time
+        
         base.setHours(0, 0, 0, 0);
 
-        // force Monday
+        
         const monday = new Date(base);
         const day = monday.getDay() || 7;
         monday.setDate(monday.getDate() - day + 1);
@@ -181,7 +181,7 @@ export class BookingDetailsModalComponent implements OnInit {
             return d.toISOString().split('T')[0];
         });
 
-        // Month + year label
+        
         this.monthLabel = monday.toLocaleDateString('en-US', {
             month: 'long',
             year: 'numeric'
@@ -259,15 +259,15 @@ export class BookingDetailsModalComponent implements OnInit {
     return this.selectedDate === date && this.selectedSlot === time;
   }
 
-    // get selectedDaySlots(): string[] {
-    // if (!this.selectedDate) return [];
+    
+    
 
-    // const day = this.availability.find(
-    //     a => a.date === this.selectedDate
-    // );
+    
+    
+    
 
-    // return day ? day.slots : [];
-    // }
+    
+    
 
 
   next() {

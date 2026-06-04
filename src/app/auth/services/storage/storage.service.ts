@@ -1,82 +1,82 @@
 
 
-// import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-// import { isPlatformBrowser } from '@angular/common';
-// import { BehaviorSubject } from 'rxjs';
 
-// const TOKEN = 'token';
-// const USER = 'user';
 
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class StorageService {
 
-//   loggedInSubject$ = new BehaviorSubject<boolean>(false);
 
-//   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
-//   private isBrowser(): boolean {
-//     return isPlatformBrowser(this.platformId);
-//   }
 
-//   saveToken(token: string): void {
-//     if (!this.isBrowser()) return;
-//     localStorage.setItem(TOKEN, token);
-//     this.loggedInSubject$.next(t
-//   }
 
-//   saveUser(user: any): void {
-//     if (!this.isBrowser()) return;
-//     localStorage.setItem(USER, JSON.stringify(user));
-//   }
 
-//   getToken(): string | null {
-//     if (!this.isBrowser()) return null;
-//     return localStorage.getItem(TOKEN);
-//   }
 
-//   getUser(): any {
-//     if (!this.isBrowser()) return null;
-//     const user = localStorage.getItem(USER);
-//     return user ? JSON.parse(user) : null;
-//   }
 
-//   getUserRole(): string {
-//     return this.getUser()?.role ?? '';
-//   }
 
-//   isAdminLoggedIn(): boolean {
-//     return !!this.getToken() && this.getUserRole() === 'ADMIN';
-//   }
 
-//   isUserLoggedIn(): boolean {
-//     return !!this.getToken() && this.getUserRole() === 'USER';
-//   }
 
-//   isOrganizerLoggedIn(): boolean {
-//     return !!this.getToken() && this.getUserRole() === 'ORGANIZER';
-//   }
 
-//   isTrainerLoggedIn(): boolean {
-//     return !!this.getToken() && this.getUserRole() === 'TRAINER';
-//   }
 
-//   hasToken(): boolean {
-//     return !!this.getToken();
-//   }
 
-//   getUserId(): string {
-//     return this.getUser()?.id ?? '';
-//   }
 
-//   signOut(): void {
-//     if (!this.isBrowser()) return;
-//     localStorage.removeItem(TOKEN);
-//     localStorage.removeItem(USER);
-//     this.loggedInSubject$.next(false);
-//   }
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -101,7 +101,7 @@ export class StorageService {
     return isPlatformBrowser(this.platformId);
   }
 
-  // ─── Token ────────────────────────────────────────────────────────────────
+  
 
   saveToken(token: string): void {
     if (!this.isBrowser()) return;
@@ -124,13 +124,9 @@ export class StorageService {
     return localStorage.getItem(REFRESH_TOKEN);
   }
 
-  // ─── User ─────────────────────────────────────────────────────────────────
+  
 
-  /**
-   * Save user info to localStorage.
-   * The backend JWT payload contains roles as string[] e.g. ['MEMBER'] / ['ADMIN'] / ['TRAINER']
-   * We store { id, roles, email } from the decoded token or login response.
-   */
+  
   saveUser(user: any): void {
     if (!this.isBrowser()) return;
     localStorage.setItem(USER, JSON.stringify(user));
@@ -158,14 +154,11 @@ export class StorageService {
     return this.getUser()?.email ?? '';
   }
 
-  /**
-   * Roles come back in the JWT payload as an array e.g. ['ADMIN'] or ['MEMBER']
-   * Backend role names: ADMIN, STAFF, TRAINER, MEMBER  (NOT "USER")
-   */
+  
   getUserRoles(): string[] {
     const user = this.getUser();
     if (!user) return [];
-    // Support both { roles: ['ADMIN'] } and { role: 'ADMIN' } shapes
+    
     if (Array.isArray(user.roles)) return user.roles;
     if (user.role) return [user.role];
     return [];
@@ -175,7 +168,7 @@ export class StorageService {
     return this.getUserRoles().includes(role);
   }
 
-  // ─── Auth checks ──────────────────────────────────────────────────────────
+  
 
   hasToken(): boolean {
     return !!this.getToken();
@@ -185,7 +178,7 @@ export class StorageService {
     return this.hasToken() && this.hasRole('ADMIN');
   }
 
-  /** Backend role is MEMBER (not USER) */
+  
   isUserLoggedIn(): boolean {
     return this.hasToken() && this.hasRole('MEMBER');
   }
@@ -198,7 +191,7 @@ export class StorageService {
     return this.hasToken() && this.hasRole('STAFF');
   }
 
-  // ─── Sign out ─────────────────────────────────────────────────────────────
+  
 
   signOut(): void {
     if (!this.isBrowser()) return;

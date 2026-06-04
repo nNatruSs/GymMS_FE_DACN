@@ -125,7 +125,7 @@ export class UserChatbotComponent {
     close$.subscribe({
       next: () => runCreate(),
       error: () => {
-        // Even if close fails (expired/already closed), still try to create new session.
+        
         runCreate();
       },
     });

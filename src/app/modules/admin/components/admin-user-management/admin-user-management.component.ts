@@ -4,9 +4,11 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import {
   AdminRoleItem,
   AdminUserListItem,
+  AdminTrainerPayload,
   AdminUserPayload,
   AdminUserService,
 } from '../../services/admin-user.service';
+import { ConfirmDialogService } from '../../../../services/confirm-dialog.service';
 
 @Component({
   selector: 'app-admin-user-management',
@@ -18,6 +20,7 @@ import {
 export class AdminUserManagementComponent {
   private fb = inject(FormBuilder);
   private adminUserService = inject(AdminUserService);
+  private confirmDialog = inject(ConfirmDialogService);
 
   loading = true;
   creating = false;
@@ -55,6 +58,13 @@ export class AdminUserManagementComponent {
     gender: ['male', Validators.required],
     dob: ['', Validators.required],
     address: [''],
+    password: ['SecurePass@123'],
+    ptSessionPrice60: [250000],
+    specialization: [''],
+    experienceYears: [0],
+    biography: [''],
+    certifications: [''],
+    areasOfExpertise: [''],
   });
 
   editForm = this.fb.nonNullable.group({
@@ -68,6 +78,12 @@ export class AdminUserManagementComponent {
     status: ['active', Validators.required],
     role: ['MEMBER', Validators.required],
     password: [''],
+    ptSessionPrice60: [250000],
+    specialization: [''],
+    experienceYears: [0],
+    biography: [''],
+    certifications: [''],
+    areasOfExpertise: [''],
   });
 
   ngOnInit(): void {
@@ -121,6 +137,13 @@ export class AdminUserManagementComponent {
       gender: 'male',
       dob: '',
       address: '',
+      password: 'SecurePass@123',
+      ptSessionPrice60: 250000,
+      specialization: '',
+      experienceYears: 0,
+      biography: '',
+      certifications: '',
+      areasOfExpertise: '',
     });
   }
 
@@ -129,12 +152,16 @@ export class AdminUserManagementComponent {
     this.showCreateModal = false;
   }
 
-  createUser(): void {
+  async createUser(): Promise<void> {
     this.createForm.markAllAsTouched();
     if (this.createForm.invalid || this.creating) return;
-    if (!confirm('Create this user account?')) return;
+    const confirmed = await this.confirmDialog.confirm('Create this user account?', {
+      title: 'Confirm Create User',
+      confirmText: 'Create',
+    });
+    if (!confirmed) return;
 
-    const payload: AdminUserPayload = {
+    const basePayload: AdminUserPayload = {
       firstName: this.createForm.controls.firstName.value.trim(),
       lastName: this.createForm.controls.lastName.value.trim(),
       email: this.createForm.controls.email.value.trim(),
@@ -144,11 +171,28 @@ export class AdminUserManagementComponent {
       dob: this.createForm.controls.dob.value,
       address: this.createForm.controls.address.value.trim() || undefined,
     };
+    const isTrainer = this.isTrainerRoleName(basePayload.role);
+    const payload: AdminTrainerPayload | AdminUserPayload = isTrainer
+      ? {
+          ...this.omitRole(basePayload),
+          status: 'active',
+          password: this.createForm.controls.password.value.trim() || 'SecurePass@123',
+          ptSessionPrice60: Number(this.createForm.controls.ptSessionPrice60.value || 0),
+          specialization: this.createForm.controls.specialization.value.trim() || undefined,
+          experienceYears: Number(this.createForm.controls.experienceYears.value || 0),
+          biography: this.createForm.controls.biography.value.trim() || undefined,
+          certifications: this.splitCommaList(this.createForm.controls.certifications.value),
+          areasOfExpertise: this.splitCommaList(this.createForm.controls.areasOfExpertise.value),
+        }
+      : basePayload;
 
     this.creating = true;
     this.errorMessage = '';
     this.successMessage = '';
-    this.adminUserService.createUser(payload).subscribe({
+    const request$ = isTrainer
+      ? this.adminUserService.createTrainer(payload as AdminTrainerPayload)
+      : this.adminUserService.createUser(payload as AdminUserPayload);
+    request$.subscribe({
       next: () => {
         this.creating = false;
         this.showCreateModal = false;
@@ -186,6 +230,12 @@ export class AdminUserManagementComponent {
           status: user.status ?? 'active',
           role: user.roles?.[0]?.name ?? 'MEMBER',
           password: '',
+          ptSessionPrice60: Number(user.ptSessionPrice60 ?? 250000),
+          specialization: user.trainerSpecialization ?? '',
+          experienceYears: Number(user.trainerExperienceYears ?? 0),
+          biography: user.trainerBiography ?? '',
+          certifications: (user.trainerCertifications ?? []).join(', '),
+          areasOfExpertise: (user.trainerAreasOfExpertise ?? []).join(', '),
         });
       },
       error: (err) => {
@@ -202,13 +252,17 @@ export class AdminUserManagementComponent {
     this.selectedAssignRoleIds = [];
   }
 
-  updateUser(): void {
+  async updateUser(): Promise<void> {
     this.editForm.markAllAsTouched();
     if (this.editForm.invalid || !this.selectedUser?.id || this.updating) return;
-    if (!confirm('Update this user information?')) return;
+    const confirmed = await this.confirmDialog.confirm('Update this user information?', {
+      title: 'Confirm Update User',
+      confirmText: 'Update',
+    });
+    if (!confirmed) return;
 
     const rawPassword = this.editForm.controls.password.value.trim();
-    const payload: AdminUserPayload = {
+    const basePayload: AdminUserPayload = {
       firstName: this.editForm.controls.firstName.value.trim(),
       lastName: this.editForm.controls.lastName.value.trim(),
       email: this.editForm.controls.email.value.trim(),
@@ -220,11 +274,26 @@ export class AdminUserManagementComponent {
       role: this.editForm.controls.role.value,
       password: rawPassword || undefined,
     };
+    const isTrainer = this.isTrainerUser(this.selectedUser);
+    const payload: AdminTrainerPayload | AdminUserPayload = isTrainer
+      ? {
+          ...basePayload,
+          ptSessionPrice60: Number(this.editForm.controls.ptSessionPrice60.value || 0),
+          specialization: this.editForm.controls.specialization.value.trim() || undefined,
+          experienceYears: Number(this.editForm.controls.experienceYears.value || 0),
+          biography: this.editForm.controls.biography.value.trim() || undefined,
+          certifications: this.splitCommaList(this.editForm.controls.certifications.value),
+          areasOfExpertise: this.splitCommaList(this.editForm.controls.areasOfExpertise.value),
+        }
+      : basePayload;
 
     this.updating = true;
     this.errorMessage = '';
     this.successMessage = '';
-    this.adminUserService.updateUser(this.selectedUser.id, payload).subscribe({
+    const request$ = isTrainer
+      ? this.adminUserService.updateTrainer(this.selectedUser.id, payload as AdminTrainerPayload)
+      : this.adminUserService.updateUser(this.selectedUser.id, payload as AdminUserPayload);
+    request$.subscribe({
       next: () => {
         this.updating = false;
         this.successMessage = 'User updated successfully.';
@@ -237,9 +306,13 @@ export class AdminUserManagementComponent {
     });
   }
 
-  deleteUser(): void {
+  async deleteUser(): Promise<void> {
     if (!this.selectedUser?.id || this.deleting) return;
-    if (!confirm('Delete this user? This action cannot be undone.')) return;
+    const confirmed = await this.confirmDialog.confirm('Delete this user? This action cannot be undone.', {
+      title: 'Confirm Delete User',
+      confirmText: 'Delete',
+    });
+    if (!confirmed) return;
 
     this.deleting = true;
     this.errorMessage = '';
@@ -259,11 +332,15 @@ export class AdminUserManagementComponent {
     });
   }
 
-  assignRoles(): void {
+  async assignRoles(): Promise<void> {
     if (!this.selectedUser?.id || this.assigningRole) return;
     const roleIds = this.selectedAssignRoleIds.filter((x) => !!x);
     if (!roleIds.length) return;
-    if (!confirm('Assign selected roles to this user?')) return;
+    const confirmed = await this.confirmDialog.confirm('Assign selected roles to this user?', {
+      title: 'Confirm Assign Roles',
+      confirmText: 'Assign',
+    });
+    if (!confirmed) return;
 
     this.assigningRole = true;
     this.errorMessage = '';
@@ -282,9 +359,13 @@ export class AdminUserManagementComponent {
     });
   }
 
-  removeRole(roleId: string): void {
+  async removeRole(roleId: string): Promise<void> {
     if (!this.selectedUser?.id || !roleId || this.removingRoleId) return;
-    if (!confirm('Remove this role from the user?')) return;
+    const confirmed = await this.confirmDialog.confirm('Remove this role from the user?', {
+      title: 'Confirm Remove Role',
+      confirmText: 'Remove',
+    });
+    if (!confirmed) return;
 
     this.removingRoleId = roleId;
     this.errorMessage = '';
@@ -384,5 +465,26 @@ export class AdminUserManagementComponent {
         this.availableRoles = [];
       },
     });
+  }
+
+  isTrainerRoleName(roleName?: string | null): boolean {
+    return String(roleName ?? '').toUpperCase() === 'TRAINER';
+  }
+
+  isTrainerUser(user: AdminUserListItem | null): boolean {
+    if (!user) return false;
+    return Boolean(user.roles?.some((r) => this.isTrainerRoleName(r?.name)));
+  }
+
+  private splitCommaList(value: string): string[] {
+    return String(value ?? '')
+      .split(',')
+      .map((x) => x.trim())
+      .filter(Boolean);
+  }
+
+  private omitRole(payload: AdminUserPayload): AdminTrainerPayload {
+    const { role, ...rest } = payload;
+    return rest as AdminTrainerPayload;
   }
 }

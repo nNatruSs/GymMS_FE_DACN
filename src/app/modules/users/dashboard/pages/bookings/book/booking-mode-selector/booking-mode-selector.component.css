@@ -1,39 +1,4 @@
-/* .mode-card {
-  height: 300px;
-  border-radius: 26px;
-  color: white;
-  padding: 2rem;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: all .4s ease;
-}
 
-.mode-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-}
-
-.mode-card * {
-  position: relative;
-  z-index: 1;
-}
-
-.mode-card.class {
-  background: url('/assets/book/mode-select/class_session.jpg') center/cover;
-  border: 3px solid #0d6efd;
-}
-
-.mode-card.trainer {
-  background: url('/assets/book/mode-select/trainer_session.jpg') center/cover;
-  border: 3px solid #dc3545;
-}
-
-.mode-card:hover {
-  transform: scale(1.04);
-} */
 
 .mode-grid {
   display: grid;

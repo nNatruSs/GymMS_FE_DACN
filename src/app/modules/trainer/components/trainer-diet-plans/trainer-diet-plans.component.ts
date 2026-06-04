@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TrainerService } from '../../services/trainer.service';
+import { ConfirmDialogService } from '../../../../services/confirm-dialog.service';
 
 @Component({
   selector: 'app-trainer-diet-plans',
@@ -68,7 +69,10 @@ export class TrainerDietPlansComponent {
     memberIds: [] as string[],
   };
 
-  constructor(private trainerService: TrainerService) {}
+  constructor(
+    private trainerService: TrainerService,
+    private confirmDialog: ConfirmDialogService
+  ) {}
 
   ngOnInit(): void {
     this.loadBookedMembers();
@@ -346,10 +350,14 @@ export class TrainerDietPlansComponent {
       });
   }
 
-  deleteDietPlan(): void {
+  async deleteDietPlan(): Promise<void> {
     const planId = this.selectedPlanSummary?.id ?? this.selectedPlanDetail?.id;
     if (!planId || !this.canDeleteSelected() || this.deleting) return;
-    if (!confirm('Delete this DRAFT private diet plan?')) return;
+    const confirmed = await this.confirmDialog.confirm('Delete this DRAFT private diet plan?', {
+      title: 'Confirm Delete Diet Plan',
+      confirmText: 'Delete',
+    });
+    if (!confirmed) return;
 
     this.deleting = true;
     this.clearMessages();

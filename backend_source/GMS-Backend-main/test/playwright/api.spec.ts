@@ -109,7 +109,7 @@ test.describe('Playwright API E2E', () => {
   });
 
   test('logs in an active user', async () => {
-    const response = await anonymousApi.post('auth/login', {
+    const response = await anonymousApi.post('/auth/login', {
       data: {
         username: seededUsers.member.email,
         password: seededUsers.member.password,
@@ -132,7 +132,7 @@ test.describe('Playwright API E2E', () => {
   });
 
   test('rejects login with invalid credentials', async () => {
-    const response = await anonymousApi.post('auth/login', {
+    const response = await anonymousApi.post('/auth/login', {
       data: {
         username: seededUsers.member.email,
         password: 'WrongPassword@123',
@@ -146,7 +146,7 @@ test.describe('Playwright API E2E', () => {
     const sessionCountBefore = await countSessionsForUser(seededUsers.member.id);
     await updateUserStatus(seededUsers.member.id, 'inactive');
 
-    const response = await anonymousApi.post('auth/login', {
+    const response = await anonymousApi.post('/auth/login', {
       data: {
         username: seededUsers.member.email,
         password: seededUsers.member.password,
@@ -309,7 +309,7 @@ test.describe('Playwright API E2E', () => {
   });
 
   test('issues a longer refresh-token lifetime when rememberMe is enabled', async () => {
-    const normalLogin = await anonymousApi.post('auth/login', {
+    const normalLogin = await anonymousApi.post('/auth/login', {
       data: {
         username: seededUsers.member.email,
         password: seededUsers.member.password,
@@ -322,7 +322,7 @@ test.describe('Playwright API E2E', () => {
       data: { refreshToken: string };
     };
 
-    const rememberLogin = await anonymousApi.post('auth/login', {
+    const rememberLogin = await anonymousApi.post('/auth/login', {
       data: {
         username: seededUsers.member.email,
         password: seededUsers.member.password,
@@ -391,7 +391,7 @@ test.describe('Playwright API E2E', () => {
     expect(createdUser).not.toBeNull();
     expect(await getUserRoleNames(createdUser!.id)).toEqual(['MEMBER']);
 
-    const blockedLogin = await anonymousApi.post('auth/login', {
+    const blockedLogin = await anonymousApi.post('/auth/login', {
       data: {
         username: payload.email,
         password: payload.password,
@@ -410,7 +410,7 @@ test.describe('Playwright API E2E', () => {
     });
     expect(verifyResponse.status()).toBe(200);
 
-    const verifiedLogin = await anonymousApi.post('auth/login', {
+    const verifiedLogin = await anonymousApi.post('/auth/login', {
       data: {
         username: payload.email,
         password: payload.password,
@@ -627,7 +627,7 @@ test.describe('Playwright API E2E', () => {
       expect(verifyBody.data.status).toBe('active');
       expect(verifyBody.data.email).toBe(user.email);
 
-      const loginResponse = await anonymousApi.post('auth/login', {
+      const loginResponse = await anonymousApi.post('/auth/login', {
         data: {
           username: user.email,
           password,
@@ -777,7 +777,7 @@ test.describe('Playwright API E2E', () => {
         })
         .toBe(0);
 
-      const blockedLogin = await anonymousApi.post('auth/login', {
+      const blockedLogin = await anonymousApi.post('/auth/login', {
         data: {
           username: seededUsers.member.email,
           password: seededUsers.member.password,

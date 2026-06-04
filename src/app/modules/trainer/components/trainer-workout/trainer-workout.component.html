@@ -9,7 +9,7 @@
     <div *ngIf="loading" class="text-muted">Loading workout resources...</div>
 
     <div *ngIf="!loading" class="row g-4">
-      <!-- Exercises -->
+      
       <div class="col-lg-5">
         <div class="section-card p-3 h-100">
           <div class="d-flex justify-content-between align-items-center mb-2">
@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <!-- Workout plans -->
+      
       <div class="col-lg-7">
         <div class="section-card p-3 h-100">
           <div class="d-flex justify-content-between align-items-center mb-2">
@@ -55,7 +55,7 @@
   </div>
 </div>
 
-<!-- Create Exercise Modal -->
+
 <div *ngIf="showCreateExerciseModal" class="modal-overlay" (click)="closeExerciseModals()">
   <div class="modal-card" (click)="$event.stopPropagation()">
     <h5 class="mb-3">Create Exercise</h5>
@@ -86,7 +86,7 @@
   </div>
 </div>
 
-<!-- Exercise Detail Modal -->
+
 <div *ngIf="showExerciseDetailModal" class="modal-overlay" (click)="closeExerciseModals()">
   <div class="modal-card" (click)="$event.stopPropagation()">
     <h5 class="mb-3">Exercise Detail</h5>
@@ -122,7 +122,7 @@
   </div>
 </div>
 
-<!-- Create Plan Modal -->
+
 <div *ngIf="showCreatePlanModal" class="modal-overlay" (click)="closePlanModals()">
   <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
     <h5 class="mb-3">Create Workout Plan</h5>
@@ -231,7 +231,7 @@
   </div>
 </div>
 
-<!-- Plan Detail Modal -->
+
 <div *ngIf="showPlanDetailModal" class="modal-overlay" (click)="closePlanModals()">
   <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
     <h5 class="mb-3">Workout Plan Detail</h5>

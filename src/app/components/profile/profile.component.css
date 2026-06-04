@@ -1,0 +1,35 @@
+.profile-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px 12px;
+}
+
+.profile-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar-preview,
+.avatar-placeholder {
+  width: 78px;
+  height: 78px;
+  border-radius: 9999px;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 700;
+}

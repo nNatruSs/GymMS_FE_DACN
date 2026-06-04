@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import { RouterOutlet } from '@angular/router';
+
 import { OnInit } from '@angular/core';
 import { BookingService } from '../../../../services/booking.service';
 import { StorageService } from '../../../../../../auth/services/storage/storage.service';
@@ -27,7 +27,7 @@ export class BookingCalendarComponent implements OnInit {
   currentWeek = new Date();
   monthLabel = '';
 
-  // @Output() selectBooking = new EventEmitter<any>();
+  
 
   selectedBooking: any | null = null;
 

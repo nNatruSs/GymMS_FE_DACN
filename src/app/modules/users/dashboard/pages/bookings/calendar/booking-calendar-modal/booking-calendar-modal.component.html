@@ -1,29 +1,4 @@
-<!-- <div class="modal-backdrop" (click)="close.emit()"></div>
 
-<div class="modal-card">
-  <h5 class="fw-semibold mb-2">{{ booking.title }}</h5>
-
-  <div class="text-muted mb-2">
-    {{ booking.date }} • {{ booking.time }}
-  </div>
-
-  <span
-    class="badge"
-    [class.bg-danger]="booking.type==='class'"
-    [class.bg-primary]="booking.type==='trainer'"
-  >
-    {{ booking.type }} session
-  </span>
-
-  <div class="mt-4 d-flex justify-content-end gap-2">
-    <button class="btn btn-outline-secondary" (click)="close.emit()">
-      Close
-    </button>
-    <button class="btn btn-danger" (click)="cancel.emit(booking.id)">
-      Cancel Booking
-    </button>
-  </div>
-</div> -->
 
 
 <div class="modal-backdrop-custom" (click)="close.emit()"></div>
@@ -31,16 +6,16 @@
 <div data-testid="calendar-booking-modal" class="modal-container">
   <div class="modal-card">
 
-    <!-- HEADER -->
+    
     <div class="modal-header">
       <h5 class="fw-semibold mb-0">Booking Details</h5>
       <button class="btn-close" (click)="close.emit()"></button>
     </div>
 
-    <!-- BODY (SCROLLABLE) -->
+    
     <div class="modal-body">
 
-      <!-- IMAGE -->
+      
       <div class="image-wrapper mb-3">
         <img
           *ngIf="booking.thumbnail"
@@ -49,7 +24,7 @@
         />
       </div>
 
-      <!-- TITLE -->
+      
       <h4 class="fw-bold mb-1">{{ booking.title }}</h4>
 
       <div class="mb-2 text-muted">
@@ -62,7 +37,7 @@
         {{ booking.title }}
       </div>
 
-      <!-- BADGES -->
+      
       <div class="mb-3">
         <span
           class="badge me-2"
@@ -83,13 +58,13 @@
 
       <hr />
 
-      <!-- DATE & TIME -->
+      
       <div class="mb-2">
         <i class="bi bi-calendar-event me-2"></i>
         {{ booking.date }} • {{ booking.time }}
       </div>
 
-      <!-- OPTIONAL INFO -->
+      
       <div *ngIf="booking.branchName" class="mb-2">
         <i class="bi bi-geo-alt me-2"></i>
         {{ booking.branchName }}
@@ -109,7 +84,7 @@
 
     </div>
 
-    <!-- FOOTER -->
+    
     <div class="modal-footer">
 
       <button

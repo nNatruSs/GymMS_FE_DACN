@@ -12,19 +12,19 @@
           
         </div>
 
-        <!-- Login Card -->
+        
         <div class="card shadow-sm mb-4 p-4">
           <form [formGroup]="loginForm" >
           
           
             
-            <!-- Email Field -->
+            
             <div class="mb-3">
               <h2 class="display-6 text-center">Login</h2>
               <p class="lead mb-4 text-center">Enter your credentials</p>
               <label for="email" class="form-label">Email</label>
               <input data-testid="login-email" id="email" formControlName="email" type="email" class="form-control" placeholder="Email" />
-              <!-- Validation Error for Email -->
+              
               <div *ngIf="loginForm.controls['email'].touched && loginForm.controls['email'].errors?.['required']" class="text-danger">
                 Email is required
               </div>
@@ -33,28 +33,28 @@
               </div>
             </div>
 
-            <!-- Password Field -->
+            
             <div class="mb-3">
               <label for="password" class="form-label">Password</label>
               <input data-testid="login-password" id="password" formControlName="password" type="password" class="form-control" placeholder="Password" />
-              <!-- Validation Error for Password -->
+              
               <div *ngIf="loginForm.controls['password'].touched && loginForm.controls['password'].errors?.['required']" class="text-danger">
                 Password is required
               </div>
             </div>
 
         
-            <!-- Submit Button -->
+            
             <a data-testid="login-submit" type="submit" class="btn btn-outline-primary w-100 mt-4" (click)="login()">Sign in</a>
 
 
-            <!-- Forgot Password Link -->
+            
             <div class="text-center mt-3">
               <a href="/forgot-password" class="text-decoration-none">Forgot password?</a>
             </div>
           </form>
         </div>
-<!-- User Registration Section as an Outlined Card -->
+
 <div class="card border-success mb-3">
   <div class="card-header text-center" style="font-size: 1.3rem; font-weight: bold; text-transform: uppercase; color: #28a745;">No account yet?</div>
   <div class="card-body">

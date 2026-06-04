@@ -40,7 +40,7 @@
   </div>
 </div>
 
-<!-- Start Session Modal -->
+
 <div *ngIf="showStartModal" class="overlay" (click)="closeStartModal()">
   <div class="modal-card" (click)="$event.stopPropagation()">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -72,7 +72,7 @@
   </div>
 </div>
 
-<!-- Session Detail Modal -->
+
 <div *ngIf="showDetailModal && selectedSession" class="overlay" (click)="closeSessionDetail()">
   <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
     <div class="d-flex justify-content-between align-items-center mb-3">

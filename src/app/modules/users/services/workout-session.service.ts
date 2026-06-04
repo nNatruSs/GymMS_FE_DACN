@@ -2,8 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { StorageService } from '../../../auth/services/storage/storage.service';
-
-const BASE_URL = 'https://gms-backend-lc61.onrender.com/api/v1';
+import { API_BASE_URL as BASE_URL } from '../../../core/constants/api.constants';
 
 @Injectable({ providedIn: 'root' })
 export class WorkoutSessionService {

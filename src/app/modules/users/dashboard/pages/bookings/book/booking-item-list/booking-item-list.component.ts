@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookingService } from '../../../../../services/booking.service';
 import { StorageService } from '../../../../../../../auth/services/storage/storage.service';
-import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-booking-item-list',
@@ -109,10 +108,10 @@ export class BookingItemListComponent implements OnInit {
     this.trainerBookingNotes = '';
   }
 
-//   confirm() {
-//     alert('Booking confirmed (mock)');
-//     this.close();
-//   }
+
+
+
+
 
   confirm({ date, time }: { date: string; time: string }) {
     const booking = {
@@ -242,37 +241,21 @@ export class BookingItemListComponent implements OnInit {
         bookingEndDate: this.bookingEndDate,
         classScheduleId: [this.selectedClass.id],
       })
-      .pipe(
-        switchMap((res: any) => {
-          const bookingData = res?.data ?? res;
-          const createdBooking = Array.isArray(bookingData) ? bookingData[0] : bookingData;
-          const bookingId = createdBooking?.id;
-          if (!bookingId) {
-            throw new Error('Could not retrieve booking id for checkout.');
-          }
-          return this.bookingService.checkoutClassBooking(bookingId);
-        })
-      )
       .subscribe({
-        next: (checkoutRes: any) => {
+        next: () => {
           this.bookingClassSubmitting = false;
-          const checkoutUrl = checkoutRes?.checkoutUrl ?? checkoutRes?.data?.checkoutUrl;
-          if (checkoutUrl) {
-            window.open(checkoutUrl, '_blank');
-          } else {
-            alert('Booking created, but checkout link was not returned.');
-          }
+          alert('Class booking created successfully.');
           this.selectedClass = null;
           this.loadClassSchedules(this.classFilters.page);
         },
         error: () => {
           this.bookingClassSubmitting = false;
-          alert('Could not start class checkout. Please try again.');
+          alert('Could not create class booking. Please try again.');
         },
       });
   }
 
-  // ─── Trainer booking flow ───────────────────────────────────────────────────
+  
   loadTrainerList(): void {
     this.loading = true;
     this.bookingService
@@ -364,9 +347,9 @@ export class BookingItemListComponent implements OnInit {
   }
 
   trainerSpecialization(item: any): string {
-    const fromArray = item?.specializations ?? item?.trainerAreasOfExpertise ?? [];
+    const fromArray = item?.specialization ?? item?.areasOfExpertise ?? [];
     if (Array.isArray(fromArray) && fromArray.length) return fromArray.join(', ');
-    return item?.specialization || item?.trainerSpecialization || 'No specialization';
+    return item?.specialization || 'No specialization';
   }
 
   trainerThumbnail(item: any): string {

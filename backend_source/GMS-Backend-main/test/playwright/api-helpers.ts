@@ -620,7 +620,7 @@ export async function loginAs(
   username: string,
   password: string,
 ): Promise<LoginResult> {
-  const response = await api.post('auth/login', {
+  const response = await api.post('/auth/login', {
     data: {
       username,
       password,

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ConfirmDialogService } from '../../../../../../../services/confirm-dialog.service';
 
 @Component({
   selector: 'app-booking-calendar-modal',
@@ -14,8 +15,14 @@ export class BookingCalendarModalComponent {
   @Output() close = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<string>();
 
-  cancelBooking() {
-    if (!confirm('Are you sure you want to cancel this booking?')) return;
+  constructor(private confirmDialog: ConfirmDialogService) {}
+
+  async cancelBooking(): Promise<void> {
+    const confirmed = await this.confirmDialog.confirm('Are you sure you want to cancel this booking?', {
+      title: 'Confirm Cancel Booking',
+      confirmText: 'Cancel Booking',
+    });
+    if (!confirmed) return;
     this.cancel.emit(this.booking.id);
   }
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrainerClientLinkView, TrainerService } from '../../services/trainer.service';
+import { ConfirmDialogService } from '../../../../services/confirm-dialog.service';
 
 @Component({
   selector: 'app-trainer-my-clients',
@@ -18,7 +19,10 @@ export class TrainerMyClientsComponent {
   bookings: any[] = [];
   completingBookingId: string | null = null;
 
-  constructor(private trainerService: TrainerService) {}
+  constructor(
+    private trainerService: TrainerService,
+    private confirmDialog: ConfirmDialogService
+  ) {}
 
   ngOnInit(): void {
     this.loadClients();
@@ -66,9 +70,13 @@ export class TrainerMyClientsComponent {
     return this.clients.find((x) => x.memberId === memberId || x.member?.id === memberId) ?? null;
   }
 
-  completeSession(booking: any): void {
+  async completeSession(booking: any): Promise<void> {
     if (!booking?.id || this.completingBookingId || !this.canCompleteBooking(booking)) return;
-    if (!confirm('Mark this session as completed?')) return;
+    const confirmed = await this.confirmDialog.confirm('Mark this session as completed?', {
+      title: 'Confirm Complete Session',
+      confirmText: 'Complete',
+    });
+    if (!confirmed) return;
 
     this.completingBookingId = booking.id;
     this.errorMessage = null;

@@ -23,7 +23,7 @@ export class CreateTrainerBookingDto {
   @IsNotEmpty()
   endAt!: Date;
 
-  @ApiPropertyOptional({ example: 'Focus on deadlift form' })
+  @ApiPropertyOptional({ example: 'Note' })
   @IsOptional()
   @IsString()
   notes?: string;

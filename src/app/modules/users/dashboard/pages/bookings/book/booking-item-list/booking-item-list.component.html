@@ -1,56 +1,6 @@
-<!-- <h4 class="fw-semibold mb-4 text-capitalize">
-  Available {{ mode }}s
-</h4>
 
-<div *ngIf="loading" class="text-center py-5">
-  <div class="spinner-border"></div>
-</div>
 
-<div class="row g-4">
-  <div class="col-md-4" *ngFor="let i of items">
-    <div class="item-card">
-      <img [src]="i.thumbnail" />
-      <div class="p-3">
-        <h6>{{ i.name || i.bio }}</h6>
-        <p class="small text-muted">
-          {{ i.schedule || i.specialties?.join(', ') }}
-        </p>
-        <button class="btn btn-outline-primary w-100">
-          View Details
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
 
-<button class="btn btn-link mt-4" (click)="back.emit()">← Back</button> -->
-
-<!-- <h4 class="fw-semibold mb-4 text-capitalize">
-  Available {{ mode }}s
-</h4>
-
-<div *ngIf="loading" class="text-center py-5">
-  <div class="spinner-border"></div>
-</div>
-
-<div class="row g-4">
-  <div class="col-md-4" *ngFor="let i of items">
-    <div class="item-card">
-      <img [src]="i.thumbnail" />
-      <div class="p-3">
-        <h6>{{ i.name || i.bio }}</h6>
-        <p class="small text-muted">
-          {{ i.schedule || i.specialties?.join(', ') }}
-        </p>
-        <button class="btn btn-outline-primary w-100">
-          View Details
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<button class="btn btn-link mt-4" (click)="back.emit()">← Back</button> -->
 
 <div class="mode-header mb-4 d-flex align-items-center">
   <button
@@ -158,7 +108,7 @@
       <div class="thumb-wrapper">
         <img [src]="mode === 'class' ? getClassLogo(i) : trainerThumbnail(i)" alt="" />
       </div>
-      <!-- <img [src]="i.thumbnail" class="card-img-top h-100" /> -->
+      
       <div class="card-body">
         <h6 class="fw-semibold mb-1">
           {{ mode === 'class' ? i.className : trainerDisplayName(i) }}
@@ -174,7 +124,7 @@
           {{ formatClassTime(i.startTime) }} - {{ formatClassTime(i.endTime) }} • {{ i.location }}
         </div>
         <div *ngIf="mode === 'trainer'" class="small mt-2 text-muted">
-          {{ i.ptSessionPrice60 || i.hourlyRate || i.price || 0 | number }} VND / session
+          {{ i.ptSessionPrice60 || i.hourlyRate || i.pricing['60'] || 0 | number }} VND / session
         </div>
       </div>
     </div>
@@ -205,8 +155,8 @@
           <div><strong>Name:</strong> {{ trainerDisplayName(trainerProfile || selectedItem) }}</div>
           <div><strong>Email:</strong> {{ (trainerProfile || selectedItem)?.email || '-' }}</div>
           <div><strong>Specialization:</strong> {{ trainerSpecialization(trainerProfile || selectedItem) }}</div>
-          <div><strong>Experience:</strong> {{ (trainerProfile || selectedItem)?.trainerExperienceYears ?? '-' }} years</div>
-          <div><strong>Biography:</strong> {{ (trainerProfile || selectedItem)?.trainerBiography || (trainerProfile || selectedItem)?.bio || '-' }}</div>
+          <div><strong>Experience:</strong> {{ (trainerProfile || selectedItem)?.experience ?? '-' }} years</div>
+          <div><strong>Biography:</strong> {{ (trainerProfile || selectedItem)?.biography || (trainerProfile || selectedItem)?.bio || '-' }}</div>
         </div>
       </div>
 
@@ -227,7 +177,7 @@
 
       <div class="mb-3">
         <label class="form-label">Notes (optional)</label>
-        <textarea data-testid="trainer-booking-notes" class="form-control" rows="2" [(ngModel)]="trainerBookingNotes" placeholder="Focus on deadlift form"></textarea>
+        <textarea data-testid="trainer-booking-notes" class="form-control" rows="2" [(ngModel)]="trainerBookingNotes" placeholder="Note here"></textarea>
       </div>
 
       <div class="d-flex justify-content-end gap-2">

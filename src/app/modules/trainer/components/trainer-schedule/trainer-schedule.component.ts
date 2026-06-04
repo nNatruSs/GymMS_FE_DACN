@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { StorageService } from '../../../../auth/services/storage/storage.service';
+import { ConfirmDialogService } from '../../../../services/confirm-dialog.service';
 import {
   TrainerAvailabilitySlot,
   TrainerBookingSlot,
@@ -45,7 +46,8 @@ export class TrainerScheduleComponent {
 
   constructor(
     private trainerService: TrainerService,
-    private storage: StorageService
+    private storage: StorageService,
+    private confirmDialog: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -84,12 +86,16 @@ export class TrainerScheduleComponent {
     this.slots = [...this.slots, { ...this.newSlot }];
   }
 
-  removeSlot(index: number): void {
+  async removeSlot(index: number): Promise<void> {
     const slot = this.slots[index];
     if (!slot) return;
 
     if (slot.id) {
-      if (!confirm('Delete this availability slot?')) return;
+      const confirmed = await this.confirmDialog.confirm('Delete this availability slot?', {
+        title: 'Confirm Delete Availability',
+        confirmText: 'Delete',
+      });
+      if (!confirmed) return;
       this.deletingSlotId = slot.id;
       this.trainerService.deleteAvailabilitySlot(this.trainerId, slot.id).subscribe({
         next: () => {
@@ -231,7 +237,7 @@ export class TrainerScheduleComponent {
 
   private getMonday(date: Date): Date {
     const d = new Date(date);
-    const day = d.getDay(); // 0 Sun
+    const day = d.getDay(); 
     const diff = day === 0 ? -6 : 1 - day;
     d.setDate(d.getDate() + diff);
     d.setHours(0, 0, 0, 0);

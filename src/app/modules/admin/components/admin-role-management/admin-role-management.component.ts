@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminRoleItem, AdminRolePayload, AdminRoleService } from '../../services/admin-role.service';
+import { ConfirmDialogService } from '../../../../services/confirm-dialog.service';
 
 @Component({
   selector: 'app-admin-role-management',
@@ -13,6 +14,7 @@ import { AdminRoleItem, AdminRolePayload, AdminRoleService } from '../../service
 export class AdminRoleManagementComponent {
   private fb = inject(FormBuilder);
   private adminRoleService = inject(AdminRoleService);
+  private confirmDialog = inject(ConfirmDialogService);
 
   loading = true;
   creating = false;
@@ -100,10 +102,14 @@ export class AdminRoleManagementComponent {
     this.showCreateModal = false;
   }
 
-  createRole(): void {
+  async createRole(): Promise<void> {
     this.createForm.markAllAsTouched();
     if (this.createForm.invalid || this.creating) return;
-    if (!confirm('Create this role?')) return;
+    const confirmed = await this.confirmDialog.confirm('Create this role?', {
+      title: 'Confirm Create Role',
+      confirmText: 'Create',
+    });
+    if (!confirmed) return;
 
     const payload: AdminRolePayload = {
       name: this.createForm.controls.name.value.trim(),
@@ -142,10 +148,14 @@ export class AdminRoleManagementComponent {
     this.selectedRole = null;
   }
 
-  updateRole(): void {
+  async updateRole(): Promise<void> {
     this.editForm.markAllAsTouched();
     if (!this.selectedRole?.id || this.editForm.invalid || this.updating) return;
-    if (!confirm('Update this role?')) return;
+    const confirmed = await this.confirmDialog.confirm('Update this role?', {
+      title: 'Confirm Update Role',
+      confirmText: 'Update',
+    });
+    if (!confirmed) return;
 
     const payload: AdminRolePayload = {
       name: this.editForm.controls.name.value.trim(),
@@ -168,9 +178,13 @@ export class AdminRoleManagementComponent {
     });
   }
 
-  deleteRole(): void {
+  async deleteRole(): Promise<void> {
     if (!this.selectedRole?.id || this.deleting) return;
-    if (!confirm('Delete this role? This action cannot be undone.')) return;
+    const confirmed = await this.confirmDialog.confirm('Delete this role? This action cannot be undone.', {
+      title: 'Confirm Delete Role',
+      confirmText: 'Delete',
+    });
+    if (!confirmed) return;
 
     this.deleting = true;
     this.adminRoleService.deleteRole(this.selectedRole.id).subscribe({

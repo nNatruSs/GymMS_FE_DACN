@@ -2,8 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { StorageService } from '../../../auth/services/storage/storage.service';
-
-const BASE_URL = 'https://gms-backend-lc61.onrender.com/api/v1';
+import { API_BASE_URL as BASE_URL } from '../../../core/constants/api.constants';
 
 export interface AdminUserPayload {
   firstName: string;
@@ -16,6 +15,17 @@ export interface AdminUserPayload {
   role?: string;
   status?: string;
   password?: string;
+}
+
+export interface AdminTrainerPayload extends AdminUserPayload {
+  ptSessionPrice30?: number;
+  ptSessionPrice60: number;
+  ptSessionPrice90?: number;
+  specialization?: string;
+  experienceYears?: number;
+  biography?: string;
+  certifications?: string[];
+  areasOfExpertise?: string[];
 }
 
 export interface AdminUserRole {
@@ -35,6 +45,15 @@ export interface AdminUserListItem {
   address?: string | null;
   status?: string;
   createdAt?: string;
+  avatarUrl?: string | null;
+  ptSessionPrice30?: number;
+  ptSessionPrice60?: number;
+  ptSessionPrice90?: number;
+  trainerSpecialization?: string | null;
+  trainerExperienceYears?: number | null;
+  trainerBiography?: string | null;
+  trainerCertifications?: string[];
+  trainerAreasOfExpertise?: string[];
   roles?: AdminUserRole[];
   memberships?: { id: string; name: string; description?: string }[];
 }
@@ -116,6 +135,18 @@ export class AdminUserService {
   updateUser(id: string, payload: AdminUserPayload) {
     return this.http
       .patch<any>(`${BASE_URL}/user/${id}`, payload, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  createTrainer(payload: AdminTrainerPayload) {
+    return this.http
+      .post<any>(`${BASE_URL}/trainer/create`, payload, { headers: this.authHeaders() })
+      .pipe(map((res) => this.unwrapData<any>(res)));
+  }
+
+  updateTrainer(id: string, payload: AdminTrainerPayload) {
+    return this.http
+      .patch<any>(`${BASE_URL}/trainer/${id}`, payload, { headers: this.authHeaders() })
       .pipe(map((res) => this.unwrapData<any>(res)));
   }
 

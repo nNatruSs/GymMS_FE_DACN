@@ -11,22 +11,22 @@ import { CommonModule } from '@angular/common';
 export class BookingModeSelectorComponent {
 
     @Input() disabled = false;
-  /** Selected branch (display only) */
+  
   @Input() branch: any;
 
-  /** Emit selected booking mode */
+  
   @Output() select = new EventEmitter<'class' | 'trainer'>();
 
-  /** Go back to branch selection */
+  
   @Output() back = new EventEmitter<void>();
 
-//   chooseClass() {
-//     this.select.emit('class');
-//   }
 
-//   chooseTrainer() {
-//     this.select.emit('trainer');
-//   }
+
+
+
+
+
+
 
     choose(mode: 'class' | 'trainer') {
         if (this.disabled) return;

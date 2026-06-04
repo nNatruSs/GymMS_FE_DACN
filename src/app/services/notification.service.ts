@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { StorageService } from '../auth/services/storage/storage.service';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-
-const BASE_URL = 'https://gms-backend-lc61.onrender.com/api/v1';
+import { API_BASE_URL as BASE_URL } from '../core/constants/api.constants';
 
 export interface AppNotification {
   id: string;
@@ -52,7 +51,7 @@ export class NotificationService {
       .patch<any>(`${BASE_URL}/notifications/read-all`, {}, { headers: this.authHeaders() })
       .pipe(
         map((res) => Number(res?.data?.updatedCount ?? 0)),
-        // Backward-compat if backend path is singular in some envs.
+        
         catchError(() =>
           this.http
             .patch<any>(`${BASE_URL}/notification/read-all`, {}, { headers: this.authHeaders() })
@@ -66,8 +65,6 @@ export class NotificationService {
     targetId: string;
     amount: number;
     currency?: string;
-    successUrl?: string;
-    cancelUrl?: string;
   }): Observable<any> {
     const body: any = {
       targetType: payload.targetType,
@@ -75,8 +72,6 @@ export class NotificationService {
       amount: payload.amount,
       currency: payload.currency ?? 'VND',
     };
-    if (payload.successUrl) body.successUrl = payload.successUrl;
-    if (payload.cancelUrl) body.cancelUrl = payload.cancelUrl;
 
     return this.http.post<any>(
       `${BASE_URL}/payments/checkout`,

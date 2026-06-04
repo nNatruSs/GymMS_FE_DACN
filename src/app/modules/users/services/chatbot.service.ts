@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { StorageService } from '../../../auth/services/storage/storage.service';
-
-const BASE_URL = 'https://gms-backend-lc61.onrender.com/api/v1';
+import { API_BASE_URL as BASE_URL } from '../../../core/constants/api.constants';
 
 export interface ChatbotMessage {
   id: string;
@@ -64,9 +63,9 @@ export class ChatbotService {
       .pipe(
         map((res) => this.unwrapData<any>(res)),
         map((data) => {
-          // Support both shapes:
-          // 1) { sessionId, status, messages: [...] }
-          // 2) legacy direct array [...]
+          
+          
+          
           if (Array.isArray(data)) return data as ChatbotMessage[];
           if (Array.isArray(data?.messages)) return data.messages as ChatbotMessage[];
           return [];

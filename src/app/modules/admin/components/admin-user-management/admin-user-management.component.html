@@ -141,6 +141,37 @@
           <label class="form-label">Address</label>
           <input class="form-control" formControlName="address" />
         </div>
+
+        <ng-container *ngIf="isTrainerRoleName(createForm.controls.role.value)">
+          <div class="col-md-6">
+            <label class="form-label">Password *</label>
+            <input class="form-control" type="password" formControlName="password" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Private Session Pricing (60 mins) *</label>
+            <input class="form-control" type="number" min="0" formControlName="ptSessionPrice60" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Specialization</label>
+            <input class="form-control" formControlName="specialization" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Experience Years</label>
+            <input class="form-control" type="number" min="0" formControlName="experienceYears" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Certifications (comma separated)</label>
+            <input class="form-control" formControlName="certifications" placeholder="NASM CPT, Precision Nutrition Level 1" />
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Areas of Expertise (comma separated)</label>
+            <input class="form-control" formControlName="areasOfExpertise" placeholder="Hypertrophy, Fat Loss, Mobility" />
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Biography</label>
+            <textarea class="form-control" rows="2" formControlName="biography"></textarea>
+          </div>
+        </ng-container>
       </div>
 
       <div class="d-flex justify-content-end gap-2 mt-4">
@@ -213,6 +244,33 @@
           <label class="form-label">New Password (optional)</label>
           <input class="form-control" type="password" formControlName="password" />
         </div>
+
+        <ng-container *ngIf="isTrainerUser(selectedUser)">
+          <div class="col-md-6">
+            <label class="form-label">Private Session Pricing (60 mins) *</label>
+            <input class="form-control" type="number" min="0" formControlName="ptSessionPrice60" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Specialization</label>
+            <input class="form-control" formControlName="specialization" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Experience Years</label>
+            <input class="form-control" type="number" min="0" formControlName="experienceYears" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Certifications (comma separated)</label>
+            <input class="form-control" formControlName="certifications" />
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Areas of Expertise (comma separated)</label>
+            <input class="form-control" formControlName="areasOfExpertise" />
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Biography</label>
+            <textarea class="form-control" rows="2" formControlName="biography"></textarea>
+          </div>
+        </ng-container>
       </div>
 
       <div class="role-section mt-4">

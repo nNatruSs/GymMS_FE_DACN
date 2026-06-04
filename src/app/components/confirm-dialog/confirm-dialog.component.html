@@ -1,0 +1,16 @@
+<ng-container *ngIf="state$ | async as state">
+  <div *ngIf="state.open" class="confirm-overlay" (click)="onCancel()">
+    <div class="confirm-card" (click)="$event.stopPropagation()">
+      <h5 class="mb-2">{{ state.title }}</h5>
+      <p class="mb-3 text-muted">{{ state.message }}</p>
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+          {{ state.cancelText }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="onConfirm()">
+          {{ state.confirmText }}
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>

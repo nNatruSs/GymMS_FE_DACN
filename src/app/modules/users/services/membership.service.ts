@@ -1,33 +1,33 @@
-// import { Injectable } from '@angular/core';
-// import { HttpClient } from '@angular/common/http';
 
-// @Injectable({ providedIn: 'root' })
-// export class MembershipService {
 
-//   private baseUrl = 'http://localhost:3000';
 
-//   constructor(private http: HttpClient) {}
 
-//   getUserMembership(userId: string) {
-//     return this.http.get<any[]>(`${this.baseUrl}/user_memberships?user_id=${userId}`);
-//   }
 
-//   getPlans() {
-//     return this.http.get<any[]>(`${this.baseUrl}/membership_plans`);
-//   }
 
-//   registerMembership(data: any) {
-//     return this.http.post(`${this.baseUrl}/user_memberships`, {id: Date.now().toString(), ...data}); //remove later when use real backend
-//   }
 
-//   updateMembership(id: string, data: any) {
-//     return this.http.patch(`${this.baseUrl}/user_memberships/${id}`, data);
-//   }
 
-//   cancelMembership(id: string) {
-//     return this.http.delete(`${this.baseUrl}/user_memberships/${id}`);
-//   }
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 import { Injectable } from '@angular/core';
@@ -35,8 +35,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from './../../../auth/services/storage/storage.service';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-const BASE_URL = 'https://gms-backend-lc61.onrender.com/api/v1';
+import { API_BASE_URL as BASE_URL } from '../../../core/constants/api.constants';
 
 @Injectable({ providedIn: 'root' })
 export class MembershipService {
@@ -66,33 +65,47 @@ export class MembershipService {
 
   private normalizeObjectResponse(response: any): any | null {
     if (!response) return null;
+    if (response?.data === null) return null;
     if (response?.data && typeof response.data === 'object') return response.data;
+    if (typeof response !== 'object') return null;
+    const keys = Object.keys(response);
+    const metaKeys = ['statusCode', 'status', 'statusText', 'error', 'message'];
+    const hasOnlyMeta = keys.length > 0 && keys.every((k) => metaKeys.includes(k));
+    if (hasOnlyMeta) return null;
+    const hasMembershipFields =
+      !!response?.id ||
+      !!response?.membershipId ||
+      !!response?.membership ||
+      !!response?.membershipName ||
+      !!response?.startDate ||
+      !!response?.endDate;
+    if (!hasMembershipFields) return null;
     return response;
   }
 
-  /** GET /memberships — list all membership tiers/plans */
+  
   getPlans() {
     return this.http
       .get<any>(`${BASE_URL}/memberships`, { headers: this.authHeaders() })
       .pipe(map((res) => this.normalizeArrayResponse(res)));
   }
 
-  /** GET /memberships/my — get current user's active membership */
+  
   getUserMembership() {
     return this.http
       .get<any>(`${BASE_URL}/memberships/my`, { headers: this.authHeaders() })
       .pipe(map((res) => this.normalizeObjectResponse(res)));
   }
 
-  /** GET /memberships/:id */
+  
   getMembershipById(id: string) {
-    // return this.http.get<any>(`${BASE_URL}/memberships/${id}`, { headers: this.authHeaders() });
+    
     return this.http
       .get<any>(`${BASE_URL}/memberships/${id}`, { headers: this.authHeaders() })
       .pipe(map((res) => this.normalizeObjectResponse(res)));
   }
 
-  /** POST /memberships/:id/checkout — initiate Stripe checkout to purchase a tier */
+  
   initiateCheckout(membershipId: string) {
     return this.http.post<any>(
       `${BASE_URL}/memberships/${membershipId}/checkout`,
@@ -101,28 +114,19 @@ export class MembershipService {
     );
   }
 
-  /**
-   * Temporary frontend stub to keep legacy UI compiling.
-   * Backend user endpoints are not available yet.
-   */
+  
   registerMembership(_data: any) {
     console.warn('[MembershipService] registerMembership is a temporary stub.');
     return of({ success: false, message: 'Not implemented in backend yet.' });
   }
 
-  /**
-   * Temporary frontend stub to keep legacy UI compiling.
-   * Backend user endpoints are not available yet.
-   */
+  
   updateMembership(_id: string, _data: any) {
     console.warn('[MembershipService] updateMembership is a temporary stub.');
     return of({ success: false, message: 'Not implemented in backend yet.' });
   }
 
-  /**
-   * Temporary frontend stub to keep legacy UI compiling.
-   * Backend user endpoints are not available yet.
-   */
+  
   cancelMembership(_id: string) {
     console.warn('[MembershipService] cancelMembership is a temporary stub.');
     return of({ success: false, message: 'Not implemented in backend yet.' });

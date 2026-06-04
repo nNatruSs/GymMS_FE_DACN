@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { TrainerService } from '../../services/trainer.service';
+import { ConfirmDialogService } from '../../../../services/confirm-dialog.service';
 
 @Component({
   selector: 'app-trainer-workout',
@@ -62,7 +63,10 @@ export class TrainerWorkoutComponent {
     ],
   };
 
-  constructor(private trainerService: TrainerService) {}
+  constructor(
+    private trainerService: TrainerService,
+    private confirmDialog: ConfirmDialogService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -108,7 +112,7 @@ export class TrainerWorkoutComponent {
     return Array.from(map.values());
   }
 
-  // ─── Exercise CRUD ─────────────────────────────────────────────────────────
+  
   openCreateExerciseModal(): void {
     this.exerciseForm = {
       name: '',
@@ -172,9 +176,13 @@ export class TrainerWorkoutComponent {
     });
   }
 
-  deleteExercise(): void {
+  async deleteExercise(): Promise<void> {
     if (!this.selectedExercise?.id || this.deletingExercise) return;
-    if (!confirm('Delete this exercise?')) return;
+    const confirmed = await this.confirmDialog.confirm('Delete this exercise?', {
+      title: 'Confirm Delete Exercise',
+      confirmText: 'Delete',
+    });
+    if (!confirmed) return;
     this.deletingExercise = true;
     this.trainerService.deleteExercise(this.selectedExercise.id).subscribe({
       next: () => {
@@ -191,7 +199,7 @@ export class TrainerWorkoutComponent {
     });
   }
 
-  // ─── Workout Plans ─────────────────────────────────────────────────────────
+  
   openCreatePlanModal(): void {
     this.planForm = {
       title: '',
@@ -316,10 +324,14 @@ export class TrainerWorkoutComponent {
     });
   }
 
-  deleteWorkoutPlan(): void {
+  async deleteWorkoutPlan(): Promise<void> {
     const planId = this.selectedPlanSummary?.id || this.selectedPlanDetail?.id;
     if (!planId || this.deletingPlan) return;
-    if (!confirm('Delete this workout plan?')) return;
+    const confirmed = await this.confirmDialog.confirm('Delete this workout plan?', {
+      title: 'Confirm Delete Workout Plan',
+      confirmText: 'Delete',
+    });
+    if (!confirmed) return;
     this.deletingPlan = true;
     this.trainerService.deleteWorkoutPlan(planId).subscribe({
       next: () => {

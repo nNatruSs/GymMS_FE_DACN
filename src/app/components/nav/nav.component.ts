@@ -14,7 +14,7 @@ import { Inject, PLATFORM_ID } from '@angular/core';
   standalone: true,
   imports: [RouterModule,CommonModule],
   templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.css'] // Corrected to styleUrls
+  styleUrls: ['./nav.component.css'] 
 })
 export class NavComponent {
   isLoggedIn: boolean = false;
@@ -51,7 +51,7 @@ export class NavComponent {
     this.isLoggedIn = this.storage.isUserLoggedIn();
 
     this.loginStatusSubscription = this.storage.loggedInSubject$.subscribe((status) => {
-      // Set login status
+      
       this.isLoggedIn = status;
 
       this.isUserLoggedIn = this.storage.isUserLoggedIn();
@@ -66,13 +66,13 @@ export class NavComponent {
     });
 
 
-    // Check if user is logged in
+    
     this.isAdminLoggedIn = this.storage.isAdminLoggedIn();
     this.isUserLoggedIn = this.storage.isUserLoggedIn();
     this.isTrainerLoggedIn = this.storage.isTrainerLoggedIn();
     const user = this.storage.getUser();
     if (user) {
-      this.userName = user.email || 'User'; // Assuming the user has a 'name' property
+      this.userName = user.email || 'User'; 
     }
     this.loadNotifications();
   }
@@ -300,17 +300,12 @@ export class NavComponent {
 
     this.paymentCheckoutLoading = true;
     this.paymentCheckoutError = null;
-    const origin = window.location.origin;
-    const successUrl = `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${origin}/payment/cancel`;
     this.notificationService
       .checkoutPayment({
         targetType: 'TRAINER_BOOKING',
         targetId,
         amount: 50000,
         currency: 'VND',
-        successUrl,
-        cancelUrl,
       })
       .subscribe({
         next: (res) => {
@@ -363,14 +358,14 @@ export class NavComponent {
     );
   }
 
-  // Redirect user to login page if not logged in
+  
   onSignInClick(): void {
     if (!this.isUserLoggedIn && !this.isAdminLoggedIn && !this.isTrainerLoggedIn) {
-      this.router.navigate(['/login']);  // Or redirect to any login route you have
+      this.router.navigate(['/login']);  
     }
   }
 
-  // Sign out the user
+  
   onSignOutClick(): void {
     this.storage.signOut();
     this.storage.loggedInSubject$.next(false);

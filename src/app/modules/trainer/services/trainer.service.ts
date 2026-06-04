@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { StorageService } from '../../../auth/services/storage/storage.service';
-
-const BASE_URL = 'https://gms-backend-lc61.onrender.com/api/v1';
+import { API_BASE_URL as BASE_URL } from '../../../core/constants/api.constants';
 
 export interface TrainerMessagingParticipant {
   id: string;
@@ -364,7 +363,7 @@ export class TrainerService {
     );
   }
 
-  // ─── Workout: Exercises ───────────────────────────────────────────────────
+  
   listExercises() {
     return this.http
       .get<any>(`${BASE_URL}/exercises`, { headers: this.authHeaders() })
@@ -389,7 +388,7 @@ export class TrainerService {
       .pipe(map((res) => this.unwrapData<any>(res)));
   }
 
-  // ─── Workout: Plans ───────────────────────────────────────────────────────
+  
   listWorkoutPlans() {
     return this.http
       .get<any>(`${BASE_URL}/workout-plans`, { headers: this.authHeaders() })
@@ -414,7 +413,7 @@ export class TrainerService {
       .pipe(map((res) => this.unwrapData<any>(res)));
   }
 
-  // ─── Diet Plans ────────────────────────────────────────────────────────────
+  
   listDietPlans(params?: {
     page?: number;
     limit?: number;

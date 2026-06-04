@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminMembershipService, MembershipTierPayload } from '../../services/admin-membership.service';
+import { ConfirmDialogService } from '../../../../services/confirm-dialog.service';
 
 @Component({
   selector: 'app-admin-membership-management',
@@ -13,6 +14,7 @@ import { AdminMembershipService, MembershipTierPayload } from '../../services/ad
 export class AdminMembershipManagementComponent {
   private fb = inject(FormBuilder);
   private adminMembershipService = inject(AdminMembershipService);
+  private confirmDialog = inject(ConfirmDialogService);
 
   loading = true;
   creating = false;
@@ -99,10 +101,14 @@ export class AdminMembershipManagementComponent {
     this.selectedLogoFile = null;
   }
 
-  createTier(): void {
+  async createTier(): Promise<void> {
     this.createForm.markAllAsTouched();
     if (this.createForm.invalid || this.creating) return;
-    if (!confirm('Create this membership tier?')) return;
+    const confirmed = await this.confirmDialog.confirm('Create this membership tier?', {
+      title: 'Confirm Create Membership',
+      confirmText: 'Create',
+    });
+    if (!confirmed) return;
 
     const payload: MembershipTierPayload = {
       name: this.createForm.controls.name.value,
@@ -127,10 +133,14 @@ export class AdminMembershipManagementComponent {
     });
   }
 
-  updateTier(): void {
+  async updateTier(): Promise<void> {
     this.editForm.markAllAsTouched();
     if (this.editForm.invalid || this.updating || !this.selectedTier?.id) return;
-    if (!confirm('Update this membership tier?')) return;
+    const confirmed = await this.confirmDialog.confirm('Update this membership tier?', {
+      title: 'Confirm Update Membership',
+      confirmText: 'Update',
+    });
+    if (!confirmed) return;
 
     const payload: MembershipTierPayload = {
       name: this.editForm.controls.name.value,
@@ -155,9 +165,13 @@ export class AdminMembershipManagementComponent {
     });
   }
 
-  deleteTier(id: string | undefined): void {
+  async deleteTier(id: string | undefined): Promise<void> {
     if (!id || this.deletingId) return;
-    if (!confirm('Delete this membership tier?')) return;
+    const confirmed = await this.confirmDialog.confirm('Delete this membership tier?', {
+      title: 'Confirm Delete Membership',
+      confirmText: 'Delete',
+    });
+    if (!confirmed) return;
 
     this.deletingId = id;
     this.errorMessage = '';
