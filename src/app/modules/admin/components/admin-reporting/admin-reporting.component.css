@@ -64,3 +64,11 @@
   padding: 10px;
   height: 100%;
 }
+
+.revenue-chart-container {
+  height: 320px;
+  border: 1px solid #eef2f7;
+  border-radius: 10px;
+  padding: 12px;
+  background: #fafbfc;
+}

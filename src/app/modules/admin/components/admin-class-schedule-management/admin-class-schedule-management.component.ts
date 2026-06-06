@@ -432,9 +432,10 @@ export class AdminClassScheduleManagementComponent {
   }
 
   uploadClassImage(): void {
-    if (!this.selectedSchedule?.classId || !this.selectedClassImageFile) return;
+    const classId = this.selectedSchedule?.id
+    if (!classId || !this.selectedClassImageFile) return;
     this.uploadingImage = true;
-    this.scheduleService.uploadClassImage(this.selectedSchedule.classId, this.selectedClassImageFile).subscribe({
+    this.scheduleService.uploadClassImage(classId, this.selectedClassImageFile).subscribe({
       next: () => {
         this.uploadingImage = false;
         this.selectedClassImageFile = null;

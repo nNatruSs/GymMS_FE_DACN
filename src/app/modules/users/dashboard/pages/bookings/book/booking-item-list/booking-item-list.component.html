@@ -116,7 +116,7 @@
         <small class="text-muted">
           {{
             mode === 'class'
-              ? (i.category + ' • ' + (i.dayOfWeek || '-'))
+              ? (i.category + ' • ' + (i.daysOfWeek.join(', ') || '-'))
               : trainerSpecialization(i)
           }}
         </small>

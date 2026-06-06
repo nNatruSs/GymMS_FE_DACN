@@ -74,6 +74,13 @@
       No revenue analytics data in this date range.
     </div>
 
+    <div
+      class="revenue-chart-container mt-3"
+      *ngIf="!loadingRevenue && revenueAnalytics.buckets.length > 0"
+    >
+      <canvas #revenueChartCanvas aria-label="Revenue analytics chart"></canvas>
+    </div>
+
     <div class="table-responsive mt-3" *ngIf="!loadingRevenue && revenueAnalytics.buckets.length > 0">
       <table class="table table-striped align-middle mb-0">
         <thead>
