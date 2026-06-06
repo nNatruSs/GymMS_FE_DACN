@@ -21,7 +21,7 @@ Each row describes what that exact line contributes to behavior or structure.
 | 6 | `        ` | Blank line used to separate logical blocks for readability. |
 | 7 | `        <div class="card shadow-sm mb-4 p-4">` | Declares a core TypeScript structure used by this module. |
 | 8 | `          <h2 class="display-6 text-center">Register</h2>` | Declares a core TypeScript structure used by this module. |
-| 9 | `          <p class="lead mb-4 text-center">Sign up to GivingToHelp</p>` | Declares a core TypeScript structure used by this module. |
+| 9 | `          <p class="lead mb-4 text-center">Sign up to GymMS</p>` | Declares a core TypeScript structure used by this module. |
 | 10 | `          <form [formGroup]="signUpForm">` | HTML tag opening/closing markup for component template structure. |
 | 11 | `  ` | Blank line used to separate logical blocks for readability. |
 | 12 | `            ` | Blank line used to separate logical blocks for readability. |

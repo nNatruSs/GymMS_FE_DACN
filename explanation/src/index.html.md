@@ -18,7 +18,7 @@ Each row describes what that exact line contributes to behavior or structure.
 | 3 | `<head>` | HTML tag opening/closing markup for component template structure. |
 | 4 | `  <meta charset="utf-8">` | HTML tag opening/closing markup for component template structure. |
 | 5 | `  <base href="/">` | HTML tag opening/closing markup for component template structure. |
-| 6 | `  <title>GivingToHelp</title>` | HTML tag opening/closing markup for component template structure. |
+| 6 | `  <title>GymMS</title>` | HTML tag opening/closing markup for component template structure. |
 | 7 | `  ` | Blank line used to separate logical blocks for readability. |
 | 8 | `  <link rel="icon" type="image/x-icon" href="assets/gym_ms_logo.png" />` | Declares a core TypeScript structure used by this module. |
 | 9 | `  ` | Blank line used to separate logical blocks for readability. |

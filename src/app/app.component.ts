@@ -19,7 +19,7 @@ export class AppComponent {
   
   constructor(private router: Router, private storage: StorageService){}
 
-  title = 'GivingToHelp';
+  title = 'GymMS';
 
   
 

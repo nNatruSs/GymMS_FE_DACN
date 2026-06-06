@@ -34,7 +34,7 @@ Each row describes what that exact line contributes to behavior or structure.
 | 19 | `  ` | Blank line used to separate logical blocks for readability. |
 | 20 | `  constructor(private router: Router, private storage: StorageService){}` | Class constructor for dependency injection and initial setup. |
 | 21 | `` | Blank line used to separate logical blocks for readability. |
-| 22 | `  title = 'GivingToHelp';` | Core implementation line contributing to the file behavior. |
+| 22 | `  title = 'GymMS';` | Core implementation line contributing to the file behavior. |
 | 23 | `` | Blank line used to separate logical blocks for readability. |
 | 24 | `  ` | Blank line used to separate logical blocks for readability. |
 | 25 | `` | Blank line used to separate logical blocks for readability. |
