@@ -68,7 +68,7 @@ export class TrainerMessagesComponent {
 
     this.trainerService.getMessages(conversationId).subscribe({
       next: (page) => {
-        this.messages = [...page.messages].reverse();
+        this.messages = page.messages;
         this.selectedPartnerName = `${page.partner.firstName} ${page.partner.lastName}`.trim();
         this.loading = false;
         this.trainerService.markConversationRead(conversationId).subscribe();
@@ -100,7 +100,7 @@ export class TrainerMessagesComponent {
     this.sending = true;
     this.trainerService.sendMessage(this.selectedConversationId, content).subscribe({
       next: (page) => {
-        this.messages = [...page.messages].reverse();
+        this.messages = page.messages;
         this.draftMessage = '';
         this.sending = false;
       },
